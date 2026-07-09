@@ -55,9 +55,6 @@ por defecto si no las defines):
 set DB_PASSWORD=tu_contraseña
 mvnw spring-boot:run
 
-# Linux / Mac
-export DB_PASSWORD=tu_contraseña
-./mvnw spring-boot:run
 ```
 
 Al iniciar, Hibernate crea automáticamente la tabla `player_match_stats` (modo
