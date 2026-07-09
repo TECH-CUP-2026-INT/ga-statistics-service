@@ -49,11 +49,14 @@ public class StatisticsServiceImpl implements StatisticsService {
         repository.save(stat);
     }
 
-    @Override
+   @Override
     public PlayerAverageResponse getAverageWinRate(Long playerId, Long tournamentId) {
         long played = repository.countMatchesPlayed(playerId, tournamentId);
-        long won = repository.countMatchesWon(playerId, tournamentId);
-        double winRatePercentage = played == 0 ? 0.0 : round((won * 100.0) / played);
+        double winRatePercentage = 0.0;
+        if (played > 0) {
+            long won = repository.countMatchesWon(playerId, tournamentId);
+            winRatePercentage = round((won * 100.0) / played);
+        }
         return new PlayerAverageResponse(playerId, tournamentId, "averageWinRatePercentage",
                 winRatePercentage, played);
     }
