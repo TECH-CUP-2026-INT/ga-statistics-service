@@ -167,9 +167,65 @@ GET /api/v1/statistics/rankings?type=GOALS&limit=5
 }
 ```
 
+
 > Este servicio solo conoce el `playerId`. El nombre, foto y equipo del jugador los
 > enriquece el frontend (o el orquestador) consultando el servicio de Usuarios y
 > Jugadores — cada microservicio es dueño únicamente de su propio dominio.
+
+### Estadísticas de equipo y torneo
+
+**`GET /tournaments/{tournamentId}/standings`**
+
+Estadísticas generales del torneo: la tabla de posiciones completa (equipos, puntos,
+resultados), ordenada por puntos y diferencia de gol.
+
+```json
+{
+  "tournamentId": 1,
+  "standings": [
+    {
+      "teamId": 10,
+      "tournamentId": 1,
+      "matchesPlayed": 2,
+      "wins": 1,
+      "draws": 0,
+      "losses": 1,
+      "goalsFor": 2,
+      "goalsAgainst": 1,
+      "goalDifference": 1,
+      "points": 3
+    }
+  ]
+}
+```
+
+**`GET /teams/{teamId}/statistics`**
+
+Estadísticas de un equipo específico **en el torneo activo**. A diferencia de los demás
+endpoints, este no recibe `tournamentId` — el servicio le pregunta al servicio de
+Torneos cuál es el torneo activo en este momento (`GET {TOURNAMENTS_SERVICE_URL}/api/v1/tournaments/active`,
+contrato pendiente de confirmar con el equipo de Torneos).
+
+Respuesta: igual forma que una entrada de `standings` (ver arriba).
+
+Si el servicio de Torneos no está disponible o no responde con un torneo activo válido,
+este endpoint devuelve `502 Bad Gateway` con el detalle del error.
+
+**`GET /tournaments/{tournamentId}/recognitions`**
+
+Reconocimientos del torneo: máximo goleador y malla menos vencida.
+
+```json
+{
+  "tournamentId": 1,
+  "topScorer": { "playerId": 1, "goals": 2 },
+  "bestDefense": { "teamId": 10, "goalsAgainst": 1 }
+}
+```
+
+Si el torneo todavía no tiene datos registrados, `topScorer` y/o `bestDefense` vienen
+en `null`.
+
 
 ## Manejo de errores
 

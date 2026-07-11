@@ -1,0 +1,46 @@
+package co.edu.escuelaing.techcup.statistics.client;
+
+import co.edu.escuelaing.techcup.statistics.exception.ExternalServiceException;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
+
+@Component
+public class TournamentClientImpl implements TournamentClient {
+
+    private final RestClient restClient;
+
+    /**
+     * Ruta relativa asumida del servicio de Torneos. AJUSTAR si el contrato
+     * real que defina el equipo de Torneos es distinto.
+     */
+    private static final String ACTIVE_TOURNAMENT_PATH = "/api/v1/tournaments/active";
+
+    public TournamentClientImpl(@Value("${services.tournaments.base-url}") String baseUrl) {
+        this.restClient = RestClient.builder()
+                .baseUrl(baseUrl)
+                .build();
+    }
+
+    @Override
+    public Long getActiveTournamentId() {
+        try {
+            ActiveTournamentResponse response = restClient.get()
+                    .uri(ACTIVE_TOURNAMENT_PATH)
+                    .retrieve()
+                    .body(ActiveTournamentResponse.class);
+
+            if (response == null || response.id() == null) {
+                throw new ExternalServiceException(
+                        "El servicio de Torneos respondió sin un torneo activo válido.");
+            }
+            return response.id();
+        } catch (RestClientException ex) {
+            throw new ExternalServiceException(
+                    "No fue posible consultar el torneo activo en el servicio de Torneos: "
+                            + ex.getMessage());
+        }
+    }
+}
