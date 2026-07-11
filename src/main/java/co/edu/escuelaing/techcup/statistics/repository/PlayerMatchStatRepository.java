@@ -110,4 +110,57 @@ public interface PlayerMatchStatRepository extends JpaRepository<PlayerMatchStat
         Long getPlayerId();
         Long getValue();
     }
+
+    // ---------- Estadísticas de equipo ----------
+    // Se derivan de PlayerMatchStat: cada partido que un equipo jugó aparece
+    // repetido (una fila por jugador), por eso "partidos jugados" cuenta
+    // matchId DISTINCT en vez de filas.
+
+    @Query("""
+            SELECT DISTINCT p.teamId FROM PlayerMatchStat p
+            WHERE p.tournamentId = :tournamentId
+            """)
+    List<Long> findDistinctTeamIds(@Param("tournamentId") Long tournamentId);
+
+    @Query("""
+            SELECT COUNT(DISTINCT p.matchId) FROM PlayerMatchStat p
+            WHERE p.teamId = :teamId
+            AND (:tournamentId IS NULL OR p.tournamentId = :tournamentId)
+            """)
+    long countTeamMatchesPlayed(@Param("teamId") Long teamId,
+                                 @Param("tournamentId") Long tournamentId);
+
+    @Query("""
+            SELECT COUNT(DISTINCT p.matchId) FROM PlayerMatchStat p
+            WHERE p.teamId = :teamId
+            AND p.result = :result
+            AND (:tournamentId IS NULL OR p.tournamentId = :tournamentId)
+            """)
+    long countTeamMatchesByResult(@Param("teamId") Long teamId,
+                                   @Param("tournamentId") Long tournamentId,
+                                   @Param("result") co.edu.escuelaing.techcup.statistics.entity.MatchResult result);
+
+    @Query("""
+            SELECT COALESCE(SUM(p.goals), 0) FROM PlayerMatchStat p
+            WHERE p.teamId = :teamId
+            AND (:tournamentId IS NULL OR p.tournamentId = :tournamentId)
+            """)
+    long sumTeamGoalsFor(@Param("teamId") Long teamId,
+                          @Param("tournamentId") Long tournamentId);
+
+    /**
+     * Goles en contra = suma de los goles anotados por los RIVALES en cada
+     * partido que este equipo jugó (mismo matchId, teamId distinto).
+     */
+    @Query("""
+            SELECT COALESCE(SUM(opp.goals), 0) FROM PlayerMatchStat opp
+            WHERE opp.teamId <> :teamId
+            AND opp.matchId IN (
+                SELECT p.matchId FROM PlayerMatchStat p
+                WHERE p.teamId = :teamId
+                AND (:tournamentId IS NULL OR p.tournamentId = :tournamentId)
+            )
+            """)
+    long sumTeamGoalsAgainst(@Param("teamId") Long teamId,
+                              @Param("tournamentId") Long tournamentId);
 }

@@ -35,6 +35,8 @@ class StatisticsServiceImplTest {
 
     @Mock
     private PlayerMatchStatRepository repository;
+    @Mock
+    private co.edu.escuelaing.techcup.statistics.client.TournamentClient tournamentClient;
 
     private StatisticsService statisticsService;
 
@@ -43,9 +45,8 @@ class StatisticsServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        statisticsService = new StatisticsServiceImpl(repository);
+        statisticsService = new StatisticsServiceImpl(repository, tournamentClient);
     }
-
     // ---------- registerMatchStat ----------
 
     @Test
