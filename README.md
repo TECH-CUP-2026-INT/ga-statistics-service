@@ -170,6 +170,10 @@ GET /api/v1/statistics/rankings?type=GOALS&limit=5
 > Este servicio solo conoce el `playerId`. El nombre, foto y equipo del jugador los
 > enriquece el frontend (o el orquestador) consultando el servicio de Usuarios y
 > Jugadores — cada microservicio es dueño únicamente de su propio dominio.
+> Este servicio solo conoce el `playerId`. El nombre, foto y equipo del jugador los
+> enriquece el frontend (o el orquestador) consultando el servicio de Usuarios y
+> Jugadores — cada microservicio es dueño únicamente de su propio dominio.
+
 
 ## Manejo de errores
 
