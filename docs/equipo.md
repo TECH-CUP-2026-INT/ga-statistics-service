@@ -5,10 +5,10 @@
 El equipo **GA** es responsable del servicio del dominio **D4 — Estadísticas**.
 
 <!-- TODO: completar con los nombres reales del equipo -->
-| Nombre | Rol |
-|---|---|
-| _(completar)_ | Líder |
-| _(completar)_ | Back-end |
+| Nombre          | Rol |
+|-----------------|---|
+| Jhonatan peña   | Líder |
+| jhonatan madero | Back-end |
 
 ---
 
