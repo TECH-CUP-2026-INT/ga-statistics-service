@@ -20,6 +20,12 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.CONFLICT, List.of(ex.getMessage()), request);
     }
 
+    @ExceptionHandler(RecognitionNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleRecognitionNotFound(RecognitionNotFoundException ex,
+                                                                    HttpServletRequest request) {
+        return build(HttpStatus.NOT_FOUND, List.of(ex.getMessage()), request);
+    }
+
     @ExceptionHandler(ExternalServiceException.class)
     public ResponseEntity<ErrorResponse> handleExternalService(ExternalServiceException ex,
                                                                 HttpServletRequest request) {

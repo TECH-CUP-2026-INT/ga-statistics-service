@@ -1,6 +1,7 @@
 package co.edu.escuelaing.techcup.statistics.service;
 
 import co.edu.escuelaing.techcup.statistics.client.TournamentClient;
+import co.edu.escuelaing.techcup.statistics.repository.TournamentRecognitionRepository;
 import co.edu.escuelaing.techcup.statistics.dto.MatchStatEventRequest;
 import co.edu.escuelaing.techcup.statistics.dto.MatchesPlayedResponse;
 import co.edu.escuelaing.techcup.statistics.dto.PlayerAverageResponse;
@@ -36,6 +37,9 @@ class StatisticsServiceImplTest {
     @Mock
     private TournamentClient tournamentClient;
 
+    @Mock
+    private TournamentRecognitionRepository recognitionRepository;
+
     private StatisticsService statisticsService;
 
     private static final Long PLAYER_ID = 1L;
@@ -44,11 +48,11 @@ class StatisticsServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        statisticsService = new StatisticsServiceImpl(repository, tournamentClient);
+        statisticsService = new StatisticsServiceImpl(repository, recognitionRepository, tournamentClient);
     }
 
     private PlayerMatchStat stat(Long playerId, Long teamId, Long matchId, MatchResult result,
-                                 int goals, int fouls, int minutes) {
+                                  int goals, int fouls, int minutes) {
         return PlayerMatchStat.builder()
                 .playerId(playerId)
                 .teamId(teamId)
@@ -67,7 +71,7 @@ class StatisticsServiceImplTest {
     void registerMatchStat_deberiaGuardarCuandoNoEsDuplicado() {
         MatchStatEventRequest request = new MatchStatEventRequest(
                 PLAYER_ID, TEAM_ID, 500L, TOURNAMENT_ID, MatchResult.WON,
-                2, 1, 0, 3, 90);
+                2, 1, 0, 3, 90, 1, false);
 
         when(repository.existsByPlayerIdAndMatchId(PLAYER_ID, 500L)).thenReturn(false);
 
@@ -87,7 +91,7 @@ class StatisticsServiceImplTest {
     void registerMatchStat_deberiaRellenarConCeroLosCamposNulos() {
         MatchStatEventRequest request = new MatchStatEventRequest(
                 PLAYER_ID, TEAM_ID, 501L, TOURNAMENT_ID, MatchResult.LOST,
-                null, null, null, null, null);
+                null, null, null, null, null, null, null);
 
         when(repository.existsByPlayerIdAndMatchId(PLAYER_ID, 501L)).thenReturn(false);
 
@@ -105,7 +109,7 @@ class StatisticsServiceImplTest {
     void registerMatchStat_deberiaLanzarExcepcionSiYaExisteElPartidoParaElJugador() {
         MatchStatEventRequest request = new MatchStatEventRequest(
                 PLAYER_ID, TEAM_ID, 500L, TOURNAMENT_ID, MatchResult.WON,
-                2, 0, 0, 1, 90);
+                2, 0, 0, 1, 90, 0, false);
 
         when(repository.existsByPlayerIdAndMatchId(PLAYER_ID, 500L)).thenReturn(true);
 

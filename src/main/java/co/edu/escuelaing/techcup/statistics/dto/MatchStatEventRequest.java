@@ -39,6 +39,12 @@ public record MatchStatEventRequest(
         Integer foulsCommitted,
 
         @Min(value = 0, message = "minutesPlayed no puede ser negativo")
-        Integer minutesPlayed
+        Integer minutesPlayed,
+
+        @Min(value = 0, message = "assists no puede ser negativo")
+        Integer assists,
+
+        /** true si este jugador jugó como portero en este partido. Opcional, default false. */
+        Boolean goalkeeper
 ) {
 }

@@ -63,6 +63,13 @@ public class PlayerMatchStat {
     @Builder.Default
     private Integer minutesPlayed = 0;
 
+    @Builder.Default
+    private Integer assists = 0;
+
+    /** true si este jugador jugó como portero en este partido específico. */
+    @Builder.Default
+    private boolean goalkeeper = false;
+
     private MatchResult result;
 
     @Builder.Default
