@@ -1,0 +1,22 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: techcup-statistics-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  statistics-service:
+    build: .
+    container_name: statistics-service
+    ports:
+      - "8085:8085"
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/techcup_statistics
+      TOURNAMENTS_SERVICE_URL: http://host.docker.internal:8081
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:
