@@ -1,15 +1,29 @@
 package co.edu.escuelaing.techcup.statistics.service;
 
+import co.edu.escuelaing.techcup.statistics.client.TournamentClient;
+import co.edu.escuelaing.techcup.statistics.dto.CardsTotalResponse;
+import co.edu.escuelaing.techcup.statistics.dto.GoalkeeperRankingResponse;
+import co.edu.escuelaing.techcup.statistics.dto.MatchResultResponse;
 import co.edu.escuelaing.techcup.statistics.dto.MatchStatEventRequest;
 import co.edu.escuelaing.techcup.statistics.dto.MatchesPlayedResponse;
 import co.edu.escuelaing.techcup.statistics.dto.PlayerAverageResponse;
+import co.edu.escuelaing.techcup.statistics.dto.PlayerCardsResponse;
 import co.edu.escuelaing.techcup.statistics.dto.RankingResponse;
 import co.edu.escuelaing.techcup.statistics.dto.RankingType;
+import co.edu.escuelaing.techcup.statistics.dto.TeamAverageResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TeamGoalsResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TeamMatchRecordResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TotalResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TournamentMatchAveragesResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TournamentRecognitionResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TournamentStandingsResponse;
 import co.edu.escuelaing.techcup.statistics.entity.MatchResult;
 import co.edu.escuelaing.techcup.statistics.entity.PlayerMatchStat;
+import co.edu.escuelaing.techcup.statistics.entity.TournamentRecognition;
 import co.edu.escuelaing.techcup.statistics.exception.DuplicateMatchStatException;
+import co.edu.escuelaing.techcup.statistics.exception.RecognitionNotFoundException;
 import co.edu.escuelaing.techcup.statistics.repository.PlayerMatchStatRepository;
-import co.edu.escuelaing.techcup.statistics.repository.PlayerMatchStatRepository.RankingRow;
+import co.edu.escuelaing.techcup.statistics.repository.TournamentRecognitionRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,15 +31,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,14 +48,47 @@ class StatisticsServiceImplTest {
     @Mock
     private PlayerMatchStatRepository repository;
 
+    @Mock
+    private TournamentClient tournamentClient;
+
+    @Mock
+    private TournamentRecognitionRepository recognitionRepository;
+
     private StatisticsService statisticsService;
 
-    private static final Long PLAYER_ID = 1L;
-    private static final Long TOURNAMENT_ID = 100L;
+    private static final String PLAYER_ID = "player-1";
+    private static final String TEAM_ID = "team-10";
+    private static final String TOURNAMENT_ID = "tournament-100";
 
     @BeforeEach
     void setUp() {
-        statisticsService = new StatisticsServiceImpl(repository);
+        statisticsService = new StatisticsServiceImpl(repository, recognitionRepository, tournamentClient);
+    }
+
+    private PlayerMatchStat stat(String playerId, String teamId, String matchId, MatchResult result,
+                                  int goals, int fouls, int minutes) {
+        return PlayerMatchStat.builder()
+                .playerId(playerId)
+                .teamId(teamId)
+                .matchId(matchId)
+                .tournamentId(TOURNAMENT_ID)
+                .result(result)
+                .goals(goals)
+                .foulsCommitted(fouls)
+                .minutesPlayed(minutes)
+                .build();
+    }
+
+    private PlayerMatchStat goalkeeperStat(String playerId, String teamId, String matchId, MatchResult result) {
+        return PlayerMatchStat.builder()
+                .playerId(playerId)
+                .teamId(teamId)
+                .matchId(matchId)
+                .tournamentId(TOURNAMENT_ID)
+                .result(result)
+                .goals(0)
+                .goalkeeper(true)
+                .build();
     }
 
     // ---------- registerMatchStat ----------
@@ -51,10 +96,10 @@ class StatisticsServiceImplTest {
     @Test
     void registerMatchStat_deberiaGuardarCuandoNoEsDuplicado() {
         MatchStatEventRequest request = new MatchStatEventRequest(
-                PLAYER_ID, 10L, 500L, TOURNAMENT_ID, MatchResult.WON,
-                2, 1, 0, 3, 90);
+                PLAYER_ID, TEAM_ID, "match-500", TOURNAMENT_ID, MatchResult.WON,
+                2, 1, 0, 3, 90, 1, false);
 
-        when(repository.existsByPlayerIdAndMatchId(PLAYER_ID, 500L)).thenReturn(false);
+        when(repository.existsByPlayerIdAndMatchId(PLAYER_ID, "match-500")).thenReturn(false);
 
         statisticsService.registerMatchStat(request);
 
@@ -63,18 +108,20 @@ class StatisticsServiceImplTest {
 
         PlayerMatchStat saved = captor.getValue();
         assertThat(saved.getPlayerId()).isEqualTo(PLAYER_ID);
-        assertThat(saved.getMatchId()).isEqualTo(500L);
+        assertThat(saved.getMatchId()).isEqualTo("match-500");
         assertThat(saved.getGoals()).isEqualTo(2);
+        assertThat(saved.getAssists()).isEqualTo(1);
+        assertThat(saved.isGoalkeeper()).isFalse();
         assertThat(saved.getResult()).isEqualTo(MatchResult.WON);
     }
 
     @Test
     void registerMatchStat_deberiaRellenarConCeroLosCamposNulos() {
         MatchStatEventRequest request = new MatchStatEventRequest(
-                PLAYER_ID, 10L, 501L, TOURNAMENT_ID, MatchResult.LOST,
-                null, null, null, null, null);
+                PLAYER_ID, TEAM_ID, "match-501", TOURNAMENT_ID, MatchResult.LOST,
+                null, null, null, null, null, null, null);
 
-        when(repository.existsByPlayerIdAndMatchId(PLAYER_ID, 501L)).thenReturn(false);
+        when(repository.existsByPlayerIdAndMatchId(PLAYER_ID, "match-501")).thenReturn(false);
 
         statisticsService.registerMatchStat(request);
 
@@ -83,17 +130,18 @@ class StatisticsServiceImplTest {
 
         PlayerMatchStat saved = captor.getValue();
         assertThat(saved.getGoals()).isZero();
-        assertThat(saved.getYellowCards()).isZero();
         assertThat(saved.getMinutesPlayed()).isZero();
+        assertThat(saved.getAssists()).isZero();
+        assertThat(saved.isGoalkeeper()).isFalse();
     }
 
     @Test
     void registerMatchStat_deberiaLanzarExcepcionSiYaExisteElPartidoParaElJugador() {
         MatchStatEventRequest request = new MatchStatEventRequest(
-                PLAYER_ID, 10L, 500L, TOURNAMENT_ID, MatchResult.WON,
-                2, 0, 0, 1, 90);
+                PLAYER_ID, TEAM_ID, "match-500", TOURNAMENT_ID, MatchResult.WON,
+                2, 0, 0, 1, 90, 0, false);
 
-        when(repository.existsByPlayerIdAndMatchId(PLAYER_ID, 500L)).thenReturn(true);
+        when(repository.existsByPlayerIdAndMatchId(PLAYER_ID, "match-500")).thenReturn(true);
 
         assertThrows(DuplicateMatchStatException.class,
                 () -> statisticsService.registerMatchStat(request));
@@ -101,114 +149,422 @@ class StatisticsServiceImplTest {
         verify(repository, never()).save(any());
     }
 
-    // ---------- Promedios ----------
+    // ---------- Promedios de jugador ----------
 
     @Test
-    void getAverageGoals_deberiaRedondearADosDecimales() {
-        when(repository.countMatchesPlayed(PLAYER_ID, null)).thenReturn(3L);
-        when(repository.averageGoals(PLAYER_ID, null)).thenReturn(1.6666666);
+    void getAverageGoals_deberiaCalcularElPromedioYRedondear() {
+        List<PlayerMatchStat> stats = List.of(
+                stat(PLAYER_ID, TEAM_ID, "m1", MatchResult.WON, 2, 0, 90),
+                stat(PLAYER_ID, TEAM_ID, "m2", MatchResult.LOST, 1, 0, 90),
+                stat(PLAYER_ID, TEAM_ID, "m3", MatchResult.WON, 2, 0, 90));
+        when(repository.findByPlayerIdAndTournamentId(PLAYER_ID, TOURNAMENT_ID)).thenReturn(stats);
 
-        PlayerAverageResponse response = statisticsService.getAverageGoals(PLAYER_ID, null);
+        PlayerAverageResponse response = statisticsService.getAverageGoals(PLAYER_ID, TOURNAMENT_ID);
 
         assertThat(response.value()).isEqualTo(1.67);
         assertThat(response.matchesConsidered()).isEqualTo(3L);
-        assertThat(response.metric()).isEqualTo("averageGoals");
+    }
+
+    @Test
+    void getAverageFouls_deberiaCalcularElPromedio() {
+        List<PlayerMatchStat> stats = List.of(
+                stat(PLAYER_ID, TEAM_ID, "m1", MatchResult.WON, 0, 4, 90),
+                stat(PLAYER_ID, TEAM_ID, "m2", MatchResult.LOST, 0, 2, 90));
+        when(repository.findByPlayerIdAndTournamentId(PLAYER_ID, TOURNAMENT_ID)).thenReturn(stats);
+
+        PlayerAverageResponse response = statisticsService.getAverageFouls(PLAYER_ID, TOURNAMENT_ID);
+
+        assertThat(response.value()).isEqualTo(3.0);
+        assertThat(response.metric()).isEqualTo("averageFouls");
+    }
+
+    @Test
+    void getAverageMinutesPlayed_deberiaCalcularElPromedio() {
+        List<PlayerMatchStat> stats = List.of(
+                stat(PLAYER_ID, TEAM_ID, "m1", MatchResult.WON, 0, 0, 60),
+                stat(PLAYER_ID, TEAM_ID, "m2", MatchResult.LOST, 0, 0, 90));
+        when(repository.findByPlayerIdAndTournamentId(PLAYER_ID, TOURNAMENT_ID)).thenReturn(stats);
+
+        PlayerAverageResponse response = statisticsService.getAverageMinutesPlayed(PLAYER_ID, TOURNAMENT_ID);
+
+        assertThat(response.value()).isEqualTo(75.0);
     }
 
     @Test
     void getAverageWinRate_deberiaCalcularPorcentajeCorrectamente() {
-        when(repository.countMatchesPlayed(PLAYER_ID, TOURNAMENT_ID)).thenReturn(4L);
-        when(repository.countMatchesWon(PLAYER_ID, TOURNAMENT_ID)).thenReturn(3L);
+        List<PlayerMatchStat> stats = List.of(
+                stat(PLAYER_ID, TEAM_ID, "m1", MatchResult.WON, 1, 0, 90),
+                stat(PLAYER_ID, TEAM_ID, "m2", MatchResult.WON, 1, 0, 90),
+                stat(PLAYER_ID, TEAM_ID, "m3", MatchResult.WON, 1, 0, 90),
+                stat(PLAYER_ID, TEAM_ID, "m4", MatchResult.LOST, 0, 0, 90));
+        when(repository.findByPlayerIdAndTournamentId(PLAYER_ID, TOURNAMENT_ID)).thenReturn(stats);
 
         PlayerAverageResponse response = statisticsService.getAverageWinRate(PLAYER_ID, TOURNAMENT_ID);
 
         assertThat(response.value()).isEqualTo(75.0);
-        assertThat(response.tournamentId()).isEqualTo(TOURNAMENT_ID);
     }
 
     @Test
     void getAverageWinRate_deberiaDevolverCeroSiNoHaJugadoPartidos() {
-        when(repository.countMatchesPlayed(PLAYER_ID, null)).thenReturn(0L);
+        when(repository.findByPlayerId(PLAYER_ID)).thenReturn(List.of());
 
         PlayerAverageResponse response = statisticsService.getAverageWinRate(PLAYER_ID, null);
 
         assertThat(response.value()).isZero();
         assertThat(response.matchesConsidered()).isZero();
-        // Como no jugo partidos, nunca deberia preguntarse cuantos gano.
-        verify(repository, never()).countMatchesWon(anyLong(), any());
     }
 
     @Test
-    void getAverageFouls_deberiaUsarElRepositorio() {
-        when(repository.countMatchesPlayed(PLAYER_ID, null)).thenReturn(2L);
-        when(repository.averageFouls(PLAYER_ID, null)).thenReturn(2.5);
+    void getMatchesPlayed_deberiaContarLosPartidosDelJugador() {
+        when(repository.findByPlayerId(PLAYER_ID)).thenReturn(List.of(
+                stat(PLAYER_ID, TEAM_ID, "m1", MatchResult.WON, 1, 0, 90),
+                stat(PLAYER_ID, TEAM_ID, "m2", MatchResult.LOST, 0, 0, 90)));
 
-        PlayerAverageResponse response = statisticsService.getAverageFouls(PLAYER_ID, null);
+        MatchesPlayedResponse response = statisticsService.getMatchesPlayed(PLAYER_ID, null);
 
-        assertThat(response.value()).isEqualTo(2.5);
-        assertThat(response.metric()).isEqualTo("averageFouls");
+        assertThat(response.matchesPlayed()).isEqualTo(2L);
+    }
+
+    // ---------- Totales y tarjetas de jugador ----------
+
+    @Test
+    void getPlayerTotalGoals_deberiaSumarTodosLosGoles() {
+        when(repository.findByPlayerIdAndTournamentId(PLAYER_ID, TOURNAMENT_ID)).thenReturn(List.of(
+                stat(PLAYER_ID, TEAM_ID, "m1", MatchResult.WON, 2, 0, 90),
+                stat(PLAYER_ID, TEAM_ID, "m2", MatchResult.WON, 3, 0, 90)));
+
+        TotalResponse response = statisticsService.getPlayerTotalGoals(PLAYER_ID, TOURNAMENT_ID);
+
+        assertThat(response.total()).isEqualTo(5L);
+        assertThat(response.metric()).isEqualTo("totalGoals");
     }
 
     @Test
-    void getAverageMinutesPlayed_deberiaUsarElRepositorio() {
-        when(repository.countMatchesPlayed(PLAYER_ID, null)).thenReturn(2L);
-        when(repository.averageMinutesPlayed(PLAYER_ID, null)).thenReturn(75.0);
+    void getPlayerTotalFouls_deberiaSumarTodasLasFaltas() {
+        when(repository.findByPlayerIdAndTournamentId(PLAYER_ID, TOURNAMENT_ID)).thenReturn(List.of(
+                stat(PLAYER_ID, TEAM_ID, "m1", MatchResult.WON, 0, 2, 90),
+                stat(PLAYER_ID, TEAM_ID, "m2", MatchResult.WON, 0, 3, 90)));
 
-        PlayerAverageResponse response = statisticsService.getAverageMinutesPlayed(PLAYER_ID, null);
+        TotalResponse response = statisticsService.getPlayerTotalFouls(PLAYER_ID, TOURNAMENT_ID);
 
-        assertThat(response.value()).isEqualTo(75.0);
-        assertThat(response.metric()).isEqualTo("averageMinutesPlayed");
+        assertThat(response.total()).isEqualTo(5L);
     }
 
-    // ---------- Partidos jugados ----------
+    @Test
+    void getPlayerTotalAssists_deberiaSumarTodasLasAsistencias() {
+        PlayerMatchStat withAssists = PlayerMatchStat.builder()
+                .playerId(PLAYER_ID).teamId(TEAM_ID).matchId("m1").tournamentId(TOURNAMENT_ID)
+                .result(MatchResult.WON).assists(2).build();
+        when(repository.findByPlayerIdAndTournamentId(PLAYER_ID, TOURNAMENT_ID))
+                .thenReturn(List.of(withAssists));
+
+        TotalResponse response = statisticsService.getPlayerTotalAssists(PLAYER_ID, TOURNAMENT_ID);
+
+        assertThat(response.total()).isEqualTo(2L);
+        assertThat(response.metric()).isEqualTo("totalAssists");
+    }
 
     @Test
-    void getMatchesPlayed_deberiaDevolverElConteoDelRepositorio() {
-        when(repository.countMatchesPlayed(PLAYER_ID, TOURNAMENT_ID)).thenReturn(5L);
+    void getPlayerCards_deberiaSumarAmarillasYRojas() {
+        PlayerMatchStat withCards = PlayerMatchStat.builder()
+                .playerId(PLAYER_ID).teamId(TEAM_ID).matchId("m1").tournamentId(TOURNAMENT_ID)
+                .result(MatchResult.WON).yellowCards(1).redCards(1).build();
+        when(repository.findByPlayerIdAndTournamentId(PLAYER_ID, TOURNAMENT_ID))
+                .thenReturn(List.of(withCards));
 
-        MatchesPlayedResponse response = statisticsService.getMatchesPlayed(PLAYER_ID, TOURNAMENT_ID);
+        PlayerCardsResponse response = statisticsService.getPlayerCards(PLAYER_ID, TOURNAMENT_ID);
 
-        assertThat(response.matchesPlayed()).isEqualTo(5L);
-        assertThat(response.playerId()).isEqualTo(PLAYER_ID);
+        assertThat(response.yellowCards()).isEqualTo(1L);
+        assertThat(response.redCards()).isEqualTo(1L);
     }
 
     // ---------- Rankings ----------
 
     @Test
-    void getRanking_deberiaAsignarPosicionesEnOrden() {
-        RankingRow row1 = mockRankingRow(1L, 10L);
-        RankingRow row2 = mockRankingRow(2L, 7L);
+    void getRanking_goles_deberiaOrdenarDescendente() {
+        List<PlayerMatchStat> stats = List.of(
+                stat("p1", TEAM_ID, "m1", MatchResult.WON, 5, 0, 90),
+                stat("p2", TEAM_ID, "m1", MatchResult.LOST, 2, 0, 90));
+        when(repository.findByTournamentId(TOURNAMENT_ID)).thenReturn(stats);
 
-        when(repository.findGoalsRanking(eq(null), any(Pageable.class)))
-                .thenReturn(List.of(row1, row2));
+        RankingResponse response = statisticsService.getRanking(RankingType.GOALS, TOURNAMENT_ID, 10);
 
-        RankingResponse response = statisticsService.getRanking(RankingType.GOALS, null, 10);
-
-        assertThat(response.type()).isEqualTo("GOALS");
         assertThat(response.entries()).hasSize(2);
+        assertThat(response.entries().get(0).playerId()).isEqualTo("p1");
+        assertThat(response.entries().get(0).value()).isEqualTo(5L);
         assertThat(response.entries().get(0).position()).isEqualTo(1);
-        assertThat(response.entries().get(0).playerId()).isEqualTo(1L);
-        assertThat(response.entries().get(0).value()).isEqualTo(10L);
-        assertThat(response.entries().get(1).position()).isEqualTo(2);
     }
 
     @Test
-    void getRanking_deberiaUsarElRepositorioCorrectoSegunElTipo() {
-        when(repository.findFairPlayRanking(eq(TOURNAMENT_ID), any(Pageable.class)))
-                .thenReturn(List.of());
+    void getRanking_faltas_deberiaOrdenarAscendente() {
+        List<PlayerMatchStat> stats = List.of(
+                stat("p1", TEAM_ID, "m1", MatchResult.WON, 0, 5, 90),
+                stat("p2", TEAM_ID, "m1", MatchResult.LOST, 0, 1, 90));
+        when(repository.findByTournamentId(TOURNAMENT_ID)).thenReturn(stats);
 
-        statisticsService.getRanking(RankingType.FOULS, TOURNAMENT_ID, 5);
+        RankingResponse response = statisticsService.getRanking(RankingType.FOULS, TOURNAMENT_ID, 10);
 
-        verify(repository).findFairPlayRanking(eq(TOURNAMENT_ID), any(Pageable.class));
-        verify(repository, never()).findGoalsRanking(any(), any());
-        verify(repository, never()).findWinsRanking(any(), any());
-        verify(repository, never()).findMinutesRanking(any(), any());
+        assertThat(response.entries().get(0).playerId()).isEqualTo("p2");
+        assertThat(response.entries().get(0).value()).isEqualTo(1L);
     }
 
-    private RankingRow mockRankingRow(Long playerId, Long value) {
-        RankingRow row = org.mockito.Mockito.mock(RankingRow.class);
-        when(row.getPlayerId()).thenReturn(playerId);
-        when(row.getValue()).thenReturn(value);
-        return row;
+    @Test
+    void getRanking_historico_deberiaUsarFindAllCuandoNoHayTorneo() {
+        when(repository.findAll()).thenReturn(List.of(
+                stat("p1", TEAM_ID, "m1", MatchResult.WON, 3, 0, 90)));
+
+        RankingResponse response = statisticsService.getRanking(RankingType.GOALS, null, 10);
+
+        assertThat(response.entries()).hasSize(1);
+    }
+
+    @Test
+    void getGoalkeeperRanking_deberiaOrdenarPorMenosGolesRecibidos() {
+        PlayerMatchStat keeper1 = goalkeeperStat("gk1", "teamA", "m400", MatchResult.LOST);
+        PlayerMatchStat opponent1 = stat("p31", "teamB", "m400", MatchResult.WON, 2, 0, 90);
+        PlayerMatchStat keeper2 = goalkeeperStat("gk2", "teamC", "m401", MatchResult.WON);
+        PlayerMatchStat opponent2 = stat("p33", "teamD", "m401", MatchResult.LOST, 0, 0, 90);
+
+        when(repository.findByTournamentId(TOURNAMENT_ID))
+                .thenReturn(List.of(keeper1, opponent1, keeper2, opponent2));
+
+        GoalkeeperRankingResponse response = statisticsService.getGoalkeeperRanking(TOURNAMENT_ID, 10);
+
+        assertThat(response.entries()).hasSize(2);
+        assertThat(response.entries().get(0).playerId()).isEqualTo("gk2");
+        assertThat(response.entries().get(0).goalsConceded()).isZero();
+        assertThat(response.entries().get(1).playerId()).isEqualTo("gk1");
+        assertThat(response.entries().get(1).goalsConceded()).isEqualTo(2L);
+    }
+
+    // ---------- Estadísticas de equipo ----------
+
+    @Test
+    void getTeamStatisticsInActiveTournament_deberiaResolverElTorneoActivo() {
+        when(tournamentClient.getActiveTournamentId()).thenReturn(TOURNAMENT_ID);
+        when(repository.findByTeamIdAndTournamentId(TEAM_ID, TOURNAMENT_ID)).thenReturn(List.of(
+                stat("p1", TEAM_ID, "m1", MatchResult.WON, 2, 0, 90),
+                stat("p2", TEAM_ID, "m1", MatchResult.WON, 2, 0, 90)));
+        when(repository.findByMatchId("m1")).thenReturn(List.of(
+                stat("p1", TEAM_ID, "m1", MatchResult.WON, 2, 0, 90),
+                stat("p2", TEAM_ID, "m1", MatchResult.WON, 2, 0, 90),
+                stat("p9", "team99", "m1", MatchResult.LOST, 1, 0, 90)));
+
+        var response = statisticsService.getTeamStatisticsInActiveTournament(TEAM_ID);
+
+        assertThat(response.matchesPlayed()).isEqualTo(1L);
+        assertThat(response.wins()).isEqualTo(1L);
+        assertThat(response.goalsFor()).isEqualTo(4L);
+        assertThat(response.goalsAgainst()).isEqualTo(1L);
+        assertThat(response.points()).isEqualTo(3L);
+    }
+
+    @Test
+    void getTeamGoals_deberiaCalcularFavorContraYDiferencia() {
+        when(repository.findByTeamIdAndTournamentId(TEAM_ID, TOURNAMENT_ID)).thenReturn(List.of(
+                stat("p1", TEAM_ID, "m1", MatchResult.WON, 3, 0, 90)));
+        when(repository.findByMatchId("m1")).thenReturn(List.of(
+                stat("p1", TEAM_ID, "m1", MatchResult.WON, 3, 0, 90),
+                stat("p2", "team99", "m1", MatchResult.LOST, 1, 0, 90)));
+
+        TeamGoalsResponse response = statisticsService.getTeamGoals(TEAM_ID, TOURNAMENT_ID);
+
+        assertThat(response.goalsFor()).isEqualTo(3L);
+        assertThat(response.goalsAgainst()).isEqualTo(1L);
+        assertThat(response.goalDifference()).isEqualTo(2L);
+    }
+
+    @Test
+    void getTeamMatchRecord_deberiaCalcularPorcentajes() {
+        when(repository.findByTeamIdAndTournamentId(TEAM_ID, TOURNAMENT_ID)).thenReturn(List.of(
+                stat("p1", TEAM_ID, "m1", MatchResult.WON, 1, 0, 90),
+                stat("p1", TEAM_ID, "m2", MatchResult.WON, 1, 0, 90),
+                stat("p1", TEAM_ID, "m3", MatchResult.DRAWN, 0, 0, 90),
+                stat("p1", TEAM_ID, "m4", MatchResult.LOST, 0, 0, 90)));
+
+        TeamMatchRecordResponse response = statisticsService.getTeamMatchRecord(TEAM_ID, TOURNAMENT_ID);
+
+        assertThat(response.matchesPlayed()).isEqualTo(4L);
+        assertThat(response.wins()).isEqualTo(2L);
+        assertThat(response.winRatePercentage()).isEqualTo(50.0);
+        assertThat(response.drawRatePercentage()).isEqualTo(25.0);
+        assertThat(response.lossRatePercentage()).isEqualTo(25.0);
+    }
+
+    @Test
+    void getTeamAverageGoals_deberiaPromediarPorPartidoNoPorFila() {
+        when(repository.findByTeamIdAndTournamentId(TEAM_ID, TOURNAMENT_ID)).thenReturn(List.of(
+                stat("p1", TEAM_ID, "m1", MatchResult.WON, 2, 0, 90),
+                stat("p1", TEAM_ID, "m2", MatchResult.WON, 4, 0, 90)));
+
+        TeamAverageResponse response = statisticsService.getTeamAverageGoals(TEAM_ID, TOURNAMENT_ID);
+
+        assertThat(response.value()).isEqualTo(3.0);
+        assertThat(response.matchesConsidered()).isEqualTo(2L);
+    }
+
+    @Test
+    void getTeamAverageFouls_deberiaPromediarPorPartido() {
+        when(repository.findByTeamIdAndTournamentId(TEAM_ID, TOURNAMENT_ID)).thenReturn(List.of(
+                stat("p1", TEAM_ID, "m1", MatchResult.WON, 0, 3, 90),
+                stat("p1", TEAM_ID, "m2", MatchResult.WON, 0, 5, 90)));
+
+        TeamAverageResponse response = statisticsService.getTeamAverageFouls(TEAM_ID, TOURNAMENT_ID);
+
+        assertThat(response.value()).isEqualTo(4.0);
+    }
+
+    @Test
+    void getTeamTotalFouls_deberiaSumarTodasLasFaltasDelEquipo() {
+        when(repository.findByTeamIdAndTournamentId(TEAM_ID, TOURNAMENT_ID)).thenReturn(List.of(
+                stat("p1", TEAM_ID, "m1", MatchResult.WON, 0, 3, 90),
+                stat("p2", TEAM_ID, "m1", MatchResult.WON, 0, 2, 90)));
+
+        TotalResponse response = statisticsService.getTeamTotalFouls(TEAM_ID, TOURNAMENT_ID);
+
+        assertThat(response.total()).isEqualTo(5L);
+    }
+
+    // ---------- Torneo: standings, promedios, tarjetas ----------
+
+    @Test
+    void getTournamentStandings_deberiaOrdenarPorPuntosDescendente() {
+        PlayerMatchStat teamAPlayer = stat("p20", "teamA", "m300", MatchResult.WON, 3, 0, 90);
+        PlayerMatchStat teamBPlayer = stat("p21", "teamB", "m300", MatchResult.LOST, 1, 0, 90);
+
+        when(repository.findByTournamentId(TOURNAMENT_ID)).thenReturn(List.of(teamAPlayer, teamBPlayer));
+        when(repository.findByTeamIdAndTournamentId("teamA", TOURNAMENT_ID)).thenReturn(List.of(teamAPlayer));
+        when(repository.findByTeamIdAndTournamentId("teamB", TOURNAMENT_ID)).thenReturn(List.of(teamBPlayer));
+        when(repository.findByMatchId("m300")).thenReturn(List.of(teamAPlayer, teamBPlayer));
+
+        TournamentStandingsResponse response = statisticsService.getTournamentStandings(TOURNAMENT_ID);
+
+        assertThat(response.standings()).hasSize(2);
+        assertThat(response.standings().get(0).teamId()).isEqualTo("teamA");
+        assertThat(response.standings().get(0).points()).isEqualTo(3L);
+        assertThat(response.standings().get(1).teamId()).isEqualTo("teamB");
+        assertThat(response.standings().get(1).points()).isEqualTo(0L);
+    }
+
+    @Test
+    void getTournamentMatchAverages_deberiaPromediarSobreTodosLosPartidos() {
+        List<PlayerMatchStat> stats = List.of(
+                stat("p1", TEAM_ID, "m1", MatchResult.WON, 2, 4, 90),
+                stat("p2", "team99", "m1", MatchResult.LOST, 1, 2, 90),
+                stat("p1", TEAM_ID, "m2", MatchResult.WON, 3, 3, 90));
+        when(repository.findByTournamentId(TOURNAMENT_ID)).thenReturn(stats);
+
+        TournamentMatchAveragesResponse response = statisticsService.getTournamentMatchAverages(TOURNAMENT_ID);
+
+        assertThat(response.matchesConsidered()).isEqualTo(2L);
+        assertThat(response.averageGoalsPerMatch()).isEqualTo(3.0);
+        assertThat(response.averageFoulsPerMatch()).isEqualTo(4.5);
+    }
+
+    @Test
+    void getTournamentMatchAverages_deberiaDevolverCeroSiNoHayPartidos() {
+        when(repository.findByTournamentId(TOURNAMENT_ID)).thenReturn(List.of());
+
+        TournamentMatchAveragesResponse response = statisticsService.getTournamentMatchAverages(TOURNAMENT_ID);
+
+        assertThat(response.matchesConsidered()).isZero();
+        assertThat(response.averageGoalsPerMatch()).isZero();
+    }
+
+    @Test
+    void getTournamentCardsTotal_deberiaSumarTodasLasTarjetasDelTorneo() {
+        PlayerMatchStat withCards = PlayerMatchStat.builder()
+                .playerId("p1").teamId(TEAM_ID).matchId("m1").tournamentId(TOURNAMENT_ID)
+                .result(MatchResult.WON).yellowCards(2).redCards(1).build();
+        when(repository.findByTournamentId(TOURNAMENT_ID)).thenReturn(List.of(withCards));
+
+        CardsTotalResponse response = statisticsService.getTournamentCardsTotal(TOURNAMENT_ID);
+
+        assertThat(response.scope()).isEqualTo("tournament");
+        assertThat(response.yellowCards()).isEqualTo(2L);
+        assertThat(response.redCards()).isEqualTo(1L);
+    }
+
+    // ---------- Partido ----------
+
+    @Test
+    void getMatchCardsTotal_deberiaSumarLasTarjetasDeEsePartido() {
+        PlayerMatchStat withCards = PlayerMatchStat.builder()
+                .playerId("p1").teamId(TEAM_ID).matchId("m500").tournamentId(TOURNAMENT_ID)
+                .result(MatchResult.WON).yellowCards(1).redCards(0).build();
+        when(repository.findByMatchId("m500")).thenReturn(List.of(withCards));
+
+        CardsTotalResponse response = statisticsService.getMatchCardsTotal("m500");
+
+        assertThat(response.scope()).isEqualTo("match");
+        assertThat(response.id()).isEqualTo("m500");
+        assertThat(response.yellowCards()).isEqualTo(1L);
+    }
+
+    @Test
+    void getMatchResult_deberiaDevolverElResultadoDeCadaEquipo() {
+        PlayerMatchStat teamAPlayer = stat("p1", "teamA", "m300", MatchResult.WON, 2, 0, 90);
+        PlayerMatchStat teamBPlayer = stat("p2", "teamB", "m300", MatchResult.LOST, 0, 0, 90);
+        when(repository.findByMatchId("m300")).thenReturn(List.of(teamAPlayer, teamBPlayer));
+
+        MatchResultResponse response = statisticsService.getMatchResult("m300");
+
+        assertThat(response.matchId()).isEqualTo("m300");
+        assertThat(response.tournamentId()).isEqualTo(TOURNAMENT_ID);
+        assertThat(response.teamResults()).hasSize(2);
+    }
+
+    // ---------- Reconocimientos ----------
+
+    @Test
+    void generateTournamentRecognitions_deberiaPublicarTodosLosGoleadoresEmpatados() {
+        PlayerMatchStat scorer1 = stat("p20", "teamA", "m300", MatchResult.WON, 3, 0, 90);
+        PlayerMatchStat scorer2 = stat("p22", "teamC", "m301", MatchResult.WON, 3, 0, 90);
+        PlayerMatchStat other1 = stat("p21", "teamB", "m300", MatchResult.LOST, 0, 0, 90);
+        PlayerMatchStat other2 = stat("p23", "teamD", "m301", MatchResult.LOST, 0, 0, 90);
+
+        when(repository.findByTournamentId(TOURNAMENT_ID))
+                .thenReturn(List.of(scorer1, other1, scorer2, other2));
+        when(repository.findByTeamIdAndTournamentId("teamA", TOURNAMENT_ID)).thenReturn(List.of(scorer1));
+        when(repository.findByTeamIdAndTournamentId("teamB", TOURNAMENT_ID)).thenReturn(List.of(other1));
+        when(repository.findByTeamIdAndTournamentId("teamC", TOURNAMENT_ID)).thenReturn(List.of(scorer2));
+        when(repository.findByTeamIdAndTournamentId("teamD", TOURNAMENT_ID)).thenReturn(List.of(other2));
+        when(repository.findByMatchId("m300")).thenReturn(List.of(scorer1, other1));
+        when(repository.findByMatchId("m301")).thenReturn(List.of(scorer2, other2));
+
+        when(recognitionRepository.findByTournamentId(TOURNAMENT_ID)).thenReturn(Optional.empty());
+        when(recognitionRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        TournamentRecognitionResponse response = statisticsService.generateTournamentRecognitions(TOURNAMENT_ID);
+
+        assertThat(response.topScorersGoals()).isEqualTo(3L);
+        assertThat(response.topScorers()).extracting(TournamentRecognitionResponse.PlayerGoals::playerId)
+                .containsExactlyInAnyOrder("p20", "p22");
+        verify(recognitionRepository).save(any(TournamentRecognition.class));
+    }
+
+    @Test
+    void getTournamentRecognitions_deberiaLeerLoYaGuardado() {
+        TournamentRecognition saved = TournamentRecognition.builder()
+                .tournamentId(TOURNAMENT_ID)
+                .topScorerPlayerIds(List.of("p20"))
+                .topScorersGoals(3)
+                .bestDefenseTeamIds(List.of("teamA"))
+                .bestDefenseGoalsAgainst(0)
+                .build();
+        when(recognitionRepository.findByTournamentId(TOURNAMENT_ID)).thenReturn(Optional.of(saved));
+
+        TournamentRecognitionResponse response = statisticsService.getTournamentRecognitions(TOURNAMENT_ID);
+
+        assertThat(response.topScorers()).hasSize(1);
+        assertThat(response.topScorers().get(0).playerId()).isEqualTo("p20");
+    }
+
+    @Test
+    void getTournamentRecognitions_deberiaLanzarExcepcionSiNoSeHaGenerado() {
+        when(recognitionRepository.findByTournamentId(TOURNAMENT_ID)).thenReturn(Optional.empty());
+
+        assertThrows(RecognitionNotFoundException.class,
+                () -> statisticsService.getTournamentRecognitions(TOURNAMENT_ID));
     }
 }

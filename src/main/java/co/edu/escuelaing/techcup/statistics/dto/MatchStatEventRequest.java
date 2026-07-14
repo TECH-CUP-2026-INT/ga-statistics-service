@@ -3,6 +3,7 @@ package co.edu.escuelaing.techcup.statistics.dto;
 import co.edu.escuelaing.techcup.statistics.entity.MatchResult;
 
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -11,17 +12,17 @@ import jakarta.validation.constraints.NotNull;
  */
 public record MatchStatEventRequest(
 
-        @NotNull(message = "playerId es obligatorio")
-        Long playerId,
+        @NotBlank(message = "playerId es obligatorio")
+        String playerId,
 
-        @NotNull(message = "teamId es obligatorio")
-        Long teamId,
+        @NotBlank(message = "teamId es obligatorio")
+        String teamId,
 
-        @NotNull(message = "matchId es obligatorio")
-        Long matchId,
+        @NotBlank(message = "matchId es obligatorio")
+        String matchId,
 
-        @NotNull(message = "tournamentId es obligatorio")
-        Long tournamentId,
+        @NotBlank(message = "tournamentId es obligatorio")
+        String tournamentId,
 
         @NotNull(message = "result es obligatorio")
         MatchResult result,
@@ -39,6 +40,12 @@ public record MatchStatEventRequest(
         Integer foulsCommitted,
 
         @Min(value = 0, message = "minutesPlayed no puede ser negativo")
-        Integer minutesPlayed
+        Integer minutesPlayed,
+
+        @Min(value = 0, message = "assists no puede ser negativo")
+        Integer assists,
+
+        /** true si este jugador jugó como portero en este partido. Opcional, default false. */
+        Boolean goalkeeper
 ) {
 }

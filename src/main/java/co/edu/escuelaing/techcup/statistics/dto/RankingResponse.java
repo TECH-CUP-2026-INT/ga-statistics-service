@@ -4,7 +4,7 @@ import java.util.List;
 
 public record RankingResponse(
         String type,
-        Long tournamentId,
+        String tournamentId,
         List<RankingEntryResponse> entries
 ) {
 }
