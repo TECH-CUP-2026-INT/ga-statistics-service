@@ -1,6 +1,7 @@
 package co.edu.escuelaing.techcup.statistics.controller;
 
 import co.edu.escuelaing.techcup.statistics.dto.CardsTotalResponse;
+import co.edu.escuelaing.techcup.statistics.dto.GoalkeeperRankingResponse;
 import co.edu.escuelaing.techcup.statistics.dto.MatchResultResponse;
 import co.edu.escuelaing.techcup.statistics.dto.MatchStatEventRequest;
 import co.edu.escuelaing.techcup.statistics.dto.MatchesPlayedResponse;
@@ -8,13 +9,13 @@ import co.edu.escuelaing.techcup.statistics.dto.PlayerAverageResponse;
 import co.edu.escuelaing.techcup.statistics.dto.PlayerCardsResponse;
 import co.edu.escuelaing.techcup.statistics.dto.RankingResponse;
 import co.edu.escuelaing.techcup.statistics.dto.RankingType;
-import co.edu.escuelaing.techcup.statistics.dto.RecognitionResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TeamAverageResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TeamGoalsResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TeamMatchRecordResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TeamStatisticsResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TotalResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentMatchAveragesResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TournamentRecognitionResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentStandingsResponse;
 import co.edu.escuelaing.techcup.statistics.service.StatisticsService;
 
@@ -116,12 +117,41 @@ public class StatisticsController {
     }
 
     /**
-     * Reconocimientos del torneo: máximo goleador y malla menos vencida.
+     * Genera y GUARDA el reconocimiento del torneo. Lo llama el servicio de
+     * Torneos al finalizar el torneo.
+     */
+    @PostMapping("/tournaments/{tournamentId}/recognitions")
+    public ResponseEntity<TournamentRecognitionResponse> generateTournamentRecognitions(
+            @PathVariable Long tournamentId) {
+        TournamentRecognitionResponse response = statisticsService.generateTournamentRecognitions(tournamentId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * Consulta el reconocimiento ya generado (404 si el torneo no ha
+     * finalizado / aún no se ha generado).
      */
     @GetMapping("/tournaments/{tournamentId}/recognitions")
-    public ResponseEntity<RecognitionResponse> getTournamentRecognitions(
+    public ResponseEntity<TournamentRecognitionResponse> getTournamentRecognitions(
             @PathVariable Long tournamentId) {
         return ResponseEntity.ok(statisticsService.getTournamentRecognitions(tournamentId));
+    }
+
+    /**
+     * Ranking de porteros por menos goles recibidos (valla menos vencida).
+     */
+    @GetMapping("/goalkeeper-ranking")
+    public ResponseEntity<GoalkeeperRankingResponse> getGoalkeeperRanking(
+            @RequestParam(required = false) Long tournamentId,
+            @RequestParam(defaultValue = "10") int limit) {
+        return ResponseEntity.ok(statisticsService.getGoalkeeperRanking(tournamentId, limit));
+    }
+
+    @GetMapping("/players/{playerId}/assists")
+    public ResponseEntity<TotalResponse> getPlayerTotalAssists(
+            @PathVariable Long playerId,
+            @RequestParam(required = false) Long tournamentId) {
+        return ResponseEntity.ok(statisticsService.getPlayerTotalAssists(playerId, tournamentId));
     }
 
     // ---------- Jugador: totales y tarjetas ----------

@@ -2,6 +2,7 @@ package co.edu.escuelaing.techcup.statistics.service;
 
 import co.edu.escuelaing.techcup.statistics.client.TournamentClient;
 import co.edu.escuelaing.techcup.statistics.dto.CardsTotalResponse;
+import co.edu.escuelaing.techcup.statistics.dto.GoalkeeperRankingResponse;
 import co.edu.escuelaing.techcup.statistics.dto.MatchResultResponse;
 import co.edu.escuelaing.techcup.statistics.dto.MatchStatEventRequest;
 import co.edu.escuelaing.techcup.statistics.dto.MatchesPlayedResponse;
@@ -10,18 +11,21 @@ import co.edu.escuelaing.techcup.statistics.dto.PlayerCardsResponse;
 import co.edu.escuelaing.techcup.statistics.dto.RankingEntryResponse;
 import co.edu.escuelaing.techcup.statistics.dto.RankingResponse;
 import co.edu.escuelaing.techcup.statistics.dto.RankingType;
-import co.edu.escuelaing.techcup.statistics.dto.RecognitionResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TeamAverageResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TeamGoalsResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TeamMatchRecordResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TeamStatisticsResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TotalResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentMatchAveragesResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TournamentRecognitionResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentStandingsResponse;
 import co.edu.escuelaing.techcup.statistics.entity.MatchResult;
 import co.edu.escuelaing.techcup.statistics.entity.PlayerMatchStat;
+import co.edu.escuelaing.techcup.statistics.entity.TournamentRecognition;
 import co.edu.escuelaing.techcup.statistics.exception.DuplicateMatchStatException;
+import co.edu.escuelaing.techcup.statistics.exception.RecognitionNotFoundException;
 import co.edu.escuelaing.techcup.statistics.repository.PlayerMatchStatRepository;
+import co.edu.escuelaing.techcup.statistics.repository.TournamentRecognitionRepository;
 
 import org.springframework.stereotype.Service;
 
@@ -37,6 +41,7 @@ import lombok.RequiredArgsConstructor;
 public class StatisticsServiceImpl implements StatisticsService {
 
     private final PlayerMatchStatRepository repository;
+    private final TournamentRecognitionRepository recognitionRepository;
     private final TournamentClient tournamentClient;
 
     @Override
@@ -56,6 +61,8 @@ public class StatisticsServiceImpl implements StatisticsService {
                 .redCards(defaultZero(request.redCards()))
                 .foulsCommitted(defaultZero(request.foulsCommitted()))
                 .minutesPlayed(defaultZero(request.minutesPlayed()))
+                .assists(defaultZero(request.assists()))
+                .goalkeeper(request.goalkeeper() != null && request.goalkeeper())
                 .build();
 
         repository.save(stat);
@@ -157,29 +164,115 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public RecognitionResponse getTournamentRecognitions(Long tournamentId) {
+    public TournamentRecognitionResponse generateTournamentRecognitions(Long tournamentId) {
         List<PlayerMatchStat> tournamentStats = repository.findByTournamentId(tournamentId);
 
-        RecognitionResponse.TopScorer topScorer = tournamentStats.stream()
+        // Máximo goleador: TODOS los jugadores empatados en el primer lugar.
+        Map<Long, Integer> goalsByPlayer = tournamentStats.stream()
                 .collect(Collectors.groupingBy(PlayerMatchStat::getPlayerId,
-                        Collectors.summingInt(PlayerMatchStat::getGoals)))
-                .entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(e -> new RecognitionResponse.TopScorer(e.getKey(), e.getValue()))
-                .orElse(null);
+                        Collectors.summingInt(PlayerMatchStat::getGoals)));
 
+        long maxGoals = goalsByPlayer.values().stream().mapToLong(Integer::longValue).max().orElse(0);
+        List<Long> topScorerIds = goalsByPlayer.entrySet().stream()
+                .filter(e -> e.getValue() == maxGoals && maxGoals > 0)
+                .map(Map.Entry::getKey)
+                .toList();
+
+        // Malla menos vencida: TODOS los equipos empatados con menos goles en contra.
         List<Long> teamIds = tournamentStats.stream()
                 .map(PlayerMatchStat::getTeamId)
                 .distinct()
                 .toList();
 
-        RecognitionResponse.BestDefense bestDefense = teamIds.stream()
-                .map(teamId -> new RecognitionResponse.BestDefense(
-                        teamId, buildTeamStatistics(teamId, tournamentId).goalsAgainst()))
-                .min(Comparator.comparingLong(RecognitionResponse.BestDefense::goalsAgainst))
-                .orElse(null);
+        Map<Long, Long> goalsAgainstByTeam = teamIds.stream()
+                .collect(Collectors.toMap(id -> id, id -> buildTeamStatistics(id, tournamentId).goalsAgainst()));
 
-        return new RecognitionResponse(tournamentId, topScorer, bestDefense);
+        long minGoalsAgainst = goalsAgainstByTeam.values().stream()
+                .mapToLong(Long::longValue).min().orElse(0);
+        List<Long> bestDefenseIds = goalsAgainstByTeam.entrySet().stream()
+                .filter(e -> e.getValue() == minGoalsAgainst)
+                .map(Map.Entry::getKey)
+                .toList();
+
+        TournamentRecognition recognition = recognitionRepository.findByTournamentId(tournamentId)
+                .orElseGet(TournamentRecognition::new);
+        recognition.setTournamentId(tournamentId);
+        recognition.setTopScorerPlayerIds(topScorerIds);
+        recognition.setTopScorersGoals(maxGoals);
+        recognition.setBestDefenseTeamIds(bestDefenseIds);
+        recognition.setBestDefenseGoalsAgainst(minGoalsAgainst);
+        recognition.setGeneratedAt(java.time.LocalDateTime.now());
+
+        recognitionRepository.save(recognition);
+
+        return toRecognitionResponse(recognition);
+    }
+
+    @Override
+    public TournamentRecognitionResponse getTournamentRecognitions(Long tournamentId) {
+        TournamentRecognition recognition = recognitionRepository.findByTournamentId(tournamentId)
+                .orElseThrow(() -> new RecognitionNotFoundException(tournamentId));
+        return toRecognitionResponse(recognition);
+    }
+
+    @Override
+    public GoalkeeperRankingResponse getGoalkeeperRanking(Long tournamentId, int limit) {
+        List<PlayerMatchStat> stats = tournamentId == null
+                ? repository.findAll()
+                : repository.findByTournamentId(tournamentId);
+
+        Map<Long, List<PlayerMatchStat>> byMatch = stats.stream()
+                .collect(Collectors.groupingBy(PlayerMatchStat::getMatchId));
+
+        Map<Long, Long> goalsConcededByGoalkeeper = new java.util.HashMap<>();
+        for (PlayerMatchStat stat : stats) {
+            if (!stat.isGoalkeeper()) {
+                continue;
+            }
+            long opponentGoals = byMatch.getOrDefault(stat.getMatchId(), List.of()).stream()
+                    .filter(row -> !row.getTeamId().equals(stat.getTeamId()))
+                    .mapToInt(PlayerMatchStat::getGoals)
+                    .sum();
+            goalsConcededByGoalkeeper.merge(stat.getPlayerId(), opponentGoals, Long::sum);
+        }
+
+        List<GoalkeeperRankingResponse.Entry> entries = new java.util.ArrayList<>();
+        int position = 1;
+        for (Map.Entry<Long, Long> entry : goalsConcededByGoalkeeper.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .limit(Math.max(limit, 1))
+                .toList()) {
+            entries.add(new GoalkeeperRankingResponse.Entry(position++, entry.getKey(), entry.getValue()));
+        }
+
+        return new GoalkeeperRankingResponse(tournamentId, entries);
+    }
+
+    @Override
+    public TotalResponse getPlayerTotalAssists(Long playerId, Long tournamentId) {
+        List<PlayerMatchStat> stats = fetchPlayerStats(playerId, tournamentId);
+        long total = stats.stream().mapToInt(PlayerMatchStat::getAssists).sum();
+        return new TotalResponse(playerId, tournamentId, "totalAssists", total, stats.size());
+    }
+
+    private TournamentRecognitionResponse toRecognitionResponse(TournamentRecognition recognition) {
+        List<TournamentRecognitionResponse.PlayerGoals> topScorers = recognition.getTopScorerPlayerIds().stream()
+                .map(id -> new TournamentRecognitionResponse.PlayerGoals(id, recognition.getTopScorersGoals()))
+                .toList();
+
+        List<TournamentRecognitionResponse.TeamGoalsAgainst> bestDefenses = recognition.getBestDefenseTeamIds()
+                .stream()
+                .map(id -> new TournamentRecognitionResponse.TeamGoalsAgainst(
+                        id, recognition.getBestDefenseGoalsAgainst()))
+                .toList();
+
+        return new TournamentRecognitionResponse(
+                recognition.getTournamentId(),
+                topScorers,
+                recognition.getTopScorersGoals(),
+                bestDefenses,
+                recognition.getBestDefenseGoalsAgainst(),
+                recognition.getGeneratedAt());
     }
 
     // ---------- Jugador: totales y tarjetas ----------
