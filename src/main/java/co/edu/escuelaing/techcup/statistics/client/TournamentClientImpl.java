@@ -14,10 +14,11 @@ public class TournamentClientImpl implements TournamentClient {
     private final RestClient restClient;
 
     /**
-     * Ruta relativa asumida del servicio de Torneos. AJUSTAR si el contrato
-     * real que defina el equipo de Torneos es distinto.
+     * Ruta relativa asumida del servicio de Torneos. AJUSTAR cuando el
+     * equipo de Torneos confirme/agregue este endpoint (ver nota en
+     * ActiveTournamentResponse: hoy no existe en su código).
      */
-    private static final String ACTIVE_TOURNAMENT_PATH = "/api/v1/tournaments/active";
+    private static final String ACTIVE_TOURNAMENT_PATH = "/tournaments/active";
 
     @Autowired
     public TournamentClientImpl(@Value("${services.tournaments.base-url}") String baseUrl) {
@@ -30,14 +31,14 @@ public class TournamentClientImpl implements TournamentClient {
     }
 
     @Override
-    public Long getActiveTournamentId() {
+    public String getActiveTournamentId() {
         try {
             ActiveTournamentResponse response = restClient.get()
                     .uri(ACTIVE_TOURNAMENT_PATH)
                     .retrieve()
                     .body(ActiveTournamentResponse.class);
 
-            if (response == null || response.id() == null) {
+            if (response == null || response.id() == null || response.id().isBlank()) {
                 throw new ExternalServiceException(
                         "El servicio de Torneos respondió sin un torneo activo válido.");
             }

@@ -1,8 +1,8 @@
 package co.edu.escuelaing.techcup.statistics.dto;
 
 public record TeamAverageResponse(
-        Long teamId,
-        Long tournamentId,
+        String teamId,
+        String tournamentId,
         String metric,
         double value,
         long matchesConsidered

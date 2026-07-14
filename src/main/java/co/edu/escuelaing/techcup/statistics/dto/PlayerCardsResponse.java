@@ -1,8 +1,8 @@
 package co.edu.escuelaing.techcup.statistics.dto;
 
 public record PlayerCardsResponse(
-        Long playerId,
-        Long tournamentId,
+        String playerId,
+        String tournamentId,
         long yellowCards,
         long redCards
 ) {

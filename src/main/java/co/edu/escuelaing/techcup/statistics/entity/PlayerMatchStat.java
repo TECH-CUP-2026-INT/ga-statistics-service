@@ -21,8 +21,10 @@ import lombok.Setter;
  * Se recibe desde el servicio de Competencia (arbitraje en vivo) una vez
  * finaliza el partido.
  *
- * Coleccion de MongoDB (no tabla relacional): las agregaciones (promedios,
- * sumas) se calculan en la capa de servicio en vez de en la base de datos.
+ * NOTA: playerId, teamId, matchId y tournamentId son String (no Long) porque
+ * los demás microservicios del sistema (Torneos, Equipos, Usuarios) usan
+ * MongoDB con IDs tipo ObjectId (ej: "64f1a2b3c4d5e6f7a8b9c0d1"), no
+ * identificadores numéricos.
  */
 @Document(collection = "player_match_stats")
 @CompoundIndex(name = "uk_player_match", def = "{'playerId': 1, 'matchId': 1}", unique = true)
@@ -37,16 +39,16 @@ public class PlayerMatchStat {
     private String id;
 
     @Indexed
-    private Long playerId;
+    private String playerId;
 
     @Indexed
-    private Long teamId;
+    private String teamId;
 
     @Indexed
-    private Long matchId;
+    private String matchId;
 
     @Indexed
-    private Long tournamentId;
+    private String tournamentId;
 
     @Builder.Default
     private Integer goals = 0;

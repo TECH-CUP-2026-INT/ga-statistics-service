@@ -14,19 +14,19 @@ import static org.mockito.Mockito.when;
 
 class TournamentClientImplTest {
 
-    private static final String ACTIVE_PATH = "/api/v1/tournaments/active";
+    private static final String ACTIVE_PATH = "/tournaments/active";
 
     @Test
     void getActiveTournamentId_deberiaDevolverElIdCuandoLaRespuestaEsValida() {
         RestClient restClient = mock(RestClient.class, Answers.RETURNS_DEEP_STUBS);
         when(restClient.get().uri(ACTIVE_PATH).retrieve().body(ActiveTournamentResponse.class))
-                .thenReturn(new ActiveTournamentResponse(5L));
+                .thenReturn(new ActiveTournamentResponse("tournament-5"));
 
         TournamentClient client = new TournamentClientImpl(restClient);
 
-        Long result = client.getActiveTournamentId();
+        String result = client.getActiveTournamentId();
 
-        assertThat(result).isEqualTo(5L);
+        assertThat(result).isEqualTo("tournament-5");
     }
 
     @Test

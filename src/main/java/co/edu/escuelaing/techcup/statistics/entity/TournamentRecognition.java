@@ -31,12 +31,12 @@ public class TournamentRecognition {
     private String id;
 
     @Indexed(unique = true)
-    private Long tournamentId;
+    private String tournamentId;
 
-    private List<Long> topScorerPlayerIds;
+    private List<String> topScorerPlayerIds;
     private long topScorersGoals;
 
-    private List<Long> bestDefenseTeamIds;
+    private List<String> bestDefenseTeamIds;
     private long bestDefenseGoalsAgainst;
 
     @Builder.Default

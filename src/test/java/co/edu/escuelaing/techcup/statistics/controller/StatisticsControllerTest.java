@@ -56,10 +56,10 @@ class StatisticsControllerTest {
     @MockitoBean
     private StatisticsService statisticsService;
 
-    private static final Long PLAYER_ID = 1L;
-    private static final Long TEAM_ID = 10L;
-    private static final Long TOURNAMENT_ID = 100L;
-    private static final Long MATCH_ID = 500L;
+    private static final String PLAYER_ID = "player-1";
+    private static final String TEAM_ID = "team-10";
+    private static final String TOURNAMENT_ID = "tournament-100";
+    private static final String MATCH_ID = "match-500";
 
     // ---------- Ingesta ----------
 
@@ -77,7 +77,7 @@ class StatisticsControllerTest {
 
     @Test
     void registerMatchStat_deberiaDevolver400CuandoFaltaUnCampoObligatorio() throws Exception {
-        String invalidJson = "{\"teamId\": 10, \"matchId\": 500}";
+        String invalidJson = "{\"teamId\": \"team-10\", \"matchId\": \"match-500\"}";
 
         mockMvc.perform(post("/api/v1/statistics/events")
                         .contentType("application/json")
@@ -207,7 +207,7 @@ class StatisticsControllerTest {
                 .thenReturn(new GoalkeeperRankingResponse(TOURNAMENT_ID,
                         List.of(new GoalkeeperRankingResponse.Entry(1, PLAYER_ID, 0))));
 
-        mockMvc.perform(get("/api/v1/statistics/goalkeeper-ranking").param("tournamentId", "100"))
+        mockMvc.perform(get("/api/v1/statistics/goalkeeper-ranking").param("tournamentId", TOURNAMENT_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.entries[0].goalsConceded").value(0));
     }

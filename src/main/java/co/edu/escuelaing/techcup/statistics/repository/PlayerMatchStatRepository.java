@@ -10,23 +10,21 @@ import java.util.List;
  * Repositorio Mongo: NO hay agregaciones (AVG/SUM/GROUP BY) aquí como en SQL.
  * Este repositorio solo trae los documentos crudos que hagan falta; los
  * promedios, sumas y agrupaciones se calculan en StatisticsServiceImpl con
- * streams de Java. Es un poco menos eficiente que dejarlo en la base de
- * datos, pero mucho más simple de leer y mantener para el volumen de datos
- * de un torneo universitario.
+ * streams de Java.
  */
 public interface PlayerMatchStatRepository extends MongoRepository<PlayerMatchStat, String> {
 
-    boolean existsByPlayerIdAndMatchId(Long playerId, Long matchId);
+    boolean existsByPlayerIdAndMatchId(String playerId, String matchId);
 
-    List<PlayerMatchStat> findByPlayerId(Long playerId);
+    List<PlayerMatchStat> findByPlayerId(String playerId);
 
-    List<PlayerMatchStat> findByPlayerIdAndTournamentId(Long playerId, Long tournamentId);
+    List<PlayerMatchStat> findByPlayerIdAndTournamentId(String playerId, String tournamentId);
 
-    List<PlayerMatchStat> findByTeamId(Long teamId);
+    List<PlayerMatchStat> findByTeamId(String teamId);
 
-    List<PlayerMatchStat> findByTeamIdAndTournamentId(Long teamId, Long tournamentId);
+    List<PlayerMatchStat> findByTeamIdAndTournamentId(String teamId, String tournamentId);
 
-    List<PlayerMatchStat> findByTournamentId(Long tournamentId);
+    List<PlayerMatchStat> findByTournamentId(String tournamentId);
 
-    List<PlayerMatchStat> findByMatchId(Long matchId);
+    List<PlayerMatchStat> findByMatchId(String matchId);
 }

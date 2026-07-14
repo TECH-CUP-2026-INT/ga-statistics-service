@@ -1,8 +1,8 @@
 package co.edu.escuelaing.techcup.statistics.dto;
 
 public record TeamMatchRecordResponse(
-        Long teamId,
-        Long tournamentId,
+        String teamId,
+        String tournamentId,
         long matchesPlayed,
         long wins,
         long draws,

@@ -73,73 +73,73 @@ public class StatisticsController {
             description = "Percentage of matches won by the player out of matches played.")
     @GetMapping("/players/{playerId}/average-win-rate")
     public ResponseEntity<PlayerAverageResponse> getAverageWinRate(
-            @PathVariable Long playerId,
+            @PathVariable String playerId,
             @Parameter(description = "Optional tournament filter; omit for historical data across all tournaments")
-            @RequestParam(required = false) Long tournamentId) {
+            @RequestParam(required = false) String tournamentId) {
         return ResponseEntity.ok(statisticsService.getAverageWinRate(playerId, tournamentId));
     }
 
     @Operation(summary = "Get a player's average goals per match")
     @GetMapping("/players/{playerId}/average-goals")
     public ResponseEntity<PlayerAverageResponse> getAverageGoals(
-            @PathVariable Long playerId,
-            @RequestParam(required = false) Long tournamentId) {
+            @PathVariable String playerId,
+            @RequestParam(required = false) String tournamentId) {
         return ResponseEntity.ok(statisticsService.getAverageGoals(playerId, tournamentId));
     }
 
     @Operation(summary = "Get a player's average fouls committed per match")
     @GetMapping("/players/{playerId}/average-fouls")
     public ResponseEntity<PlayerAverageResponse> getAverageFouls(
-            @PathVariable Long playerId,
-            @RequestParam(required = false) Long tournamentId) {
+            @PathVariable String playerId,
+            @RequestParam(required = false) String tournamentId) {
         return ResponseEntity.ok(statisticsService.getAverageFouls(playerId, tournamentId));
     }
 
     @Operation(summary = "Get a player's average minutes played per match")
     @GetMapping("/players/{playerId}/average-minutes-played")
     public ResponseEntity<PlayerAverageResponse> getAverageMinutesPlayed(
-            @PathVariable Long playerId,
-            @RequestParam(required = false) Long tournamentId) {
+            @PathVariable String playerId,
+            @RequestParam(required = false) String tournamentId) {
         return ResponseEntity.ok(statisticsService.getAverageMinutesPlayed(playerId, tournamentId));
     }
 
     @Operation(summary = "Get a player's total number of matches played")
     @GetMapping("/players/{playerId}/matches-played")
     public ResponseEntity<MatchesPlayedResponse> getMatchesPlayed(
-            @PathVariable Long playerId,
-            @RequestParam(required = false) Long tournamentId) {
+            @PathVariable String playerId,
+            @RequestParam(required = false) String tournamentId) {
         return ResponseEntity.ok(statisticsService.getMatchesPlayed(playerId, tournamentId));
     }
 
     @Operation(summary = "Get a player's total goals scored (sum, not average)")
     @GetMapping("/players/{playerId}/total-goals")
     public ResponseEntity<TotalResponse> getPlayerTotalGoals(
-            @PathVariable Long playerId,
-            @RequestParam(required = false) Long tournamentId) {
+            @PathVariable String playerId,
+            @RequestParam(required = false) String tournamentId) {
         return ResponseEntity.ok(statisticsService.getPlayerTotalGoals(playerId, tournamentId));
     }
 
     @Operation(summary = "Get a player's total fouls committed (sum, not average)")
     @GetMapping("/players/{playerId}/total-fouls")
     public ResponseEntity<TotalResponse> getPlayerTotalFouls(
-            @PathVariable Long playerId,
-            @RequestParam(required = false) Long tournamentId) {
+            @PathVariable String playerId,
+            @RequestParam(required = false) String tournamentId) {
         return ResponseEntity.ok(statisticsService.getPlayerTotalFouls(playerId, tournamentId));
     }
 
     @Operation(summary = "Get a player's total assists")
     @GetMapping("/players/{playerId}/assists")
     public ResponseEntity<TotalResponse> getPlayerTotalAssists(
-            @PathVariable Long playerId,
-            @RequestParam(required = false) Long tournamentId) {
+            @PathVariable String playerId,
+            @RequestParam(required = false) String tournamentId) {
         return ResponseEntity.ok(statisticsService.getPlayerTotalAssists(playerId, tournamentId));
     }
 
     @Operation(summary = "Get a player's accumulated yellow and red cards")
     @GetMapping("/players/{playerId}/cards")
     public ResponseEntity<PlayerCardsResponse> getPlayerCards(
-            @PathVariable Long playerId,
-            @RequestParam(required = false) Long tournamentId) {
+            @PathVariable String playerId,
+            @RequestParam(required = false) String tournamentId) {
         return ResponseEntity.ok(statisticsService.getPlayerCards(playerId, tournamentId));
     }
 
@@ -157,47 +157,47 @@ public class StatisticsController {
     })
     @GetMapping("/teams/{teamId}/statistics")
     public ResponseEntity<TeamStatisticsResponse> getTeamStatisticsInActiveTournament(
-            @PathVariable Long teamId) {
+            @PathVariable String teamId) {
         return ResponseEntity.ok(statisticsService.getTeamStatisticsInActiveTournament(teamId));
     }
 
     @Operation(summary = "Get a team's match record (wins/draws/losses with percentages)")
     @GetMapping("/teams/{teamId}/match-record")
     public ResponseEntity<TeamMatchRecordResponse> getTeamMatchRecord(
-            @PathVariable Long teamId,
-            @RequestParam(required = false) Long tournamentId) {
+            @PathVariable String teamId,
+            @RequestParam(required = false) String tournamentId) {
         return ResponseEntity.ok(statisticsService.getTeamMatchRecord(teamId, tournamentId));
     }
 
     @Operation(summary = "Get a team's average goals scored per match")
     @GetMapping("/teams/{teamId}/average-goals")
     public ResponseEntity<TeamAverageResponse> getTeamAverageGoals(
-            @PathVariable Long teamId,
-            @RequestParam(required = false) Long tournamentId) {
+            @PathVariable String teamId,
+            @RequestParam(required = false) String tournamentId) {
         return ResponseEntity.ok(statisticsService.getTeamAverageGoals(teamId, tournamentId));
     }
 
     @Operation(summary = "Get a team's average fouls committed per match")
     @GetMapping("/teams/{teamId}/average-fouls")
     public ResponseEntity<TeamAverageResponse> getTeamAverageFouls(
-            @PathVariable Long teamId,
-            @RequestParam(required = false) Long tournamentId) {
+            @PathVariable String teamId,
+            @RequestParam(required = false) String tournamentId) {
         return ResponseEntity.ok(statisticsService.getTeamAverageFouls(teamId, tournamentId));
     }
 
     @Operation(summary = "Get a team's total fouls committed (sum, not average)")
     @GetMapping("/teams/{teamId}/total-fouls")
     public ResponseEntity<TotalResponse> getTeamTotalFouls(
-            @PathVariable Long teamId,
-            @RequestParam(required = false) Long tournamentId) {
+            @PathVariable String teamId,
+            @RequestParam(required = false) String tournamentId) {
         return ResponseEntity.ok(statisticsService.getTeamTotalFouls(teamId, tournamentId));
     }
 
     @Operation(summary = "Get a team's goals for, against, and goal difference")
     @GetMapping("/teams/{teamId}/goals")
     public ResponseEntity<TeamGoalsResponse> getTeamGoals(
-            @PathVariable Long teamId,
-            @RequestParam(required = false) Long tournamentId) {
+            @PathVariable String teamId,
+            @RequestParam(required = false) String tournamentId) {
         return ResponseEntity.ok(statisticsService.getTeamGoals(teamId, tournamentId));
     }
 
@@ -207,7 +207,7 @@ public class StatisticsController {
             description = "Teams sorted by points, then goal difference, then goals for.")
     @GetMapping("/tournaments/{tournamentId}/standings")
     public ResponseEntity<TournamentStandingsResponse> getTournamentStandings(
-            @PathVariable Long tournamentId) {
+            @PathVariable String tournamentId) {
         return ResponseEntity.ok(statisticsService.getTournamentStandings(tournamentId));
     }
 
@@ -220,7 +220,7 @@ public class StatisticsController {
     @GetMapping("/rankings")
     public ResponseEntity<RankingResponse> getRanking(
             @Parameter(description = "GOALS, WINS, FOULS or MINUTES") @RequestParam RankingType type,
-            @RequestParam(required = false) Long tournamentId,
+            @RequestParam(required = false) String tournamentId,
             @Parameter(description = "Top N results to return") @RequestParam(defaultValue = "10") int limit) {
         return ResponseEntity.ok(statisticsService.getRanking(type, tournamentId, limit));
     }
@@ -231,7 +231,7 @@ public class StatisticsController {
                     + "(\"goalkeeper\": true) in the match event.")
     @GetMapping("/goalkeeper-ranking")
     public ResponseEntity<GoalkeeperRankingResponse> getGoalkeeperRanking(
-            @RequestParam(required = false) Long tournamentId,
+            @RequestParam(required = false) String tournamentId,
             @RequestParam(defaultValue = "10") int limit) {
         return ResponseEntity.ok(statisticsService.getGoalkeeperRanking(tournamentId, limit));
     }
@@ -240,14 +240,14 @@ public class StatisticsController {
             summary = "Get average goals, fouls and cards per match across the whole tournament")
     @GetMapping("/tournaments/{tournamentId}/match-averages")
     public ResponseEntity<TournamentMatchAveragesResponse> getTournamentMatchAverages(
-            @PathVariable Long tournamentId) {
+            @PathVariable String tournamentId) {
         return ResponseEntity.ok(statisticsService.getTournamentMatchAverages(tournamentId));
     }
 
     @Operation(summary = "Get total yellow and red cards for the whole tournament")
     @GetMapping("/tournaments/{tournamentId}/cards")
     public ResponseEntity<CardsTotalResponse> getTournamentCardsTotal(
-            @PathVariable Long tournamentId) {
+            @PathVariable String tournamentId) {
         return ResponseEntity.ok(statisticsService.getTournamentCardsTotal(tournamentId));
     }
 
@@ -263,7 +263,7 @@ public class StatisticsController {
     })
     @PostMapping("/tournaments/{tournamentId}/recognitions")
     public ResponseEntity<TournamentRecognitionResponse> generateTournamentRecognitions(
-            @PathVariable Long tournamentId) {
+            @PathVariable String tournamentId) {
         TournamentRecognitionResponse response = statisticsService.generateTournamentRecognitions(tournamentId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -279,7 +279,7 @@ public class StatisticsController {
     })
     @GetMapping("/tournaments/{tournamentId}/recognitions")
     public ResponseEntity<TournamentRecognitionResponse> getTournamentRecognitions(
-            @PathVariable Long tournamentId) {
+            @PathVariable String tournamentId) {
         return ResponseEntity.ok(statisticsService.getTournamentRecognitions(tournamentId));
     }
 
@@ -287,7 +287,7 @@ public class StatisticsController {
 
     @Operation(summary = "Get total yellow and red cards for a single match")
     @GetMapping("/matches/{matchId}/cards")
-    public ResponseEntity<CardsTotalResponse> getMatchCardsTotal(@PathVariable Long matchId) {
+    public ResponseEntity<CardsTotalResponse> getMatchCardsTotal(@PathVariable String matchId) {
         return ResponseEntity.ok(statisticsService.getMatchCardsTotal(matchId));
     }
 
@@ -297,7 +297,7 @@ public class StatisticsController {
                     + "represented simply as WON for the present team and LOST for the absent "
                     + "team.")
     @GetMapping("/matches/{matchId}/result")
-    public ResponseEntity<MatchResultResponse> getMatchResult(@PathVariable Long matchId) {
+    public ResponseEntity<MatchResultResponse> getMatchResult(@PathVariable String matchId) {
         return ResponseEntity.ok(statisticsService.getMatchResult(matchId));
     }
 }

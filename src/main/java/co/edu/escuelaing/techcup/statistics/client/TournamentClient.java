@@ -10,5 +10,5 @@ public interface TournamentClient {
      *         si el servicio de Torneos no responde, responde con error, o no
      *         hay ningún torneo activo en este momento.
      */
-    Long getActiveTournamentId();
+    String getActiveTournamentId();
 }

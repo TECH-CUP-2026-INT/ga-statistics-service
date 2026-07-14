@@ -4,11 +4,14 @@ package co.edu.escuelaing.techcup.statistics.client;
  * Forma esperada de la respuesta del servicio de Torneos al preguntar por el
  * torneo activo.
  *
- * SUPUESTO PENDIENTE DE CONFIRMAR con el equipo de Torneos: se asume que
- * expone GET /api/v1/tournaments/active y devuelve un JSON que al menos
- * contiene el campo "id". Los demás campos que devuelva de más se ignoran.
- * Si el contrato real es distinto, solo hay que ajustar esta clase y la URL
- * en application.properties / TournamentClientImpl.
+ * PENDIENTE DE CONFIRMAR: al revisar el código real de mk-tournament-service
+ * (2026-07-14), NO existe ningún endpoint GET /tournaments/active. El
+ * servicio expone /tournaments/{id}/finalize, /tournaments/{id}/matchups,
+ * /tournaments/history, etc., pero ninguno que devuelva "el torneo activo
+ * actual". Hay que pedirle al equipo de Torneos que agreguen ese endpoint,
+ * o cambiar el diseño de este lado para que quien llame a
+ * /teams/{teamId}/statistics pase el tournamentId explícitamente en vez de
+ * que este servicio intente resolver "el activo" por su cuenta.
  */
-public record ActiveTournamentResponse(Long id) {
+public record ActiveTournamentResponse(String id) {
 }
