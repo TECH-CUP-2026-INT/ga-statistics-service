@@ -327,6 +327,27 @@ mvn test
 El reporte HTML se genera en `target/site/jacoco/index.html` (ábrelo en el navegador).
 
 
+## API Documentation (Swagger / OpenAPI)
+
+Interactive API documentation is available via Swagger UI once the app is running:
+
+```
+http://localhost:8085/swagger-ui/index.html
+```
+
+The raw OpenAPI spec (JSON) is available at:
+
+```
+http://localhost:8085/v3/api-docs
+```
+
+
+
+
+
+![swagger-ui.png](docs/swagger-ui.png)
+
+
 ## Flujo de ramas del equipo
 
 Este repositorio sigue un flujo simplificado tipo Gitflow:
