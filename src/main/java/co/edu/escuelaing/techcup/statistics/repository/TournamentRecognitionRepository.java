@@ -7,5 +7,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface TournamentRecognitionRepository extends MongoRepository<TournamentRecognition, String> {
-    Optional<TournamentRecognition> findByTournamentId(Long tournamentId);
+    Optional<TournamentRecognition> findByTournamentId(String tournamentId);
 }

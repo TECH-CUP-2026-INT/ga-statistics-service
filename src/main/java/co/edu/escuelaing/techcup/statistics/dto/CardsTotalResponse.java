@@ -6,7 +6,7 @@ package co.edu.escuelaing.techcup.statistics.dto;
  */
 public record CardsTotalResponse(
         String scope,
-        Long id,
+        String id,
         long yellowCards,
         long redCards
 ) {

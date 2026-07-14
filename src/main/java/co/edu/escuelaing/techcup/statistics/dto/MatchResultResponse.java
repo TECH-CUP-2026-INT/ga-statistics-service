@@ -5,10 +5,10 @@ import co.edu.escuelaing.techcup.statistics.entity.MatchResult;
 import java.util.List;
 
 public record MatchResultResponse(
-        Long matchId,
-        Long tournamentId,
+        String matchId,
+        String tournamentId,
         List<TeamResult> teamResults
 ) {
-    public record TeamResult(Long teamId, MatchResult result) {
+    public record TeamResult(String teamId, MatchResult result) {
     }
 }

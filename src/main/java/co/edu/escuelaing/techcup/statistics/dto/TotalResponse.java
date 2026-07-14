@@ -6,8 +6,8 @@ package co.edu.escuelaing.techcup.statistics.dto;
  * teamId según el endpoint.
  */
 public record TotalResponse(
-        Long ownerId,
-        Long tournamentId,
+        String ownerId,
+        String tournamentId,
         String metric,
         long total,
         long matchesConsidered

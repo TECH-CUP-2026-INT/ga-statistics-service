@@ -14,7 +14,7 @@ services:
       - "8085:8085"
     environment:
       MONGODB_URI: mongodb://mongo:27017/techcup_statistics
-      TOURNAMENTS_SERVICE_URL: http://host.docker.internal:8081
+      TOURNAMENTS_SERVICE_URL: http://host.docker.internal:8080
     depends_on:
       - mongo
 
