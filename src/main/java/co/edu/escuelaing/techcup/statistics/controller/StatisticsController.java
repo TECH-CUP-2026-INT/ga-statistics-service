@@ -1,12 +1,20 @@
 package co.edu.escuelaing.techcup.statistics.controller;
 
+import co.edu.escuelaing.techcup.statistics.dto.CardsTotalResponse;
+import co.edu.escuelaing.techcup.statistics.dto.MatchResultResponse;
 import co.edu.escuelaing.techcup.statistics.dto.MatchStatEventRequest;
 import co.edu.escuelaing.techcup.statistics.dto.MatchesPlayedResponse;
 import co.edu.escuelaing.techcup.statistics.dto.PlayerAverageResponse;
+import co.edu.escuelaing.techcup.statistics.dto.PlayerCardsResponse;
 import co.edu.escuelaing.techcup.statistics.dto.RankingResponse;
 import co.edu.escuelaing.techcup.statistics.dto.RankingType;
 import co.edu.escuelaing.techcup.statistics.dto.RecognitionResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TeamAverageResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TeamGoalsResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TeamMatchRecordResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TeamStatisticsResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TotalResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TournamentMatchAveragesResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentStandingsResponse;
 import co.edu.escuelaing.techcup.statistics.service.StatisticsService;
 
@@ -114,5 +122,91 @@ public class StatisticsController {
     public ResponseEntity<RecognitionResponse> getTournamentRecognitions(
             @PathVariable Long tournamentId) {
         return ResponseEntity.ok(statisticsService.getTournamentRecognitions(tournamentId));
+    }
+
+    // ---------- Jugador: totales y tarjetas ----------
+
+    @GetMapping("/players/{playerId}/total-goals")
+    public ResponseEntity<TotalResponse> getPlayerTotalGoals(
+            @PathVariable Long playerId,
+            @RequestParam(required = false) Long tournamentId) {
+        return ResponseEntity.ok(statisticsService.getPlayerTotalGoals(playerId, tournamentId));
+    }
+
+    @GetMapping("/players/{playerId}/total-fouls")
+    public ResponseEntity<TotalResponse> getPlayerTotalFouls(
+            @PathVariable Long playerId,
+            @RequestParam(required = false) Long tournamentId) {
+        return ResponseEntity.ok(statisticsService.getPlayerTotalFouls(playerId, tournamentId));
+    }
+
+    @GetMapping("/players/{playerId}/cards")
+    public ResponseEntity<PlayerCardsResponse> getPlayerCards(
+            @PathVariable Long playerId,
+            @RequestParam(required = false) Long tournamentId) {
+        return ResponseEntity.ok(statisticsService.getPlayerCards(playerId, tournamentId));
+    }
+
+    // ---------- Equipo ----------
+
+    @GetMapping("/teams/{teamId}/match-record")
+    public ResponseEntity<TeamMatchRecordResponse> getTeamMatchRecord(
+            @PathVariable Long teamId,
+            @RequestParam(required = false) Long tournamentId) {
+        return ResponseEntity.ok(statisticsService.getTeamMatchRecord(teamId, tournamentId));
+    }
+
+    @GetMapping("/teams/{teamId}/average-goals")
+    public ResponseEntity<TeamAverageResponse> getTeamAverageGoals(
+            @PathVariable Long teamId,
+            @RequestParam(required = false) Long tournamentId) {
+        return ResponseEntity.ok(statisticsService.getTeamAverageGoals(teamId, tournamentId));
+    }
+
+    @GetMapping("/teams/{teamId}/average-fouls")
+    public ResponseEntity<TeamAverageResponse> getTeamAverageFouls(
+            @PathVariable Long teamId,
+            @RequestParam(required = false) Long tournamentId) {
+        return ResponseEntity.ok(statisticsService.getTeamAverageFouls(teamId, tournamentId));
+    }
+
+    @GetMapping("/teams/{teamId}/total-fouls")
+    public ResponseEntity<TotalResponse> getTeamTotalFouls(
+            @PathVariable Long teamId,
+            @RequestParam(required = false) Long tournamentId) {
+        return ResponseEntity.ok(statisticsService.getTeamTotalFouls(teamId, tournamentId));
+    }
+
+    @GetMapping("/teams/{teamId}/goals")
+    public ResponseEntity<TeamGoalsResponse> getTeamGoals(
+            @PathVariable Long teamId,
+            @RequestParam(required = false) Long tournamentId) {
+        return ResponseEntity.ok(statisticsService.getTeamGoals(teamId, tournamentId));
+    }
+
+    // ---------- Torneo (agregados por partido) ----------
+
+    @GetMapping("/tournaments/{tournamentId}/match-averages")
+    public ResponseEntity<TournamentMatchAveragesResponse> getTournamentMatchAverages(
+            @PathVariable Long tournamentId) {
+        return ResponseEntity.ok(statisticsService.getTournamentMatchAverages(tournamentId));
+    }
+
+    @GetMapping("/tournaments/{tournamentId}/cards")
+    public ResponseEntity<CardsTotalResponse> getTournamentCardsTotal(
+            @PathVariable Long tournamentId) {
+        return ResponseEntity.ok(statisticsService.getTournamentCardsTotal(tournamentId));
+    }
+
+    // ---------- Partido ----------
+
+    @GetMapping("/matches/{matchId}/cards")
+    public ResponseEntity<CardsTotalResponse> getMatchCardsTotal(@PathVariable Long matchId) {
+        return ResponseEntity.ok(statisticsService.getMatchCardsTotal(matchId));
+    }
+
+    @GetMapping("/matches/{matchId}/result")
+    public ResponseEntity<MatchResultResponse> getMatchResult(@PathVariable Long matchId) {
+        return ResponseEntity.ok(statisticsService.getMatchResult(matchId));
     }
 }

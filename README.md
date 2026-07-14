@@ -9,56 +9,61 @@ Forma parte de la arquitectura de microservicios del proyecto.
 ## Stack
 
 - Java 21
-- Spring Boot 3.5.6 (Web, Data JPA, Validation)
-- PostgreSQL
+- Spring Boot 3.5.6 (Web, Data MongoDB, Validation)
+- MongoDB
 - Lombok
 - JUnit 5 + Mockito + AssertJ (tests)
 
 ## Arquitectura del servicio
 
-El dato atómico es `PlayerMatchStat`: el desempeño de **un jugador** en **un partido**.
-A partir de esa tabla se calculan todos los promedios y rankings con consultas de
-agregación (`AVG`, `COUNT`, `SUM`), sin necesidad de traer los registros a memoria.
+El dato atómico es `PlayerMatchStat`: el desempeño de **un jugador** en **un partido**,
+guardado como documento en MongoDB. A diferencia de una base relacional, los promedios
+y rankings no se calculan con `AVG`/`SUM`/`GROUP BY` en la base de datos: el repositorio
+solo trae los documentos que hagan falta, y `StatisticsServiceImpl` hace los cálculos
+con streams de Java. Es la forma más simple de mantener para el volumen de datos de un
+torneo universitario.
 
 ```
 controller/   -> Endpoints REST
-service/      -> Lógica de negocio (promedios, rankings, validaciones)
-repository/   -> Acceso a datos y queries de agregación (JPA)
-entity/       -> Modelo persistente (PlayerMatchStat, MatchResult)
+service/      -> Lógica de negocio (promedios, rankings, validaciones, agregaciones)
+repository/   -> Acceso a datos (Spring Data MongoDB)
+entity/       -> Documento persistente (PlayerMatchStat, MatchResult)
 dto/          -> Contratos de entrada/salida (requests y responses)
 exception/    -> Manejo centralizado de errores
+client/       -> Cliente HTTP hacia el servicio de Torneos
 ```
 
 ## Cómo levantarlo localmente
 
 ### 1. Base de datos
 
-Necesitas una instancia de PostgreSQL corriendo, con una base de datos llamada
-`techcup_statistics` (puedes crearla con pgAdmin o `psql`).
+Necesitas una instancia de MongoDB corriendo (local, Docker, o Atlas). No hace falta
+crear la base de datos ni la colección de antemano — MongoDB las crea automáticamente
+al guardar el primer documento.
+
+Con Docker:
+```bash
+docker run -d --name techcup-mongo -p 27017:27017 mongo:7
+```
 
 ### 2. Variables de entorno
 
-El servicio lee la configuración de conexión desde variables de entorno (con valores
-por defecto si no las defines):
-
-| Variable      | Default                                              | Descripción                  |
-|---------------|-------------------------------------------------------|-------------------------------|
-| `DB_URL`      | `jdbc:postgresql://localhost:5432/techcup_statistics` | URL de conexión JDBC          |
-| `DB_USERNAME` | `postgres`                                            | Usuario de PostgreSQL         |
-| `DB_PASSWORD` | `postgres`                                            | Contraseña de PostgreSQL      |
-| `SERVER_PORT` | `8085`                                                | Puerto en el que corre la app |
+| Variable       | Default                                              | Descripción                  |
+|----------------|-------------------------------------------------------|-------------------------------|
+| `MONGODB_URI`  | `mongodb://localhost:27017/techcup_statistics`        | URI de conexión a MongoDB     |
+| `SERVER_PORT`  | `8085`                                                 | Puerto en el que corre la app |
 
 ### 3. Correrlo
 
 ```bash
-# Windows (CMD)
-set DB_PASSWORD=tu_contraseña
-mvnw spring-boot:run
+# Windows (PowerShell)
+$env:MONGODB_URI="mongodb://localhost:27017/techcup_statistics"
+mvn spring-boot:run
 
+# Linux / Mac
+export MONGODB_URI="mongodb://localhost:27017/techcup_statistics"
+./mvnw spring-boot:run
 ```
-
-Al iniciar, Hibernate crea automáticamente la tabla `player_match_stats` (modo
-`ddl-auto=update`, pensado para desarrollo).
 
 ## Correr los tests
 
@@ -67,8 +72,8 @@ mvnw test
 ```
 
 > Nota: el test `ServiceStatisticsApplicationTests` levanta el contexto completo de
-> Spring y necesita conexión real a la base de datos, así que exporta `DB_PASSWORD`
-> antes de correr los tests igual que al levantar la app.
+> Spring y necesita conexión real a MongoDB, así que exporta `MONGODB_URI` (si no usas
+> el valor por defecto) antes de correr los tests igual que al levantar la app.
 
 ## Endpoints
 
@@ -167,65 +172,9 @@ GET /api/v1/statistics/rankings?type=GOALS&limit=5
 }
 ```
 
-
 > Este servicio solo conoce el `playerId`. El nombre, foto y equipo del jugador los
 > enriquece el frontend (o el orquestador) consultando el servicio de Usuarios y
 > Jugadores — cada microservicio es dueño únicamente de su propio dominio.
-
-### Estadísticas de equipo y torneo
-
-**`GET /tournaments/{tournamentId}/standings`**
-
-Estadísticas generales del torneo: la tabla de posiciones completa (equipos, puntos,
-resultados), ordenada por puntos y diferencia de gol.
-
-```json
-{
-  "tournamentId": 1,
-  "standings": [
-    {
-      "teamId": 10,
-      "tournamentId": 1,
-      "matchesPlayed": 2,
-      "wins": 1,
-      "draws": 0,
-      "losses": 1,
-      "goalsFor": 2,
-      "goalsAgainst": 1,
-      "goalDifference": 1,
-      "points": 3
-    }
-  ]
-}
-```
-
-**`GET /teams/{teamId}/statistics`**
-
-Estadísticas de un equipo específico **en el torneo activo**. A diferencia de los demás
-endpoints, este no recibe `tournamentId` — el servicio le pregunta al servicio de
-Torneos cuál es el torneo activo en este momento (`GET {TOURNAMENTS_SERVICE_URL}/api/v1/tournaments/active`,
-contrato pendiente de confirmar con el equipo de Torneos).
-
-Respuesta: igual forma que una entrada de `standings` (ver arriba).
-
-Si el servicio de Torneos no está disponible o no responde con un torneo activo válido,
-este endpoint devuelve `502 Bad Gateway` con el detalle del error.
-
-**`GET /tournaments/{tournamentId}/recognitions`**
-
-Reconocimientos del torneo: máximo goleador y malla menos vencida.
-
-```json
-{
-  "tournamentId": 1,
-  "topScorer": { "playerId": 1, "goals": 2 },
-  "bestDefense": { "teamId": 10, "goalsAgainst": 1 }
-}
-```
-
-Si el torneo todavía no tiene datos registrados, `topScorer` y/o `bestDefense` vienen
-en `null`.
-
 
 ## Manejo de errores
 

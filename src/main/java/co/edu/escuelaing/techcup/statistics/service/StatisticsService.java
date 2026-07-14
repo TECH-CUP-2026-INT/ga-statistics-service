@@ -1,12 +1,20 @@
 package co.edu.escuelaing.techcup.statistics.service;
 
+import co.edu.escuelaing.techcup.statistics.dto.CardsTotalResponse;
+import co.edu.escuelaing.techcup.statistics.dto.MatchResultResponse;
 import co.edu.escuelaing.techcup.statistics.dto.MatchStatEventRequest;
 import co.edu.escuelaing.techcup.statistics.dto.MatchesPlayedResponse;
 import co.edu.escuelaing.techcup.statistics.dto.PlayerAverageResponse;
+import co.edu.escuelaing.techcup.statistics.dto.PlayerCardsResponse;
 import co.edu.escuelaing.techcup.statistics.dto.RankingResponse;
 import co.edu.escuelaing.techcup.statistics.dto.RankingType;
 import co.edu.escuelaing.techcup.statistics.dto.RecognitionResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TeamAverageResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TeamGoalsResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TeamMatchRecordResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TeamStatisticsResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TotalResponse;
+import co.edu.escuelaing.techcup.statistics.dto.TournamentMatchAveragesResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentStandingsResponse;
 
 public interface StatisticsService {
@@ -37,4 +45,36 @@ public interface StatisticsService {
 
     /** Reconocimientos del torneo: máximo goleador y malla menos vencida. */
     RecognitionResponse getTournamentRecognitions(Long tournamentId);
+
+    // ---------- Jugador: totales y tarjetas ----------
+
+    TotalResponse getPlayerTotalGoals(Long playerId, Long tournamentId);
+
+    TotalResponse getPlayerTotalFouls(Long playerId, Long tournamentId);
+
+    PlayerCardsResponse getPlayerCards(Long playerId, Long tournamentId);
+
+    // ---------- Equipo ----------
+
+    TeamMatchRecordResponse getTeamMatchRecord(Long teamId, Long tournamentId);
+
+    TeamAverageResponse getTeamAverageGoals(Long teamId, Long tournamentId);
+
+    TeamAverageResponse getTeamAverageFouls(Long teamId, Long tournamentId);
+
+    TotalResponse getTeamTotalFouls(Long teamId, Long tournamentId);
+
+    TeamGoalsResponse getTeamGoals(Long teamId, Long tournamentId);
+
+    // ---------- Torneo (agregados por partido) ----------
+
+    TournamentMatchAveragesResponse getTournamentMatchAverages(Long tournamentId);
+
+    CardsTotalResponse getTournamentCardsTotal(Long tournamentId);
+
+    // ---------- Partido ----------
+
+    CardsTotalResponse getMatchCardsTotal(Long matchId);
+
+    MatchResultResponse getMatchResult(Long matchId);
 }
