@@ -2,6 +2,7 @@ package co.edu.escuelaing.techcup.statistics.client;
 
 import co.edu.escuelaing.techcup.statistics.exception.ExternalServiceException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -18,10 +19,14 @@ public class TournamentClientImpl implements TournamentClient {
      */
     private static final String ACTIVE_TOURNAMENT_PATH = "/api/v1/tournaments/active";
 
+    @Autowired
     public TournamentClientImpl(@Value("${services.tournaments.base-url}") String baseUrl) {
-        this.restClient = RestClient.builder()
-                .baseUrl(baseUrl)
-                .build();
+        this(RestClient.builder().baseUrl(baseUrl).build());
+    }
+
+    /** Constructor usado por Spring en producción y por los tests para inyectar un RestClient simulado. */
+    TournamentClientImpl(RestClient restClient) {
+        this.restClient = restClient;
     }
 
     @Override
