@@ -301,6 +301,32 @@ Todas las respuestas de error siguen el mismo formato:
 | Servicio de Torneos no disponible / sin torneo activo | 502 |
 | Error inesperado | 500 |
 
+## Cobertura de tests
+
+El proyecto usa [JaCoCo](https://www.jacoco.org/jacoco/) para medir cobertura de tests.
+Cobertura actual: **97% de instrucciones, 80% de ramas** (66 tests: servicio, controlador
+y cliente HTTP).
+
+| Paquete | Cobertura |
+|---|---|
+| `dto` | 100% |
+| `controller` | 100% |
+| `client` | 100% |
+| `entity` | 100% |
+| `service` | 97% |
+| `exception` | 85% |
+
+![Reporte de cobertura JaCoCo](docs/cobertura.png)
+
+### Cómo generar el reporte
+
+```bash
+mvn test
+```
+
+El reporte HTML se genera en `target/site/jacoco/index.html` (ábrelo en el navegador).
+
+
 ## Flujo de ramas del equipo
 
 Este repositorio sigue un flujo simplificado tipo Gitflow:
