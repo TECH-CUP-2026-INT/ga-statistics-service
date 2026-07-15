@@ -56,10 +56,21 @@ public class GlobalExceptionHandler {
                 List.of("Ocurrió un error inesperado en el servidor: " + ex.getMessage()), request);
     }
 
+    private static String reasonInSpanish(HttpStatus status) {
+        return switch (status) {
+            case BAD_REQUEST -> "Solicitud inválida";
+            case NOT_FOUND -> "No encontrado";
+            case CONFLICT -> "Conflicto";
+            case BAD_GATEWAY -> "Servicio externo no disponible";
+            case INTERNAL_SERVER_ERROR -> "Error interno del servidor";
+            default -> status.getReasonPhrase();
+        };
+    }
+
     private ResponseEntity<ErrorResponse> build(HttpStatus status, List<String> messages,
                                                  HttpServletRequest request) {
         ErrorResponse body = new ErrorResponse(
-                LocalDateTime.now(), status.value(), status.getReasonPhrase(), messages, request.getRequestURI());
+                LocalDateTime.now(), status.value(), reasonInSpanish(status), messages, request.getRequestURI());
         return ResponseEntity.status(status).body(body);
     }
 }
