@@ -1,15 +1,15 @@
 package co.edu.escuelaing.techcup.statistics.infrastructure.in.amqp;
-
+import java.util.UUID;
 import java.time.LocalDateTime;
 
 /**
- * Evento de finalización de partido.
- * Indica que el árbitro finalizó el partido oficialmente.
+ * Evento de finalizaciÃ³n de partido.
+ * Indica que el Ã¡rbitro finalizÃ³ el partido oficialmente.
  * routing key: {@code techcup.match.event.finalized}
  */
 public record MatchFinalizedEvent(
-        String matchId,
-        String tournamentId,
+        UUID matchId,
+        UUID tournamentId,
         String teamHomeId,
         String teamAwayId,
         int homeScore,

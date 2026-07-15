@@ -1,5 +1,5 @@
 package co.edu.escuelaing.techcup.statistics.application.usecase;
-
+import java.util.UUID;
 import co.edu.escuelaing.techcup.statistics.domain.exception.DuplicateMatchStatException;
 import co.edu.escuelaing.techcup.statistics.domain.exception.RecognitionNotFoundException;
 import co.edu.escuelaing.techcup.statistics.domain.model.*;
@@ -49,7 +49,7 @@ public class StatisticsUseCaseImpl implements StatisticsUseCase {
     }
 
     @Override
-    public PlayerAverageResult getAverageWinRate(String playerId, String tournamentId) {
+    public PlayerAverageResult getAverageWinRate(UUID playerId, UUID tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         long played = stats.size();
         double winRatePercentage = 0.0;
@@ -61,48 +61,48 @@ public class StatisticsUseCaseImpl implements StatisticsUseCase {
     }
 
     @Override
-    public PlayerAverageResult getAverageGoals(String playerId, String tournamentId) {
+    public PlayerAverageResult getAverageGoals(UUID playerId, UUID tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         double average = averageOf(stats, PlayerMatchStatistic::getGoals);
         return new PlayerAverageResult(playerId, tournamentId, "averageGoals", average, stats.size());
     }
 
     @Override
-    public PlayerAverageResult getAverageFouls(String playerId, String tournamentId) {
+    public PlayerAverageResult getAverageFouls(UUID playerId, UUID tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         double average = averageOf(stats, PlayerMatchStatistic::getFoulsCommitted);
         return new PlayerAverageResult(playerId, tournamentId, "averageFouls", average, stats.size());
     }
 
     @Override
-    public PlayerAverageResult getAverageMinutesPlayed(String playerId, String tournamentId) {
+    public PlayerAverageResult getAverageMinutesPlayed(UUID playerId, UUID tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         double average = averageOf(stats, PlayerMatchStatistic::getMinutesPlayed);
         return new PlayerAverageResult(playerId, tournamentId, "averageMinutesPlayed", average, stats.size());
     }
 
     @Override
-    public MatchesPlayedResult getMatchesPlayed(String playerId, String tournamentId) {
+    public MatchesPlayedResult getMatchesPlayed(UUID playerId, UUID tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         return new MatchesPlayedResult(playerId, tournamentId, stats.size());
     }
 
     @Override
-    public RankingResult getRanking(RankingType type, String tournamentId, int limit) {
+    public RankingResult getRanking(RankingType type, UUID tournamentId, int limit) {
         List<PlayerMatchStatistic> stats = fetchTournamentStats(tournamentId);
 
-        Map<String, Long> totalsByPlayer = stats.stream()
+        Map<UUID, Long> totalsByPlayer = stats.stream()
                 .collect(Collectors.groupingBy(
                         PlayerMatchStatistic::getPlayerId,
                         Collectors.summingLong(stat -> valueForRanking(stat, type))));
 
-        Comparator<Map.Entry<String, Long>> comparator = type == RankingType.FOULS
+        Comparator<Map.Entry<UUID, Long>> comparator = type == RankingType.FOULS
                 ? Map.Entry.comparingByValue()
-                : Map.Entry.<String, Long>comparingByValue().reversed();
+                : Map.Entry.<UUID, Long>comparingByValue().reversed();
 
         List<RankingResult.RankingEntry> entries = new java.util.ArrayList<>();
         int position = 1;
-        for (Map.Entry<String, Long> entry : totalsByPlayer.entrySet().stream()
+        for (Map.Entry<UUID, Long> entry : totalsByPlayer.entrySet().stream()
                 .sorted(comparator).limit(Math.max(limit, 1)).toList()) {
             entries.add(new RankingResult.RankingEntry(position++, entry.getKey(), entry.getValue()));
         }
@@ -111,8 +111,8 @@ public class StatisticsUseCaseImpl implements StatisticsUseCase {
     }
 
     @Override
-    public TournamentStandingsResult getTournamentStandings(String tournamentId) {
-        List<String> teamIds = fetchTournamentStats(tournamentId).stream()
+    public TournamentStandingsResult getTournamentStandings(UUID tournamentId) {
+        List<UUID> teamIds = fetchTournamentStats(tournamentId).stream()
                 .map(PlayerMatchStatistic::getTeamId).distinct().toList();
 
         List<TeamStatisticsResult> standings = teamIds.stream()
@@ -126,35 +126,36 @@ public class StatisticsUseCaseImpl implements StatisticsUseCase {
     }
 
     @Override
-    public TeamStatisticsResult getTeamStatistics(String teamId, String tournamentId) {
-        String resolvedId = tournamentId;
+    public TeamStatisticsResult getTeamStatistics(UUID teamId, UUID tournamentId) {
+        UUID resolvedId = tournamentId;
         if (resolvedId == null) {
-            resolvedId = tournamentClient.getActiveTournamentId();
+            String tid = tournamentClient.getActiveTournamentId();
+            resolvedId = tid != null ? UUID.fromString(tid) : null;
         }
         return buildTeamStatistics(teamId, resolvedId);
     }
 
     @Override
-    public TournamentRecognitionRecord generateTournamentRecognitions(String tournamentId) {
+    public TournamentRecognitionRecord generateTournamentRecognitions(UUID tournamentId) {
         List<PlayerMatchStatistic> tournamentStats = fetchTournamentStats(tournamentId);
 
-        Map<String, Integer> goalsByPlayer = tournamentStats.stream()
+        Map<UUID, Integer> goalsByPlayer = tournamentStats.stream()
                 .collect(Collectors.groupingBy(PlayerMatchStatistic::getPlayerId,
                         Collectors.summingInt(PlayerMatchStatistic::getGoals)));
 
         long maxGoals = goalsByPlayer.values().stream().mapToLong(Integer::longValue).max().orElse(0);
-        List<String> topScorerIds = goalsByPlayer.entrySet().stream()
+        List<UUID> topScorerIds = goalsByPlayer.entrySet().stream()
                 .filter(e -> e.getValue() == maxGoals && maxGoals > 0)
                 .map(Map.Entry::getKey).toList();
 
-        List<String> teamIds = tournamentStats.stream()
+        List<UUID> teamIds = tournamentStats.stream()
                 .map(PlayerMatchStatistic::getTeamId).distinct().toList();
 
-        Map<String, Long> goalsAgainstByTeam = teamIds.stream()
+        Map<UUID, Long> goalsAgainstByTeam = teamIds.stream()
                 .collect(Collectors.toMap(id -> id, id -> buildTeamStatistics(id, tournamentId).goalsAgainst()));
 
         long minGoalsAgainst = goalsAgainstByTeam.values().stream().mapToLong(Long::longValue).min().orElse(0);
-        List<String> bestDefenseIds = goalsAgainstByTeam.entrySet().stream()
+        List<UUID> bestDefenseIds = goalsAgainstByTeam.entrySet().stream()
                 .filter(e -> e.getValue() == minGoalsAgainst).map(Map.Entry::getKey).toList();
 
         Optional<TournamentRecognitionDocument> existing = recognitionRepository.findByTournamentId(tournamentId);
@@ -171,19 +172,19 @@ public class StatisticsUseCaseImpl implements StatisticsUseCase {
     }
 
     @Override
-    public TournamentRecognitionRecord getTournamentRecognitions(String tournamentId) {
+    public TournamentRecognitionRecord getTournamentRecognitions(UUID tournamentId) {
         return recognitionRepository.findByTournamentId(tournamentId)
                 .map(recognitionMapper::toDomain)
                 .orElseThrow(() -> new RecognitionNotFoundException(tournamentId));
     }
 
     @Override
-    public GoalkeeperRankingResult getGoalkeeperRanking(String tournamentId, int limit) {
+    public GoalkeeperRankingResult getGoalkeeperRanking(UUID tournamentId, int limit) {
         List<PlayerMatchStatistic> stats = fetchTournamentStats(tournamentId);
-        Map<String, List<PlayerMatchStatistic>> byMatch = stats.stream()
+        Map<UUID, List<PlayerMatchStatistic>> byMatch = stats.stream()
                 .collect(Collectors.groupingBy(PlayerMatchStatistic::getMatchId));
 
-        Map<String, Long> conceded = new java.util.HashMap<>();
+        Map<UUID, Long> conceded = new java.util.HashMap<>();
         for (PlayerMatchStatistic stat : stats) {
             if (!stat.isGoalkeeper()) continue;
             long opponentGoals = byMatch.getOrDefault(stat.getMatchId(), List.of()).stream()
@@ -194,39 +195,39 @@ public class StatisticsUseCaseImpl implements StatisticsUseCase {
 
         List<GoalkeeperRankingResult.GoalkeeperEntry> entries = new java.util.ArrayList<>();
         int pos = 1;
-        for (Map.Entry<String, Long> e : conceded.entrySet().stream()
+        for (Map.Entry<UUID, Long> e : conceded.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue()).limit(Math.max(limit, 1)).toList()) {
             entries.add(new GoalkeeperRankingResult.GoalkeeperEntry(pos++, e.getKey(), e.getValue()));
         }
         return new GoalkeeperRankingResult(tournamentId, entries);
     }
 
-    @Override public TotalResult getPlayerTotalAssists(String playerId, String tournamentId) {
+    @Override public TotalResult getPlayerTotalAssists(UUID playerId, UUID tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         return new TotalResult(playerId, tournamentId, "totalAssists",
                 stats.stream().mapToInt(PlayerMatchStatistic::getAssists).sum(), stats.size());
     }
 
-    @Override public TotalResult getPlayerTotalGoals(String playerId, String tournamentId) {
+    @Override public TotalResult getPlayerTotalGoals(UUID playerId, UUID tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         return new TotalResult(playerId, tournamentId, "totalGoals",
                 stats.stream().mapToInt(PlayerMatchStatistic::getGoals).sum(), stats.size());
     }
 
-    @Override public TotalResult getPlayerTotalFouls(String playerId, String tournamentId) {
+    @Override public TotalResult getPlayerTotalFouls(UUID playerId, UUID tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         return new TotalResult(playerId, tournamentId, "totalFouls",
                 stats.stream().mapToInt(PlayerMatchStatistic::getFoulsCommitted).sum(), stats.size());
     }
 
-    @Override public PlayerCardsResult getPlayerCards(String playerId, String tournamentId) {
+    @Override public PlayerCardsResult getPlayerCards(UUID playerId, UUID tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         return new PlayerCardsResult(playerId, tournamentId,
                 stats.stream().mapToInt(PlayerMatchStatistic::getYellowCards).sum(),
                 stats.stream().mapToInt(PlayerMatchStatistic::getRedCards).sum());
     }
 
-    @Override public TeamMatchRecordResult getTeamMatchRecord(String teamId, String tournamentId) {
+    @Override public TeamMatchRecordResult getTeamMatchRecord(UUID teamId, UUID tournamentId) {
         var resultByMatch = resultByMatchForTeam(teamId, tournamentId);
         long played = resultByMatch.size();
         long wins = resultByMatch.values().stream().filter(r -> r == MatchResult.WON).count();
@@ -238,33 +239,33 @@ public class StatisticsUseCaseImpl implements StatisticsUseCase {
         return new TeamMatchRecordResult(teamId, tournamentId, played, wins, draws, losses, wr, dr, lr);
     }
 
-    @Override public TeamAverageResult getTeamAverageGoals(String teamId, String tournamentId) {
+    @Override public TeamAverageResult getTeamAverageGoals(UUID teamId, UUID tournamentId) {
         var teamStats = fetchTeamStats(teamId, tournamentId);
         long matches = teamStats.stream().map(PlayerMatchStatistic::getMatchId).distinct().count();
         double avg = matches == 0 ? 0 : round((double) teamStats.stream().mapToInt(PlayerMatchStatistic::getGoals).sum() / matches);
         return new TeamAverageResult(teamId, tournamentId, "averageGoalsPerMatch", avg, matches);
     }
 
-    @Override public TeamAverageResult getTeamAverageFouls(String teamId, String tournamentId) {
+    @Override public TeamAverageResult getTeamAverageFouls(UUID teamId, UUID tournamentId) {
         var teamStats = fetchTeamStats(teamId, tournamentId);
         long matches = teamStats.stream().map(PlayerMatchStatistic::getMatchId).distinct().count();
         double avg = matches == 0 ? 0 : round((double) teamStats.stream().mapToInt(PlayerMatchStatistic::getFoulsCommitted).sum() / matches);
         return new TeamAverageResult(teamId, tournamentId, "averageFoulsPerMatch", avg, matches);
     }
 
-    @Override public TotalResult getTeamTotalFouls(String teamId, String tournamentId) {
+    @Override public TotalResult getTeamTotalFouls(UUID teamId, UUID tournamentId) {
         var teamStats = fetchTeamStats(teamId, tournamentId);
         long matches = teamStats.stream().map(PlayerMatchStatistic::getMatchId).distinct().count();
         return new TotalResult(teamId, tournamentId, "totalFouls",
                 teamStats.stream().mapToInt(PlayerMatchStatistic::getFoulsCommitted).sum(), matches);
     }
 
-    @Override public TeamGoalsResult getTeamGoals(String teamId, String tournamentId) {
+    @Override public TeamGoalsResult getTeamGoals(UUID teamId, UUID tournamentId) {
         var s = buildTeamStatistics(teamId, tournamentId);
         return new TeamGoalsResult(teamId, tournamentId, s.goalsFor(), s.goalsAgainst(), s.goalDifference());
     }
 
-    @Override public TournamentMatchAveragesResult getTournamentMatchAverages(String tournamentId) {
+    @Override public TournamentMatchAveragesResult getTournamentMatchAverages(UUID tournamentId) {
         var stats = fetchTournamentStats(tournamentId);
         long matches = stats.stream().map(PlayerMatchStatistic::getMatchId).distinct().count();
         if (matches == 0) return new TournamentMatchAveragesResult(tournamentId, 0, 0, 0, 0);
@@ -275,23 +276,23 @@ public class StatisticsUseCaseImpl implements StatisticsUseCase {
                 round((double) f / matches), round((double) c / matches));
     }
 
-    @Override public CardsTotalResult getTournamentCardsTotal(String tournamentId) {
+    @Override public CardsTotalResult getTournamentCardsTotal(UUID tournamentId) {
         var stats = fetchTournamentStats(tournamentId);
         return new CardsTotalResult("tournament", tournamentId,
                 stats.stream().mapToInt(PlayerMatchStatistic::getYellowCards).sum(),
                 stats.stream().mapToInt(PlayerMatchStatistic::getRedCards).sum());
     }
 
-    @Override public CardsTotalResult getMatchCardsTotal(String matchId) {
+    @Override public CardsTotalResult getMatchCardsTotal(UUID matchId) {
         var stats = fetchMatchStats(matchId);
         return new CardsTotalResult("match", matchId,
                 stats.stream().mapToInt(PlayerMatchStatistic::getYellowCards).sum(),
                 stats.stream().mapToInt(PlayerMatchStatistic::getRedCards).sum());
     }
 
-    @Override public MatchResultResult getMatchResult(String matchId) {
+    @Override public MatchResultResult getMatchResult(UUID matchId) {
         var stats = fetchMatchStats(matchId);
-        String tid = stats.stream().map(PlayerMatchStatistic::getTournamentId).findFirst().orElse(null);
+        UUID tid = stats.stream().map(PlayerMatchStatistic::getTournamentId).findFirst().orElse(null);
         var teamResults = stats.stream()
                 .collect(Collectors.toMap(PlayerMatchStatistic::getTeamId, PlayerMatchStatistic::getResult, (a, b) -> a))
                 .entrySet().stream()
@@ -301,28 +302,28 @@ public class StatisticsUseCaseImpl implements StatisticsUseCase {
 
     // --- Helpers ---
 
-    private List<PlayerMatchStatistic> fetchPlayerStats(String playerId, String tournamentId) {
+    private List<PlayerMatchStatistic> fetchPlayerStats(UUID playerId, UUID tournamentId) {
         List<PlayerMatchStatDocument> docs = tournamentId == null
                 ? repository.findByPlayerId(playerId)
                 : repository.findByPlayerIdAndTournamentId(playerId, tournamentId);
         return playerMatchStatMapper.toDomainList(docs);
     }
 
-    private List<PlayerMatchStatistic> fetchTeamStats(String teamId, String tournamentId) {
+    private List<PlayerMatchStatistic> fetchTeamStats(UUID teamId, UUID tournamentId) {
         List<PlayerMatchStatDocument> docs = tournamentId == null
                 ? repository.findByTeamId(teamId)
                 : repository.findByTeamIdAndTournamentId(teamId, tournamentId);
         return playerMatchStatMapper.toDomainList(docs);
     }
 
-    private List<PlayerMatchStatistic> fetchTournamentStats(String tournamentId) {
+    private List<PlayerMatchStatistic> fetchTournamentStats(UUID tournamentId) {
         List<PlayerMatchStatDocument> docs = tournamentId == null
                 ? repository.findAll()
                 : repository.findByTournamentId(tournamentId);
         return playerMatchStatMapper.toDomainList(docs);
     }
 
-    private List<PlayerMatchStatistic> fetchMatchStats(String matchId) {
+    private List<PlayerMatchStatistic> fetchMatchStats(UUID matchId) {
         return playerMatchStatMapper.toDomainList(repository.findByMatchId(matchId));
     }
 
@@ -339,12 +340,12 @@ public class StatisticsUseCaseImpl implements StatisticsUseCase {
         };
     }
 
-    private Map<String, MatchResult> resultByMatchForTeam(String teamId, String tournamentId) {
+    private Map<UUID, MatchResult> resultByMatchForTeam(UUID teamId, UUID tournamentId) {
         return fetchTeamStats(teamId, tournamentId).stream()
                 .collect(Collectors.toMap(PlayerMatchStatistic::getMatchId, PlayerMatchStatistic::getResult, (a, b) -> a));
     }
 
-    private TeamStatisticsResult buildTeamStatistics(String teamId, String tournamentId) {
+    private TeamStatisticsResult buildTeamStatistics(UUID teamId, UUID tournamentId) {
         var teamStats = fetchTeamStats(teamId, tournamentId);
         var resultByMatch = resultByMatchForTeam(teamId, tournamentId);
         long played = resultByMatch.size();

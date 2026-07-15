@@ -1,8 +1,10 @@
 package co.edu.escuelaing.techcup.statistics.domain.model;
 
+import java.util.UUID;
+
 public record CardsTotalResult(
         String scope,
-        String id,
+        UUID id,
         long yellowCards,
         long redCards
 ) {}

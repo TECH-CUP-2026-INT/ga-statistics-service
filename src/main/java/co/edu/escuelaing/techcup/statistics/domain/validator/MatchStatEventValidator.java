@@ -25,16 +25,16 @@ public class MatchStatEventValidator {
     public static void validate(PlayerMatchStatistic statistic) {
         List<String> errors = new ArrayList<>();
 
-        if (statistic.getPlayerId() == null || statistic.getPlayerId().isBlank()) {
+        if (statistic.getPlayerId() == null) {
             errors.add("El identificador del jugador (playerId) es obligatorio");
         }
-        if (statistic.getTeamId() == null || statistic.getTeamId().isBlank()) {
+        if (statistic.getTeamId() == null) {
             errors.add("El identificador del equipo (teamId) es obligatorio");
         }
-        if (statistic.getMatchId() == null || statistic.getMatchId().isBlank()) {
+        if (statistic.getMatchId() == null) {
             errors.add("El identificador del partido (matchId) es obligatorio");
         }
-        if (statistic.getTournamentId() == null || statistic.getTournamentId().isBlank()) {
+        if (statistic.getTournamentId() == null) {
             errors.add("El identificador del torneo (tournamentId) es obligatorio");
         }
         if (statistic.getResult() == null) {

@@ -45,10 +45,10 @@ public interface StatisticsResponseMapper {
     GoalkeeperRankingResponse toResponse(GoalkeeperRankingResult result);
 
     default TournamentRecognitionResponse toResponse(TournamentRecognitionRecord domain) {
-        var topScorers = domain.getTopScorerPlayerIds().stream()
+        List<TournamentRecognitionResponse.PlayerGoals> topScorers = domain.getTopScorerPlayerIds().stream()
                 .map(id -> new TournamentRecognitionResponse.PlayerGoals(id, domain.getTopScorersGoals()))
                 .toList();
-        var defenses = domain.getBestDefenseTeamIds().stream()
+        List<TournamentRecognitionResponse.TeamGoalsAgainst> defenses = domain.getBestDefenseTeamIds().stream()
                 .map(id -> new TournamentRecognitionResponse.TeamGoalsAgainst(id, domain.getBestDefenseGoalsAgainst()))
                 .toList();
         return new TournamentRecognitionResponse(domain.getTournamentId(), topScorers,

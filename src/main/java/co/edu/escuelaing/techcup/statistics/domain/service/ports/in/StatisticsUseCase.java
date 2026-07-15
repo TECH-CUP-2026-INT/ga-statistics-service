@@ -1,5 +1,5 @@
 package co.edu.escuelaing.techcup.statistics.domain.service.ports.in;
-
+import java.util.UUID;
 import co.edu.escuelaing.techcup.statistics.domain.model.CardsTotalResult;
 import co.edu.escuelaing.techcup.statistics.domain.model.GoalkeeperRankingResult;
 import co.edu.escuelaing.techcup.statistics.domain.model.MatchResultResult;
@@ -19,58 +19,58 @@ import co.edu.escuelaing.techcup.statistics.domain.model.TournamentRecognitionRe
 import co.edu.escuelaing.techcup.statistics.domain.model.TournamentStandingsResult;
 
 /**
- * Puerto de entrada del hexágono: define los casos de uso del servicio
- * de estadísticas. Trabaja exclusivamente con objetos del dominio.
+ * Puerto de entrada del hexÃ¡gono: define los casos de uso del servicio
+ * de estadÃ­sticas. Trabaja exclusivamente con objetos del dominio.
  */
 public interface StatisticsUseCase {
 
     void registerMatchStat(PlayerMatchStatistic statistic);
 
-    PlayerAverageResult getAverageWinRate(String playerId, String tournamentId);
+    PlayerAverageResult getAverageWinRate(UUID playerId, UUID tournamentId);
 
-    PlayerAverageResult getAverageGoals(String playerId, String tournamentId);
+    PlayerAverageResult getAverageGoals(UUID playerId, UUID tournamentId);
 
-    PlayerAverageResult getAverageFouls(String playerId, String tournamentId);
+    PlayerAverageResult getAverageFouls(UUID playerId, UUID tournamentId);
 
-    PlayerAverageResult getAverageMinutesPlayed(String playerId, String tournamentId);
+    PlayerAverageResult getAverageMinutesPlayed(UUID playerId, UUID tournamentId);
 
-    MatchesPlayedResult getMatchesPlayed(String playerId, String tournamentId);
+    MatchesPlayedResult getMatchesPlayed(UUID playerId, UUID tournamentId);
 
-    RankingResult getRanking(RankingType type, String tournamentId, int limit);
+    RankingResult getRanking(RankingType type, UUID tournamentId, int limit);
 
-    TournamentStandingsResult getTournamentStandings(String tournamentId);
+    TournamentStandingsResult getTournamentStandings(UUID tournamentId);
 
-    TeamStatisticsResult getTeamStatistics(String teamId, String tournamentId);
+    TeamStatisticsResult getTeamStatistics(UUID teamId, UUID tournamentId);
 
-    TournamentRecognitionRecord generateTournamentRecognitions(String tournamentId);
+    TournamentRecognitionRecord generateTournamentRecognitions(UUID tournamentId);
 
-    TournamentRecognitionRecord getTournamentRecognitions(String tournamentId);
+    TournamentRecognitionRecord getTournamentRecognitions(UUID tournamentId);
 
-    GoalkeeperRankingResult getGoalkeeperRanking(String tournamentId, int limit);
+    GoalkeeperRankingResult getGoalkeeperRanking(UUID tournamentId, int limit);
 
-    TotalResult getPlayerTotalAssists(String playerId, String tournamentId);
+    TotalResult getPlayerTotalAssists(UUID playerId, UUID tournamentId);
 
-    TotalResult getPlayerTotalGoals(String playerId, String tournamentId);
+    TotalResult getPlayerTotalGoals(UUID playerId, UUID tournamentId);
 
-    TotalResult getPlayerTotalFouls(String playerId, String tournamentId);
+    TotalResult getPlayerTotalFouls(UUID playerId, UUID tournamentId);
 
-    PlayerCardsResult getPlayerCards(String playerId, String tournamentId);
+    PlayerCardsResult getPlayerCards(UUID playerId, UUID tournamentId);
 
-    TeamMatchRecordResult getTeamMatchRecord(String teamId, String tournamentId);
+    TeamMatchRecordResult getTeamMatchRecord(UUID teamId, UUID tournamentId);
 
-    TeamAverageResult getTeamAverageGoals(String teamId, String tournamentId);
+    TeamAverageResult getTeamAverageGoals(UUID teamId, UUID tournamentId);
 
-    TeamAverageResult getTeamAverageFouls(String teamId, String tournamentId);
+    TeamAverageResult getTeamAverageFouls(UUID teamId, UUID tournamentId);
 
-    TotalResult getTeamTotalFouls(String teamId, String tournamentId);
+    TotalResult getTeamTotalFouls(UUID teamId, UUID tournamentId);
 
-    TeamGoalsResult getTeamGoals(String teamId, String tournamentId);
+    TeamGoalsResult getTeamGoals(UUID teamId, UUID tournamentId);
 
-    TournamentMatchAveragesResult getTournamentMatchAverages(String tournamentId);
+    TournamentMatchAveragesResult getTournamentMatchAverages(UUID tournamentId);
 
-    CardsTotalResult getTournamentCardsTotal(String tournamentId);
+    CardsTotalResult getTournamentCardsTotal(UUID tournamentId);
 
-    CardsTotalResult getMatchCardsTotal(String matchId);
+    CardsTotalResult getMatchCardsTotal(UUID matchId);
 
-    MatchResultResult getMatchResult(String matchId);
+    MatchResultResult getMatchResult(UUID matchId);
 }

@@ -1,11 +1,17 @@
 package co.edu.escuelaing.techcup.statistics.infrastructure.out.feign;
 
+import java.util.UUID;
+
 /**
  * DTO de respuesta del servicio de Torneos al consultar el torneo activo.
  * <p>
- * Pendiente de confirmación: al revisar el código real de mk-tournament-service
- * no existe el endpoint GET /tournaments/active. Se necesita coordinar con
- * el equipo de Torneos para que lo agreguen.
+ * El servicio de Torneos devuelve IDs como String (ObjectId de MongoDB).
+ * Este record mantiene String para la deserialización y provee {@link #toTournamentId()}
+ * para convertir al UUID que usa el dominio de Estadísticas.
  */
 public record ActiveTournamentResponse(String id) {
+
+    public UUID toTournamentId() {
+        return id != null ? UUID.fromString(id) : null;
+    }
 }

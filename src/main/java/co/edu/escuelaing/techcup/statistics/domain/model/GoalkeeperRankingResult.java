@@ -1,10 +1,10 @@
 package co.edu.escuelaing.techcup.statistics.domain.model;
-
+import java.util.UUID;
 import java.util.List;
 
 public record GoalkeeperRankingResult(
-        String tournamentId,
+        UUID tournamentId,
         List<GoalkeeperEntry> entries
 ) {
-    public record GoalkeeperEntry(int position, String playerId, long goalsConceded) {}
+    public record GoalkeeperEntry(int position, UUID playerId, long goalsConceded) {}
 }

@@ -1,3 +1,5 @@
 package co.edu.escuelaing.techcup.statistics.infrastructure.in.rest.dto.response;
 
-public record CardsTotalResponse(String scope, String id, long yellowCards, long redCards) {}
+import java.util.UUID;
+
+public record CardsTotalResponse(String scope, UUID id, long yellowCards, long redCards) {}

@@ -1,5 +1,5 @@
 package co.edu.escuelaing.techcup.statistics.domain.model;
-
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Objeto de DOMINIO del reconocimiento de un torneo (máximo goleador y
- * malla menos vencida). Sin anotaciones de persistencia; la conversión
+ * Objeto de DOMINIO del reconocimiento de un torneo (mÃ¡ximo goleador y
+ * malla menos vencida). Sin anotaciones de persistencia; la conversiÃ³n
  * hacia/desde el documento de MongoDB la realiza TournamentRecognitionMapper.
  */
 @Getter
@@ -22,12 +22,11 @@ import java.util.List;
 public class TournamentRecognitionRecord {
 
     private String id;
-    private String tournamentId;
+    private UUID tournamentId;
 
-    private List<String> topScorerPlayerIds;
+    private List<UUID> topScorerPlayerIds;
     private long topScorersGoals;
-
-    private List<String> bestDefenseTeamIds;
+    private List<UUID> bestDefenseTeamIds;
     private long bestDefenseGoalsAgainst;
 
     private LocalDateTime generatedAt;

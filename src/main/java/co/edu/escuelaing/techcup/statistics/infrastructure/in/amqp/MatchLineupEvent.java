@@ -1,14 +1,14 @@
 package co.edu.escuelaing.techcup.statistics.infrastructure.in.amqp;
-
+import java.util.UUID;
 import java.util.List;
 
 /**
- * Evento de alineación de partido.
+ * Evento de alineaciÃ³n de partido.
  * Routing key: {@code techcup.match.event.lineup}
  */
 public record MatchLineupEvent(
-        String matchId,
-        String tournamentId,
+        UUID matchId,
+        UUID tournamentId,
         String teamHomeId,
         String teamAwayId,
         List<String> homePlayerIds,

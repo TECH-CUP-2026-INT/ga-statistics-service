@@ -1,5 +1,5 @@
 package co.edu.escuelaing.techcup.statistics.infrastructure.out.persistence.mongo;
-
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,10 +18,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class TournamentRecognitionDocument {
 
     @Id private String id;
-    @Indexed(unique = true) private String tournamentId;
-    private List<String> topScorerPlayerIds;
+    @Indexed(unique = true) private UUID tournamentId;
+    private List<UUID> topScorerPlayerIds;
     private long topScorersGoals;
-    private List<String> bestDefenseTeamIds;
+    private List<UUID> bestDefenseTeamIds;
     private long bestDefenseGoalsAgainst;
     @Builder.Default private LocalDateTime generatedAt = LocalDateTime.now();
 }

@@ -1,8 +1,8 @@
 package co.edu.escuelaing.techcup.statistics.domain.model;
-
+import java.util.UUID;
 public record TeamMatchRecordResult(
-        String teamId,
-        String tournamentId,
+        UUID teamId,
+        UUID tournamentId,
         long matchesPlayed,
         long wins,
         long draws,

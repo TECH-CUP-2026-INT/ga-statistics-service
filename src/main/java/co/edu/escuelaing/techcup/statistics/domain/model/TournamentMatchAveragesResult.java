@@ -1,7 +1,7 @@
 package co.edu.escuelaing.techcup.statistics.domain.model;
-
+import java.util.UUID;
 public record TournamentMatchAveragesResult(
-        String tournamentId,
+        UUID tournamentId,
         long matchesConsidered,
         double averageGoalsPerMatch,
         double averageFoulsPerMatch,

@@ -1,16 +1,16 @@
 package co.edu.escuelaing.techcup.statistics.infrastructure.in.amqp;
-
+import java.util.UUID;
 import java.time.LocalDateTime;
 
 /**
- * Evento de finalización de torneo.
+ * Evento de finalizaciÃ³n de torneo.
  * <p>
  * Publicado por el servicio de Torneos cuando un torneo finaliza.
- * Estadísticas consume este evento para generar los reconocimientos
- * (máximo goleador y malla menos vencida).
+ * EstadÃ­sticas consume este evento para generar los reconocimientos
+ * (mÃ¡ximo goleador y malla menos vencida).
  * Routing key: {@code techcup.tournament.event.finalized}
  */
 public record TournamentFinalizedEvent(
-        String tournamentId,
+        UUID tournamentId,
         LocalDateTime occurredAt
 ) {}

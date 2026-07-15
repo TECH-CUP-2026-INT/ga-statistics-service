@@ -1,5 +1,5 @@
 package co.edu.escuelaing.techcup.statistics.infrastructure.out.persistence.mongo;
-
+import java.util.UUID;
 import co.edu.escuelaing.techcup.statistics.domain.model.MatchResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,10 +20,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class PlayerMatchStatDocument {
 
     @Id private String id;
-    @Indexed private String playerId;
-    @Indexed private String teamId;
-    @Indexed private String matchId;
-    @Indexed private String tournamentId;
+    @Indexed private UUID playerId;
+    @Indexed private UUID teamId;
+    @Indexed private UUID matchId;
+    @Indexed private UUID tournamentId;
     @Builder.Default private Integer goals = 0;
     @Builder.Default private Integer yellowCards = 0;
     @Builder.Default private Integer redCards = 0;
