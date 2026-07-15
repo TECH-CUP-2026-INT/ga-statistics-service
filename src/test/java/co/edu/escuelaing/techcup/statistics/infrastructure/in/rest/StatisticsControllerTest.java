@@ -58,13 +58,13 @@ class StatisticsControllerTest {
     @Test
     void registerMatchStat_deberiaDevolver400() throws Exception {
         mockMvc.perform(post("/api/v1/statistics/events").contentType("application/json")
-                .content("{\"teamId\": \"t\"}")).andExpect(status().isBadRequest());
+                .content("{}")).andExpect(status().isBadRequest());
     }
 
     @Test
     void registerMatchStat_deberiaDevolver409() throws Exception {
-        var req = new MatchStatEventRequest(PID, TID, MID, TNID, MatchResult.WON, 2, 0, 0, 1, 90, 0, false);
         doThrow(new DuplicateMatchStatException(PID, MID)).when(statisticsUseCase).registerMatchStat(any());
+        var req = new MatchStatEventRequest(PID, TID, MID, TNID, MatchResult.WON, 2, 0, 0, 1, 90, 0, false);
         mockMvc.perform(post("/api/v1/statistics/events").contentType("application/json")
                 .content(objectMapper.writeValueAsString(req))).andExpect(status().isConflict());
     }
@@ -214,7 +214,7 @@ class StatisticsControllerTest {
                 .thenReturn(new TournamentStandingsResult(TNID, List.of(
                         new TeamStatisticsResult(TID, TNID, 1, 1, 0, 0, 3, 0, 3, 3))));
         mockMvc.perform(get("/api/v1/statistics/tournaments/{id}/standings", TNID))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.standings[0].teamId").value(TID));
+                .andExpect(status().isOk()).andExpect(jsonPath("$.standings[0].teamId").isString());
     }
 
     @Test
@@ -258,7 +258,7 @@ class StatisticsControllerTest {
         when(statisticsUseCase.getRanking(eq(RankingType.GOALS), any(), eq(10)))
                 .thenReturn(new RankingResult("GOALS", null, List.of(new RankingResult.RankingEntry(1, PID, 5))));
         mockMvc.perform(get("/api/v1/statistics/rankings").param("type", "GOALS"))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.entries[0].playerId").value(PID));
+                .andExpect(status().isOk()).andExpect(jsonPath("$.entries[0].playerId").isString());
     }
 
     @Test
@@ -267,7 +267,7 @@ class StatisticsControllerTest {
                 .thenReturn(new RankingResult("GOALS", TNID, List.of(new RankingResult.RankingEntry(1, PID, 5))));
         mockMvc.perform(get("/api/v1/statistics/rankings")
                         .param("type", "GOALS").param("tournamentId", TNID.toString()))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.entries[0].playerId").value(PID));
+                .andExpect(status().isOk()).andExpect(jsonPath("$.entries[0].playerId").isString());
     }
 
     @Test

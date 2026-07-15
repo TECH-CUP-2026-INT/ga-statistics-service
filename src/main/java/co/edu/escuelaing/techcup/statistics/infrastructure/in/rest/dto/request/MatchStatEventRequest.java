@@ -7,16 +7,16 @@ import jakarta.validation.constraints.NotNull;
 
 public record MatchStatEventRequest(
 
-        @NotBlank(message = "El identificador del jugador (playerId) es obligatorio")
+        @NotNull(message = "El identificador del jugador (playerId) es obligatorio")
         UUID playerId,
 
-        @NotBlank(message = "El identificador del equipo (teamId) es obligatorio")
+        @NotNull(message = "El identificador del equipo (teamId) es obligatorio")
         UUID teamId,
 
-        @NotBlank(message = "El identificador del partido (matchId) es obligatorio")
+        @NotNull(message = "El identificador del partido (matchId) es obligatorio")
         UUID matchId,
 
-        @NotBlank(message = "El identificador del torneo (tournamentId) es obligatorio")
+        @NotNull(message = "El identificador del torneo (tournamentId) es obligatorio")
         UUID tournamentId,
 
         @NotNull(message = "El resultado del partido (result) es obligatorio")

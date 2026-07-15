@@ -610,7 +610,7 @@ class StatisticsUseCaseImplTest {
         when(repository.findByMatchId(id("m1"))).thenReturn(List.of(
                 statFull(id("p1"), id("t1"), id("m1"), MatchResult.WON, 0, 0, 90, 1, 0, 0),
                 statFull(id("p2"), id("t2"), id("m1"), MatchResult.LOST, 0, 0, 90, 2, 1, 0)));
-        CardsTotalResult result = statisticsService.getMatchCardsTotal("m1");
+        CardsTotalResult result = statisticsService.getMatchCardsTotal(id("m1"));
         assertThat(result.yellowCards()).isEqualTo(3);
         assertThat(result.redCards()).isEqualTo(1);
     }
@@ -623,7 +623,7 @@ class StatisticsUseCaseImplTest {
                 statFull(id("p1"), id("teamA"), id("m1"), MatchResult.WON, 2, 0, 90, 0, 0, 0),
                 statFull(id("p2"), id("teamA"), id("m1"), MatchResult.WON, 0, 0, 90, 0, 0, 0),
                 statFull(id("p3"), id("teamB"), id("m1"), MatchResult.LOST, 0, 0, 90, 0, 0, 0)));
-        MatchResultResult result = statisticsService.getMatchResult("m1");
+        MatchResultResult result = statisticsService.getMatchResult(id("m1"));
         assertThat(result.teamResults()).hasSize(2);
         assertThat(result.matchId()).isEqualTo(id("m1"));
     }
@@ -631,7 +631,7 @@ class StatisticsUseCaseImplTest {
     @Test
     void getMatchResult_sinEstadisticas_deberiaTenerTournamentIdNulo() {
         when(repository.findByMatchId(id("m1"))).thenReturn(List.of());
-        MatchResultResult result = statisticsService.getMatchResult("m1");
+        MatchResultResult result = statisticsService.getMatchResult(id("m1"));
         assertThat(result.teamResults()).isEmpty();
     }
 
@@ -669,7 +669,7 @@ class StatisticsUseCaseImplTest {
     @Test
     void getMatchCardsTotal_conPartidoSinDatos_deberiaRetornarCero() {
         when(repository.findByMatchId(id("m1"))).thenReturn(List.of());
-        CardsTotalResult result = statisticsService.getMatchCardsTotal("m1");
+        CardsTotalResult result = statisticsService.getMatchCardsTotal(id("m1"));
         assertThat(result.yellowCards()).isEqualTo(0);
         assertThat(result.redCards()).isEqualTo(0);
     }
