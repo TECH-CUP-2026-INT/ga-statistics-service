@@ -5,10 +5,18 @@ spring:
 server:
   port: ${SERVER_PORT:8085}
 
-  data:
-    mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/techcup_statistics}
+data:
+  mongodb:
+    uri: ${MONGODB_URI:mongodb://localhost:27017/techcup_statistics}
 
 services:
   tournaments:
     base-url: ${TOURNAMENTS_SERVICE_URL:http://localhost:8080}
+
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 5000
+        read-timeout: 5000
+        logger-level: basic
