@@ -364,3 +364,50 @@ Este repositorio sigue un flujo simplificado tipo Gitflow:
 - **Torneos**: debe exponer `GET /api/v1/tournaments/active` (usado por
   `/teams/{id}/statistics`) y llamar a `POST /tournaments/{id}/recognitions` cuando
   finalice un torneo.
+
+
+## Diagramas de arquitectura
+
+Todos los diagramas están disponibles también como archivo editable en
+[`docs/diagrams/ga-statistics-service-diagrams.drawio`](docs/diagrams/ga-statistics-service-diagrams.drawio)
+
+### Diagrama de componentes
+
+![componetes general.png](imagenes/componetes%20general.png)
+
+### Diagrama de contexto
+
+![contexto.png](imagenes/contexto.png)
+
+### Diagrama de clases
+
+![clases.png](imagenes/clases.png)
+
+### Componentes especiales
+
+Decisiones de diseño clave: cliente resiliente hacia Torneos, agregación en memoria
+(en vez de en la base de datos), y reconocimiento persistente con manejo de empates.
+
+![componentes espeiales.png](imagenes/componentes%20espeiales.png)
+
+### Modelo de datos (Entidad-Relación lógico)
+
+MongoDB no tiene relaciones reales (FK); este diagrama muestra el modelo lógico de las
+dos colecciones y cómo se relacionan por convención de campo (`tournamentId`).
+
+![entidad relacion.png](imagenes/entidad%20relacion.png)
+
+### Diagramas de secuencia
+
+**Registrar evento de partido** (Competencia → este servicio):
+
+![sec registrar.png](imagenes/sec%20registrar.png)
+
+**Consultar estadísticas de equipo en el torneo activo** (incluye el camino de error
+502 si Torneos no responde):
+
+![sec torneos activos.png](imagenes/sec%20torneos%20activos.png)
+
+**Generar el reconocimiento del torneo** (incluye el manejo de empates):
+
+![sec reconocimiento.png](imagenes/sec%20reconocimiento.png)
