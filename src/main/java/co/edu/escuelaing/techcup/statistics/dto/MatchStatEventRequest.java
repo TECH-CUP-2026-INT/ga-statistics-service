@@ -1,6 +1,6 @@
 package co.edu.escuelaing.techcup.statistics.dto;
 
-import co.edu.escuelaing.techcup.statistics.entity.MatchResult;
+import co.edu.escuelaing.techcup.statistics.domain.MatchResult;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

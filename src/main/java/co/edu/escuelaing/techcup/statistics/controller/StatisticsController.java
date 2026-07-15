@@ -17,6 +17,7 @@ import co.edu.escuelaing.techcup.statistics.dto.TotalResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentMatchAveragesResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentRecognitionResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentStandingsResponse;
+import co.edu.escuelaing.techcup.statistics.mapper.PlayerMatchStatMapper;
 import co.edu.escuelaing.techcup.statistics.service.StatisticsService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,6 +47,7 @@ import lombok.RequiredArgsConstructor;
 public class StatisticsController {
 
     private final StatisticsService statisticsService;
+    private final PlayerMatchStatMapper playerMatchStatMapper;
 
     // ---------- Ingestion ----------
 
@@ -63,7 +65,7 @@ public class StatisticsController {
     })
     @PostMapping("/events")
     public ResponseEntity<Void> registerMatchStat(@Valid @RequestBody MatchStatEventRequest request) {
-        statisticsService.registerMatchStat(request);
+        statisticsService.registerMatchStat(playerMatchStatMapper.toDomain(request));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
