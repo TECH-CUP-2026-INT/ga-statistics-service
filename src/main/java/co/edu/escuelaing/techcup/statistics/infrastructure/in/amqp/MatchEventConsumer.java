@@ -2,6 +2,7 @@ package co.edu.escuelaing.techcup.statistics.infrastructure.in.amqp;
 
 import co.edu.escuelaing.techcup.statistics.application.mapper.PlayerMatchStatMapper;
 import co.edu.escuelaing.techcup.statistics.domain.service.ports.in.StatisticsUseCase;
+import co.edu.escuelaing.techcup.statistics.infrastructure.in.rest.dto.request.MatchStatEventRequest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,10 +11,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 /**
- * Consumidor de eventos de partido desde RabbitMQ.
- * <p>
- * Escucha la cola {@code techcup.statistics.match-events} y procesa
- * los mensajes enviados por otros servicios (Competencia, Torneos).
+ * Consumidor de {@link MatchStatEvent}.
+ * Recibe estadísticas de partido desde Competencia via RabbitMQ.
  */
 @Slf4j
 @Component
@@ -23,33 +22,18 @@ public class MatchEventConsumer {
     private final StatisticsUseCase statisticsUseCase;
     private final PlayerMatchStatMapper playerMatchStatMapper;
 
-    @RabbitListener(queues = "${rabbitmq.queue.match-events:techcup.statistics.match-events}")
-    public void handleMatchEvent(MatchEventMessage message) {
-        log.info("Evento de partido recibido desde RabbitMQ: playerId={}, matchId={}",
-                message.playerId(), message.matchId());
-
+    @RabbitListener(queues = "${rabbitmq.queue.match-events}")
+    public void handleMatchStat(MatchStatEvent event) {
+        log.info("MatchStatEvent recibido: playerId={}, matchId={}", event.playerId(), event.matchId());
         try {
-            var statistic = playerMatchStatMapper.toDomain(
-                    new co.edu.escuelaing.techcup.statistics.infrastructure.in.rest.dto.request.MatchStatEventRequest(
-                            message.playerId(),
-                            message.teamId(),
-                            message.matchId(),
-                            message.tournamentId(),
-                            message.result(),
-                            message.goals(),
-                            message.yellowCards(),
-                            message.redCards(),
-                            message.foulsCommitted(),
-                            message.minutesPlayed(),
-                            message.assists(),
-                            message.goalkeeper()
-                    ));
-            statisticsUseCase.registerMatchStat(statistic);
-            log.info("Estadística registrada exitosamente desde RabbitMQ para playerId={}, matchId={}",
-                    message.playerId(), message.matchId());
+            var request = new MatchStatEventRequest(
+                    event.playerId(), event.teamId(), event.matchId(), event.tournamentId(),
+                    event.result(), event.goals(), event.yellowCards(), event.redCards(),
+                    event.foulsCommitted(), event.minutesPlayed(), event.assists(), event.goalkeeper());
+            statisticsUseCase.registerMatchStat(playerMatchStatMapper.toDomain(request));
+            log.info("Estadística registrada via RabbitMQ para playerId={}, matchId={}", event.playerId(), event.matchId());
         } catch (Exception e) {
-            log.error("Error procesando evento de RabbitMQ para playerId={}, matchId={}: {}",
-                    message.playerId(), message.matchId(), e.getMessage());
+            log.error("Error procesando MatchStatEvent: playerId={}, matchId={}: {}", event.playerId(), event.matchId(), e.getMessage());
         }
     }
 }

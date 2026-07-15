@@ -23,11 +23,13 @@ feign:
 
 rabbitmq:
   exchange:
-    statistics: techcup.statistics.exchange
+    techcup: techcup.exchange
   queue:
     match-events: techcup.statistics.match-events
+    tournament-events: techcup.statistics.tournament-events
   routing-key:
-    match-events: techcup.match.event.#
+    match-events: techcup.match.event.*
+    tournament-events: techcup.tournament.event.*
   host: ${RABBITMQ_HOST:localhost}
   port: ${RABBITMQ_PORT:5672}
   username: ${RABBITMQ_USER:guest}

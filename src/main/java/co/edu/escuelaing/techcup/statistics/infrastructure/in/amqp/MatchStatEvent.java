@@ -5,16 +5,13 @@ import co.edu.escuelaing.techcup.statistics.domain.model.MatchResult;
 import java.time.LocalDateTime;
 
 /**
- * DTO para eventos de partido recibidos por RabbitMQ.
+ * Evento de estadísticas de partido.
  * <p>
- * Representa el payload que otros servicios (Competencia, Torneos)
- * envían al broker para que Estadísticas lo consuma de forma asíncrona.
- * <p>
- * Pendiente de definir con el equipo de Notificaciones la estructura
- * definitiva del mensaje.
+ * Publicado por el servicio de Competencia cuando finaliza un partido.
+ * Contiene el resumen de UN jugador en UN partido.
+ * Routing key: {@code techcup.match.event.finished}
  */
-public record MatchEventMessage(
-        String eventId,
+public record MatchStatEvent(
         String playerId,
         String teamId,
         String matchId,
