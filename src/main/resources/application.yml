@@ -20,3 +20,15 @@ feign:
         connect-timeout: 5000
         read-timeout: 5000
         logger-level: basic
+
+rabbitmq:
+  exchange:
+    statistics: techcup.statistics.exchange
+  queue:
+    match-events: techcup.statistics.match-events
+  routing-key:
+    match-events: techcup.match.event.#
+  host: ${RABBITMQ_HOST:localhost}
+  port: ${RABBITMQ_PORT:5672}
+  username: ${RABBITMQ_USER:guest}
+  password: ${RABBITMQ_PASS:guest}
