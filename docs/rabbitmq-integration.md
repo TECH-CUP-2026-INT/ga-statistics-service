@@ -2,146 +2,145 @@
 
 ## Broker compartido
 
-Todos los servicios deben conectarse al **mismo broker RabbitMQ**.
-Configuración común:
+Todos los servicios apuntan al **mismo** CloudAMQP:
 
-| Variable | Default |
-|----------|---------|
-| `RABBITMQ_HOST` | `localhost` |
-| `RABBITMQ_PORT` | `5672` |
-| `RABBITMQ_USER` | `guest` |
-| `RABBITMQ_PASS` | `guest` |
+| Variable | Valor |
+|----------|-------|
+| Host | `toucan.lmq.cloudamqp.com` |
+| Puerto | `5671` (TLS) |
+| Usuario | `exdntvvm` |
+| Password | Preguntar a Juan David |
+| Virtual Host | `exdntvvm` |
 
 ## Exchange compartido
 
 **Nombre:** `techcup.exchange`
 **Tipo:** `Topic`
 
-Todas las colas que quieran recibir eventos del sistema deben bindearse
-a este exchange. Los servicios que publican eventos también deben
-publicar aquí.
+Todas las colas se bindean aquí.
 
-## Colas y routing keys
+---
 
-### 1. Eventos de partido → `techcup.statistics.match-events`
+## 📌 Para astromerge (Competencia)
 
-**Routing key:** `techcup.match.event.*`
+**1. Dependencia en pom.xml:**
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-amqp</artifactId>
+</dependency>
+```
 
-**Payload esperado (`MatchEventMessage`):**
+**2. Config en application.yml:**
+```yaml
+spring:
+  rabbitmq:
+    host: toucan.lmq.cloudamqp.com
+    port: 5671
+    username: exdntvvm
+    password: ${RABBITMQ_PASS}
+    virtual-host: exdntvvm
+    ssl:
+      enabled: true
+```
 
-```json
-{
-  "eventId": "uuid",
-  "playerId": "string",
-  "teamId": "string",
-  "matchId": "string",
-  "tournamentId": "string",
-  "result": "WON|DRAWN|LOST",
-  "goals": 0,
-  "yellowCards": 0,
-  "redCards": 0,
-  "foulsCommitted": 0,
-  "minutesPlayed": 0,
-  "assists": 0,
-  "goalkeeper": false,
-  "occurredAt": "2026-07-15T10:00:00"
+**3. Publicar evento cuando termina un partido (por cada jugador):**
+```java
+@Service
+public class MatchEventPublisher {
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    public void publishPlayerStat(String playerId, String teamId, String matchId,
+                                   String tournamentId, MatchResult result,
+                                   Integer goals, Integer yellowCards, Integer redCards,
+                                   Integer fouls, Integer minutes, Integer assists,
+                                   Boolean goalkeeper) {
+        var event = new MatchStatEvent(
+            playerId, teamId, matchId, tournamentId, result,
+            goals, yellowCards, redCards, fouls, minutes, assists,
+            goalkeeper, LocalDateTime.now()
+        );
+        rabbitTemplate.convertAndSend("techcup.exchange", "techcup.match.event.stat", event);
+    }
+
+    record MatchStatEvent(
+        String playerId, String teamId, String matchId, String tournamentId,
+        MatchResult result, Integer goals, Integer yellowCards, Integer redCards,
+        Integer foulsCommitted, Integer minutesPlayed, Integer assists,
+        Boolean goalkeeper, LocalDateTime occurredAt
+    ) {}
 }
 ```
 
-**¿Quién publica?** → Servicio de **Competencia/Partidos** (astromerge)
-
-**Ejemplo en Competencia (Spring Boot):**
-```java
-// 1. Agregar al pom.xml
-// <dependency>
-//   <groupId>org.springframework.boot</groupId>
-//   <artifactId>spring-boot-starter-amqp</artifactId>
-// </dependency>
-
-// 2. Publicar evento
-@Service
-public class MatchEventPublisher {
-    @Autowired private RabbitTemplate rabbitTemplate;
-
-    public void publishMatchEvent(MatchEventMessage event) {
-        rabbitTemplate.convertAndSend(
-            "techcup.exchange",
-            "techcup.match.event.finished",
-            event
-        );
-    }
+**Payload que envía:**
+```json
+{
+  "playerId": "p1",
+  "teamId": "t1",
+  "matchId": "m1",
+  "tournamentId": "tn1",
+  "result": "WON",
+  "goals": 2,
+  "yellowCards": 1,
+  "redCards": 0,
+  "foulsCommitted": 3,
+  "minutesPlayed": 90,
+  "assists": 1,
+  "goalkeeper": false,
+  "occurredAt": "2026-07-15T18:00:00"
 }
 ```
 
 ---
 
-### 2. Eventos de torneo → `techcup.statistics.tournament-events`
+## 📌 Para mortalkodebat (Torneos)
 
-**Routing key:** `techcup.tournament.event.*`
-
-**Payload esperado (`TournamentEventMessage`):**
-
-```json
-{
-  "eventType": "FINALIZED",
-  "tournamentId": "uuid",
-  "timestamp": "2026-07-15T10:00:00"
-}
+**1. Dependencia en pom.xml:**
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-amqp</artifactId>
+</dependency>
 ```
 
-**Tipos de evento:**
-- `FINALIZED` → El torneo finalizó. Estadísticas genera reconocimientos automáticamente.
+**2. Config en application.properties:**
+```properties
+spring.rabbitmq.host=toucan.lmq.cloudamqp.com
+spring.rabbitmq.port=5671
+spring.rabbitmq.username=exdntvvm
+spring.rabbitmq.password=${RABBITMQ_PASS}
+spring.rabbitmq.virtual-host=exdntvvm
+spring.rabbitmq.ssl.enabled=true
+```
 
-**¿Quién publica?** → Servicio de **Torneos** (mortalkodebat)
-
-**Ejemplo en Torneos (Spring Boot):**
+**3. Publicar cuando finaliza un torneo:**
 ```java
-// Publicar cuando un torneo finaliza
+// En FinalizeTournamentService, después de guardar el torneo como FINISHED:
 rabbitTemplate.convertAndSend(
     "techcup.exchange",
     "techcup.tournament.event.finalized",
-    new TournamentEventMessage("FINALIZED", tournamentId, LocalDateTime.now().toString())
+    new TournamentFinalizedEvent(tournamentId, LocalDateTime.now())
 );
+
+// DTO necesario:
+record TournamentFinalizedEvent(String tournamentId, LocalDateTime occurredAt) {}
 ```
 
-> **Alternativa:** Torneos ya tiene configurado en local `StatisticsServiceFeignClient`
-> que llama a `POST /tournaments/{id}/recognitions`. Pueden usar Feign o RabbitMQ,
-> ambas funcionan. RabbitMQ es la opción async recomendada por el profe.
+> **Alternativa:** Ya tienen `StatisticsServiceFeignClient` que llama a
+> `POST /tournaments/{id}/recognitions`. Pueden usar Feign o RabbitMQ.
 
 ---
 
-## Resumen de cambios necesarios por servicio
-
-### 📌 Para el equipo de Competencia (astromerge)
-
-1. Agregar `spring-boot-starter-amqp` al `pom.xml`
-2. Configurar RabbitMQ en `application.yml` apuntando al mismo broker
-3. Cuando finalice un partido, publicar el `MatchEventMessage` en `techcup.exchange`
-   con routing key `techcup.match.event.finished`
-4. Los campos `playerId`, `teamId`, `matchId`, `tournamentId` y `result` son obligatorios
-
-### 📌 Para el equipo de Torneos (mortalkodebat) — via RabbitMQ (opcional)
-
-1. Agregar `spring-boot-starter-amqp` al `pom.xml`
-2. Configurar RabbitMQ en `application.properties`
-3. Al finalizar un torneo, publicar `TournamentEventMessage` con `eventType=FINALIZED`
-   en `techcup.exchange` con routing key `techcup.tournament.event.finalized`
-
-> **Ya tienen Feign Client local.** Si prefieren no usar RabbitMQ, el Feign
-> `StatisticsServiceFeignClient` funciona igual. Solo aseguren que
-> `statistics-service.base-url=http://localhost:8085` esté configurado.
-
-### 📌 Para el equipo de Notificaciones
-
-Definir si comparten el exchange `techcup.exchange` o si prefieren uno propio.
-Si usan el mismo exchange, pueden bindear sus colas a él sin problema.
-
-### 📌 En Estadísticas (ghostapi) — ya implementado ✅
+## 📌 Para ghostapi (Estadísticas) — ✅ ya implementado
 
 | Componente | Estado |
 |---|---|
-| `RabbitMQConfig` con exchange compartido | ✅ |
-| `MatchEventConsumer` escuchando `techcup.statistics.match-events` | ✅ |
-| `TournamentEventConsumer` escuchando `techcup.statistics.tournament-events` | ✅ |
-| `MatchEventMessage` y `TournamentEventMessage` DTOs | ✅ |
-| Config en `application.yml` | ✅ |
+| `RabbitMQConfig` con exchange `techcup.exchange` | ✅ |
+| `MatchEventConsumer` escucha `techcup.statistics.match-events` | ✅ |
+| `TournamentEventConsumer` escucha `techcup.statistics.tournament-events` | ✅ |
+| `MatchStatEvent` y `TournamentFinalizedEvent` DTOs | ✅ |
+| Config completa en `application.yml` | ✅ |
+| Azure Container Apps funcionando | ✅ |
+| RabbitMQ CloudAMQP conectado | ✅ |
