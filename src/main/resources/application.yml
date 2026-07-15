@@ -2,12 +2,21 @@ spring:
   application:
     name: service-statistics
 
+  rabbitmq:
+    host: ${RABBITMQ_HOST:toucan.lmq.cloudamqp.com}
+    port: ${RABBITMQ_PORT:5671}
+    username: ${RABBITMQ_USER:exdntvvm}
+    password: ${RABBITMQ_PASS:}
+    virtual-host: ${RABBITMQ_VHOST:exdntvvm}
+    ssl:
+      enabled: true
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/techcup_statistics}
+
 server:
   port: ${SERVER_PORT:8085}
-
-data:
-  mongodb:
-    uri: ${MONGODB_URI:mongodb://localhost:27017/techcup_statistics}
 
 services:
   tournaments:
@@ -30,7 +39,3 @@ rabbitmq:
   routing-key:
     match-events: techcup.match.event.*
     tournament-events: techcup.tournament.event.*
-  host: ${RABBITMQ_HOST:localhost}
-  port: ${RABBITMQ_PORT:5672}
-  username: ${RABBITMQ_USER:guest}
-  password: ${RABBITMQ_PASS:guest}
