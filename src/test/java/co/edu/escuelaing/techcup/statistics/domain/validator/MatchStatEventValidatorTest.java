@@ -3,13 +3,21 @@ package co.edu.escuelaing.techcup.statistics.domain.validator;
 import co.edu.escuelaing.techcup.statistics.domain.model.MatchResult;
 import co.edu.escuelaing.techcup.statistics.domain.model.PlayerMatchStatistic;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class MatchStatEventValidatorTest {
 
+    private static final UUID PLAYER_ID = UUID.randomUUID();
+    private static final UUID TEAM_ID = UUID.randomUUID();
+    private static final UUID MATCH_ID = UUID.randomUUID();
+    private static final UUID TOURNAMENT_ID = UUID.randomUUID();
+
     private PlayerMatchStatistic validStat() {
         return PlayerMatchStatistic.builder()
-                .playerId("p1").teamId("t1").matchId("m1").tournamentId("tn1")
+                .playerId(PLAYER_ID).teamId(TEAM_ID).matchId(MATCH_ID).tournamentId(TOURNAMENT_ID)
                 .result(MatchResult.WON).goals(2).yellowCards(1).redCards(0)
                 .foulsCommitted(3).minutesPlayed(90).assists(1).goalkeeper(false)
                 .build();
@@ -23,12 +31,6 @@ class MatchStatEventValidatorTest {
     @Test
     void validate_deberiaLanzarExcepcionCuandoPlayerIdEsNull() {
         var stat = validStat(); stat.setPlayerId(null);
-        assertThrows(IllegalArgumentException.class, () -> MatchStatEventValidator.validate(stat));
-    }
-
-    @Test
-    void validate_deberiaLanzarExcepcionCuandoPlayerIdEsVacio() {
-        var stat = validStat(); stat.setPlayerId("");
         assertThrows(IllegalArgumentException.class, () -> MatchStatEventValidator.validate(stat));
     }
 
@@ -77,7 +79,7 @@ class MatchStatEventValidatorTest {
     @Test
     void validate_deberiaPasarConCamposNulosOpcionales() {
         var stat = PlayerMatchStatistic.builder()
-                .playerId("p1").teamId("t1").matchId("m1").tournamentId("tn1")
+                .playerId(PLAYER_ID).teamId(TEAM_ID).matchId(MATCH_ID).tournamentId(TOURNAMENT_ID)
                 .result(MatchResult.DRAWN).build();
         assertDoesNotThrow(() -> MatchStatEventValidator.validate(stat));
     }

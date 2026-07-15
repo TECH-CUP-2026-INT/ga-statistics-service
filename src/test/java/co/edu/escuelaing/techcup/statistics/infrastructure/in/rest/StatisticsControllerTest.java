@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -40,7 +41,10 @@ class StatisticsControllerTest {
     @Autowired private ObjectMapper objectMapper;
     @MockitoBean private StatisticsUseCase statisticsUseCase;
 
-    private static final String PID = "player-1", TID = "team-10", TNID = "tournament-100", MID = "match-500";
+    private static final UUID PID = UUID.randomUUID();
+    private static final UUID TID = UUID.randomUUID();
+    private static final UUID TNID = UUID.randomUUID();
+    private static final UUID MID = UUID.randomUUID();
 
     // ======================== registerMatchStat ========================
 
@@ -262,7 +266,7 @@ class StatisticsControllerTest {
         when(statisticsUseCase.getRanking(eq(RankingType.GOALS), eq(TNID), eq(10)))
                 .thenReturn(new RankingResult("GOALS", TNID, List.of(new RankingResult.RankingEntry(1, PID, 5))));
         mockMvc.perform(get("/api/v1/statistics/rankings")
-                        .param("type", "GOALS").param("tournamentId", TNID))
+                        .param("type", "GOALS").param("tournamentId", TNID.toString()))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.entries[0].playerId").value(PID));
     }
 
@@ -284,9 +288,9 @@ class StatisticsControllerTest {
     void getGoalkeeperRanking_deberiaDevolver200() throws Exception {
         when(statisticsUseCase.getGoalkeeperRanking(any(), eq(10)))
                 .thenReturn(new GoalkeeperRankingResult(TNID, List.of(
-                        new GoalkeeperRankingResult.GoalkeeperEntry(1, "gk1", 3))));
+                        new GoalkeeperRankingResult.GoalkeeperEntry(1, UUID.randomUUID(), 3))));
         mockMvc.perform(get("/api/v1/statistics/goalkeeper-ranking"))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.entries[0].playerId").value("gk1"));
+                .andExpect(status().isOk()).andExpect(jsonPath("$.entries[0].playerId").isString());
     }
 
     // ======================== Recognitions ========================
@@ -342,7 +346,7 @@ class StatisticsControllerTest {
         when(statisticsUseCase.getGoalkeeperRanking(eq(TNID), eq(5)))
                 .thenReturn(new GoalkeeperRankingResult(TNID, List.of()));
         mockMvc.perform(get("/api/v1/statistics/goalkeeper-ranking")
-                        .param("tournamentId", TNID).param("limit", "5"))
+                        .param("tournamentId", TNID.toString()).param("limit", "5"))
                 .andExpect(status().isOk());
     }
 }

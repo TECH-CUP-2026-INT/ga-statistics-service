@@ -2,6 +2,7 @@ package co.edu.escuelaing.techcup.statistics.infrastructure.exception;
 
 import co.edu.escuelaing.techcup.statistics.domain.exception.DuplicateMatchStatException;
 import co.edu.escuelaing.techcup.statistics.domain.exception.RecognitionNotFoundException;
+import java.util.UUID;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void handleDuplicateMatchStat_deberiaRetornar409() {
-        var ex = new DuplicateMatchStatException("p1", "m1");
+        var ex = new DuplicateMatchStatException(UUID.randomUUID(), UUID.randomUUID());
         ResponseEntity<ErrorResponse> response = handler.handleDuplicate(ex, request);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
         assertThat(response.getBody().messages()).first().asString().contains("Ya existe");
@@ -36,7 +37,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void handleRecognitionNotFound_deberiaRetornar404() {
-        var ex = new RecognitionNotFoundException("tn1");
+        var ex = new RecognitionNotFoundException(UUID.randomUUID());
         ResponseEntity<ErrorResponse> response = handler.handleRecognitionNotFound(ex, request);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody().messages()).first().asString().contains("no se ha generado");
