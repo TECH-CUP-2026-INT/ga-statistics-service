@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: service-statistics
+
+server:
+  port: ${SERVER_PORT:8085}
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/techcup_statistics}
+
+services:
+  tournaments:
+    base-url: ${TOURNAMENTS_SERVICE_URL:http://localhost:8080}
