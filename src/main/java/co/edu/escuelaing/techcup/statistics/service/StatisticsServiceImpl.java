@@ -1,26 +1,24 @@
 package co.edu.escuelaing.techcup.statistics.service;
 
 import co.edu.escuelaing.techcup.statistics.client.TournamentClient;
+import co.edu.escuelaing.techcup.statistics.domain.CardsTotalResult;
+import co.edu.escuelaing.techcup.statistics.domain.GoalkeeperRankingResult;
 import co.edu.escuelaing.techcup.statistics.domain.MatchResult;
+import co.edu.escuelaing.techcup.statistics.domain.MatchResultResult;
+import co.edu.escuelaing.techcup.statistics.domain.MatchesPlayedResult;
+import co.edu.escuelaing.techcup.statistics.domain.PlayerAverageResult;
+import co.edu.escuelaing.techcup.statistics.domain.PlayerCardsResult;
 import co.edu.escuelaing.techcup.statistics.domain.PlayerMatchStatistic;
+import co.edu.escuelaing.techcup.statistics.domain.RankingResult;
+import co.edu.escuelaing.techcup.statistics.domain.TeamAverageResult;
+import co.edu.escuelaing.techcup.statistics.domain.TeamGoalsResult;
+import co.edu.escuelaing.techcup.statistics.domain.TeamMatchRecordResult;
+import co.edu.escuelaing.techcup.statistics.domain.TeamStatisticsResult;
+import co.edu.escuelaing.techcup.statistics.domain.TotalResult;
+import co.edu.escuelaing.techcup.statistics.domain.TournamentMatchAveragesResult;
 import co.edu.escuelaing.techcup.statistics.domain.TournamentRecognitionRecord;
-import co.edu.escuelaing.techcup.statistics.dto.CardsTotalResponse;
-import co.edu.escuelaing.techcup.statistics.dto.GoalkeeperRankingResponse;
-import co.edu.escuelaing.techcup.statistics.dto.MatchResultResponse;
-import co.edu.escuelaing.techcup.statistics.dto.MatchesPlayedResponse;
-import co.edu.escuelaing.techcup.statistics.dto.PlayerAverageResponse;
-import co.edu.escuelaing.techcup.statistics.dto.PlayerCardsResponse;
-import co.edu.escuelaing.techcup.statistics.dto.RankingEntryResponse;
-import co.edu.escuelaing.techcup.statistics.dto.RankingResponse;
+import co.edu.escuelaing.techcup.statistics.domain.TournamentStandingsResult;
 import co.edu.escuelaing.techcup.statistics.dto.RankingType;
-import co.edu.escuelaing.techcup.statistics.dto.TeamAverageResponse;
-import co.edu.escuelaing.techcup.statistics.dto.TeamGoalsResponse;
-import co.edu.escuelaing.techcup.statistics.dto.TeamMatchRecordResponse;
-import co.edu.escuelaing.techcup.statistics.dto.TeamStatisticsResponse;
-import co.edu.escuelaing.techcup.statistics.dto.TotalResponse;
-import co.edu.escuelaing.techcup.statistics.dto.TournamentMatchAveragesResponse;
-import co.edu.escuelaing.techcup.statistics.dto.TournamentRecognitionResponse;
-import co.edu.escuelaing.techcup.statistics.dto.TournamentStandingsResponse;
 import co.edu.escuelaing.techcup.statistics.entity.PlayerMatchStat;
 import co.edu.escuelaing.techcup.statistics.entity.TournamentRecognition;
 import co.edu.escuelaing.techcup.statistics.exception.DuplicateMatchStatException;
@@ -43,13 +41,15 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * IMPORTANTE (separacion de capas): esta clase (el "core" de negocio) SOLO
- * trabaja con objetos de dominio (PlayerMatchStatistic,
- * TournamentRecognitionRecord). Nunca importa ni manipula directamente:
+ * trabaja con objetos de dominio, tanto de ENTRADA (PlayerMatchStatistic)
+ * como de SALIDA (PlayerAverageResult, TeamStatisticsResult, etc). Nunca
+ * importa ni construye:
  * - DTOs de entrada de la capa web (MatchStatEventRequest)
+ * - DTOs de respuesta de la capa web (PlayerAverageResponse, etc)
  * - Documentos de persistencia (PlayerMatchStat, TournamentRecognition)
- * Esa conversion la hacen los mappers de MapStruct (PlayerMatchStatMapper,
- * TournamentRecognitionMapper), inmediatamente despues de leer del
- * repositorio o justo antes de guardar.
+ * Esas conversiones las hacen los mappers de MapStruct (PlayerMatchStatMapper,
+ * TournamentRecognitionMapper, StatisticsResponseMapper) desde el
+ * repositorio o desde el controller, nunca desde aqui.
  */
 @Service
 @RequiredArgsConstructor
@@ -75,7 +75,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public PlayerAverageResponse getAverageWinRate(String playerId, String tournamentId) {
+    public PlayerAverageResult getAverageWinRate(String playerId, String tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         long played = stats.size();
         double winRatePercentage = 0.0;
@@ -83,39 +83,39 @@ public class StatisticsServiceImpl implements StatisticsService {
             long won = stats.stream().filter(s -> s.getResult() == MatchResult.WON).count();
             winRatePercentage = round((won * 100.0) / played);
         }
-        return new PlayerAverageResponse(playerId, tournamentId, "averageWinRatePercentage",
+        return new PlayerAverageResult(playerId, tournamentId, "averageWinRatePercentage",
                 winRatePercentage, played);
     }
 
     @Override
-    public PlayerAverageResponse getAverageGoals(String playerId, String tournamentId) {
+    public PlayerAverageResult getAverageGoals(String playerId, String tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         double average = averageOf(stats, PlayerMatchStatistic::getGoals);
-        return new PlayerAverageResponse(playerId, tournamentId, "averageGoals", average, stats.size());
+        return new PlayerAverageResult(playerId, tournamentId, "averageGoals", average, stats.size());
     }
 
     @Override
-    public PlayerAverageResponse getAverageFouls(String playerId, String tournamentId) {
+    public PlayerAverageResult getAverageFouls(String playerId, String tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         double average = averageOf(stats, PlayerMatchStatistic::getFoulsCommitted);
-        return new PlayerAverageResponse(playerId, tournamentId, "averageFouls", average, stats.size());
+        return new PlayerAverageResult(playerId, tournamentId, "averageFouls", average, stats.size());
     }
 
     @Override
-    public PlayerAverageResponse getAverageMinutesPlayed(String playerId, String tournamentId) {
+    public PlayerAverageResult getAverageMinutesPlayed(String playerId, String tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         double average = averageOf(stats, PlayerMatchStatistic::getMinutesPlayed);
-        return new PlayerAverageResponse(playerId, tournamentId, "averageMinutesPlayed", average, stats.size());
+        return new PlayerAverageResult(playerId, tournamentId, "averageMinutesPlayed", average, stats.size());
     }
 
     @Override
-    public MatchesPlayedResponse getMatchesPlayed(String playerId, String tournamentId) {
+    public MatchesPlayedResult getMatchesPlayed(String playerId, String tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
-        return new MatchesPlayedResponse(playerId, tournamentId, stats.size());
+        return new MatchesPlayedResult(playerId, tournamentId, stats.size());
     }
 
     @Override
-    public RankingResponse getRanking(RankingType type, String tournamentId, int limit) {
+    public RankingResult getRanking(RankingType type, String tournamentId, int limit) {
         List<PlayerMatchStatistic> stats = fetchTournamentStats(tournamentId);
 
         Map<String, Long> totalsByPlayer = stats.stream()
@@ -128,47 +128,47 @@ public class StatisticsServiceImpl implements StatisticsService {
                 ? Map.Entry.comparingByValue()
                 : Map.Entry.<String, Long>comparingByValue().reversed();
 
-        List<RankingEntryResponse> entries = new java.util.ArrayList<>();
+        List<RankingResult.RankingEntry> entries = new java.util.ArrayList<>();
         int position = 1;
         for (Map.Entry<String, Long> entry : totalsByPlayer.entrySet().stream()
                 .sorted(comparator)
                 .limit(Math.max(limit, 1))
                 .toList()) {
-            entries.add(new RankingEntryResponse(position++, entry.getKey(), entry.getValue()));
+            entries.add(new RankingResult.RankingEntry(position++, entry.getKey(), entry.getValue()));
         }
 
-        return new RankingResponse(type.name(), tournamentId, entries);
+        return new RankingResult(type.name(), tournamentId, entries);
     }
 
     @Override
-    public TournamentStandingsResponse getTournamentStandings(String tournamentId) {
+    public TournamentStandingsResult getTournamentStandings(String tournamentId) {
         List<String> teamIds = fetchTournamentStats(tournamentId).stream()
                 .map(PlayerMatchStatistic::getTeamId)
                 .distinct()
                 .toList();
 
-        List<TeamStatisticsResponse> standings = teamIds.stream()
+        List<TeamStatisticsResult> standings = teamIds.stream()
                 .map(teamId -> buildTeamStatistics(teamId, tournamentId))
                 .sorted(
-                        Comparator.comparingLong(TeamStatisticsResponse::points).reversed()
+                        Comparator.comparingLong(TeamStatisticsResult::points).reversed()
                                 .thenComparing(Comparator.comparingLong(
-                                        TeamStatisticsResponse::goalDifference).reversed())
+                                        TeamStatisticsResult::goalDifference).reversed())
                                 .thenComparing(Comparator.comparingLong(
-                                        TeamStatisticsResponse::goalsFor).reversed())
+                                        TeamStatisticsResult::goalsFor).reversed())
                 )
                 .toList();
 
-        return new TournamentStandingsResponse(tournamentId, standings);
+        return new TournamentStandingsResult(tournamentId, standings);
     }
 
     @Override
-    public TeamStatisticsResponse getTeamStatisticsInActiveTournament(String teamId) {
+    public TeamStatisticsResult getTeamStatisticsInActiveTournament(String teamId) {
         String activeTournamentId = tournamentClient.getActiveTournamentId();
         return buildTeamStatistics(teamId, activeTournamentId);
     }
 
     @Override
-    public TournamentRecognitionResponse generateTournamentRecognitions(String tournamentId) {
+    public TournamentRecognitionRecord generateTournamentRecognitions(String tournamentId) {
         List<PlayerMatchStatistic> tournamentStats = fetchTournamentStats(tournamentId);
 
         // Maximo goleador: TODOS los jugadores empatados en el primer lugar.
@@ -216,19 +216,18 @@ public class StatisticsServiceImpl implements StatisticsService {
 
         recognitionRepository.save(documentToSave);
 
-        return toRecognitionResponse(domain);
+        return domain;
     }
 
     @Override
-    public TournamentRecognitionResponse getTournamentRecognitions(String tournamentId) {
-        TournamentRecognitionRecord domain = recognitionRepository.findByTournamentId(tournamentId)
+    public TournamentRecognitionRecord getTournamentRecognitions(String tournamentId) {
+        return recognitionRepository.findByTournamentId(tournamentId)
                 .map(recognitionMapper::toDomain)
                 .orElseThrow(() -> new RecognitionNotFoundException(tournamentId));
-        return toRecognitionResponse(domain);
     }
 
     @Override
-    public GoalkeeperRankingResponse getGoalkeeperRanking(String tournamentId, int limit) {
+    public GoalkeeperRankingResult getGoalkeeperRanking(String tournamentId, int limit) {
         List<PlayerMatchStatistic> stats = fetchTournamentStats(tournamentId);
 
         Map<String, List<PlayerMatchStatistic>> byMatch = stats.stream()
@@ -246,53 +245,49 @@ public class StatisticsServiceImpl implements StatisticsService {
             goalsConcededByGoalkeeper.merge(stat.getPlayerId(), opponentGoals, Long::sum);
         }
 
-        List<GoalkeeperRankingResponse.Entry> entries = new java.util.ArrayList<>();
+        List<GoalkeeperRankingResult.GoalkeeperEntry> entries = new java.util.ArrayList<>();
         int position = 1;
         for (Map.Entry<String, Long> entry : goalsConcededByGoalkeeper.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue())
                 .limit(Math.max(limit, 1))
                 .toList()) {
-            entries.add(new GoalkeeperRankingResponse.Entry(position++, entry.getKey(), entry.getValue()));
+            entries.add(new GoalkeeperRankingResult.GoalkeeperEntry(position++, entry.getKey(), entry.getValue()));
         }
 
-        return new GoalkeeperRankingResponse(tournamentId, entries);
+        return new GoalkeeperRankingResult(tournamentId, entries);
     }
 
     @Override
-    public TotalResponse getPlayerTotalAssists(String playerId, String tournamentId) {
+    public TotalResult getPlayerTotalAssists(String playerId, String tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         long total = stats.stream().mapToInt(PlayerMatchStatistic::getAssists).sum();
-        return new TotalResponse(playerId, tournamentId, "totalAssists", total, stats.size());
+        return new TotalResult(playerId, tournamentId, "totalAssists", total, stats.size());
     }
 
-    // ---------- Jugador: totales y tarjetas ----------
-
     @Override
-    public TotalResponse getPlayerTotalGoals(String playerId, String tournamentId) {
+    public TotalResult getPlayerTotalGoals(String playerId, String tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         long total = stats.stream().mapToInt(PlayerMatchStatistic::getGoals).sum();
-        return new TotalResponse(playerId, tournamentId, "totalGoals", total, stats.size());
+        return new TotalResult(playerId, tournamentId, "totalGoals", total, stats.size());
     }
 
     @Override
-    public TotalResponse getPlayerTotalFouls(String playerId, String tournamentId) {
+    public TotalResult getPlayerTotalFouls(String playerId, String tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         long total = stats.stream().mapToInt(PlayerMatchStatistic::getFoulsCommitted).sum();
-        return new TotalResponse(playerId, tournamentId, "totalFouls", total, stats.size());
+        return new TotalResult(playerId, tournamentId, "totalFouls", total, stats.size());
     }
 
     @Override
-    public PlayerCardsResponse getPlayerCards(String playerId, String tournamentId) {
+    public PlayerCardsResult getPlayerCards(String playerId, String tournamentId) {
         List<PlayerMatchStatistic> stats = fetchPlayerStats(playerId, tournamentId);
         long yellow = stats.stream().mapToInt(PlayerMatchStatistic::getYellowCards).sum();
         long red = stats.stream().mapToInt(PlayerMatchStatistic::getRedCards).sum();
-        return new PlayerCardsResponse(playerId, tournamentId, yellow, red);
+        return new PlayerCardsResult(playerId, tournamentId, yellow, red);
     }
 
-    // ---------- Equipo ----------
-
     @Override
-    public TeamMatchRecordResponse getTeamMatchRecord(String teamId, String tournamentId) {
+    public TeamMatchRecordResult getTeamMatchRecord(String teamId, String tournamentId) {
         Map<String, MatchResult> resultByMatch = resultByMatchForTeam(teamId, tournamentId);
         long played = resultByMatch.size();
         long wins = resultByMatch.values().stream().filter(r -> r == MatchResult.WON).count();
@@ -303,52 +298,50 @@ public class StatisticsServiceImpl implements StatisticsService {
         double drawRate = played == 0 ? 0.0 : round((draws * 100.0) / played);
         double lossRate = played == 0 ? 0.0 : round((losses * 100.0) / played);
 
-        return new TeamMatchRecordResponse(teamId, tournamentId, played, wins, draws, losses,
+        return new TeamMatchRecordResult(teamId, tournamentId, played, wins, draws, losses,
                 winRate, drawRate, lossRate);
     }
 
     @Override
-    public TeamAverageResponse getTeamAverageGoals(String teamId, String tournamentId) {
+    public TeamAverageResult getTeamAverageGoals(String teamId, String tournamentId) {
         List<PlayerMatchStatistic> teamStats = fetchTeamStats(teamId, tournamentId);
         long matchesPlayed = teamStats.stream().map(PlayerMatchStatistic::getMatchId).distinct().count();
         long totalGoals = teamStats.stream().mapToInt(PlayerMatchStatistic::getGoals).sum();
         double average = matchesPlayed == 0 ? 0.0 : round((double) totalGoals / matchesPlayed);
-        return new TeamAverageResponse(teamId, tournamentId, "averageGoalsPerMatch", average, matchesPlayed);
+        return new TeamAverageResult(teamId, tournamentId, "averageGoalsPerMatch", average, matchesPlayed);
     }
 
     @Override
-    public TeamAverageResponse getTeamAverageFouls(String teamId, String tournamentId) {
+    public TeamAverageResult getTeamAverageFouls(String teamId, String tournamentId) {
         List<PlayerMatchStatistic> teamStats = fetchTeamStats(teamId, tournamentId);
         long matchesPlayed = teamStats.stream().map(PlayerMatchStatistic::getMatchId).distinct().count();
         long totalFouls = teamStats.stream().mapToInt(PlayerMatchStatistic::getFoulsCommitted).sum();
         double average = matchesPlayed == 0 ? 0.0 : round((double) totalFouls / matchesPlayed);
-        return new TeamAverageResponse(teamId, tournamentId, "averageFoulsPerMatch", average, matchesPlayed);
+        return new TeamAverageResult(teamId, tournamentId, "averageFoulsPerMatch", average, matchesPlayed);
     }
 
     @Override
-    public TotalResponse getTeamTotalFouls(String teamId, String tournamentId) {
+    public TotalResult getTeamTotalFouls(String teamId, String tournamentId) {
         List<PlayerMatchStatistic> teamStats = fetchTeamStats(teamId, tournamentId);
         long matchesPlayed = teamStats.stream().map(PlayerMatchStatistic::getMatchId).distinct().count();
         long totalFouls = teamStats.stream().mapToInt(PlayerMatchStatistic::getFoulsCommitted).sum();
-        return new TotalResponse(teamId, tournamentId, "totalFouls", totalFouls, matchesPlayed);
+        return new TotalResult(teamId, tournamentId, "totalFouls", totalFouls, matchesPlayed);
     }
 
     @Override
-    public TeamGoalsResponse getTeamGoals(String teamId, String tournamentId) {
-        TeamStatisticsResponse stats = buildTeamStatistics(teamId, tournamentId);
-        return new TeamGoalsResponse(teamId, tournamentId, stats.goalsFor(), stats.goalsAgainst(),
+    public TeamGoalsResult getTeamGoals(String teamId, String tournamentId) {
+        TeamStatisticsResult stats = buildTeamStatistics(teamId, tournamentId);
+        return new TeamGoalsResult(teamId, tournamentId, stats.goalsFor(), stats.goalsAgainst(),
                 stats.goalDifference());
     }
 
-    // ---------- Torneo (agregados por partido) ----------
-
     @Override
-    public TournamentMatchAveragesResponse getTournamentMatchAverages(String tournamentId) {
+    public TournamentMatchAveragesResult getTournamentMatchAverages(String tournamentId) {
         List<PlayerMatchStatistic> stats = fetchTournamentStats(tournamentId);
         long matchesPlayed = stats.stream().map(PlayerMatchStatistic::getMatchId).distinct().count();
 
         if (matchesPlayed == 0) {
-            return new TournamentMatchAveragesResponse(tournamentId, 0, 0.0, 0.0, 0.0);
+            return new TournamentMatchAveragesResult(tournamentId, 0, 0.0, 0.0, 0.0);
         }
 
         long totalGoals = stats.stream().mapToInt(PlayerMatchStatistic::getGoals).sum();
@@ -357,7 +350,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                 .mapToInt(s -> s.getYellowCards() + s.getRedCards())
                 .sum();
 
-        return new TournamentMatchAveragesResponse(
+        return new TournamentMatchAveragesResult(
                 tournamentId,
                 matchesPlayed,
                 round((double) totalGoals / matchesPlayed),
@@ -366,25 +359,23 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public CardsTotalResponse getTournamentCardsTotal(String tournamentId) {
+    public CardsTotalResult getTournamentCardsTotal(String tournamentId) {
         List<PlayerMatchStatistic> stats = fetchTournamentStats(tournamentId);
         long yellow = stats.stream().mapToInt(PlayerMatchStatistic::getYellowCards).sum();
         long red = stats.stream().mapToInt(PlayerMatchStatistic::getRedCards).sum();
-        return new CardsTotalResponse("tournament", tournamentId, yellow, red);
+        return new CardsTotalResult("tournament", tournamentId, yellow, red);
     }
 
-    // ---------- Partido ----------
-
     @Override
-    public CardsTotalResponse getMatchCardsTotal(String matchId) {
+    public CardsTotalResult getMatchCardsTotal(String matchId) {
         List<PlayerMatchStatistic> stats = fetchMatchStats(matchId);
         long yellow = stats.stream().mapToInt(PlayerMatchStatistic::getYellowCards).sum();
         long red = stats.stream().mapToInt(PlayerMatchStatistic::getRedCards).sum();
-        return new CardsTotalResponse("match", matchId, yellow, red);
+        return new CardsTotalResult("match", matchId, yellow, red);
     }
 
     @Override
-    public MatchResultResponse getMatchResult(String matchId) {
+    public MatchResultResult getMatchResult(String matchId) {
         List<PlayerMatchStatistic> stats = fetchMatchStats(matchId);
 
         String tournamentId = stats.stream()
@@ -392,16 +383,16 @@ public class StatisticsServiceImpl implements StatisticsService {
                 .findFirst()
                 .orElse(null);
 
-        List<MatchResultResponse.TeamResult> teamResults = stats.stream()
+        List<MatchResultResult.TeamResultEntry> teamResults = stats.stream()
                 .collect(Collectors.toMap(
                         PlayerMatchStatistic::getTeamId,
                         PlayerMatchStatistic::getResult,
                         (a, b) -> a))
                 .entrySet().stream()
-                .map(e -> new MatchResultResponse.TeamResult(e.getKey(), e.getValue()))
+                .map(e -> new MatchResultResult.TeamResultEntry(e.getKey(), e.getValue()))
                 .toList();
 
-        return new MatchResultResponse(matchId, tournamentId, teamResults);
+        return new MatchResultResult(matchId, tournamentId, teamResults);
     }
 
     // ---------- Helpers privados: acceso a datos (mapean Documento -> Dominio) ----------
@@ -458,15 +449,9 @@ public class StatisticsServiceImpl implements StatisticsService {
                         (a, b) -> a));
     }
 
-    /**
-     * Calcula todas las estadisticas de un equipo (partidos, puntos, goles)
-     * para un torneo puntual.
-     */
-    private TeamStatisticsResponse buildTeamStatistics(String teamId, String tournamentId) {
+    private TeamStatisticsResult buildTeamStatistics(String teamId, String tournamentId) {
         List<PlayerMatchStatistic> teamStats = fetchTeamStats(teamId, tournamentId);
 
-        // Cada partido que el equipo jugo aparece repetido (una fila por
-        // jugador), por eso agrupamos por matchId para no contar de mas.
         Map<String, MatchResult> resultByMatch = resultByMatchForTeam(teamId, tournamentId);
 
         long played = resultByMatch.size();
@@ -476,8 +461,6 @@ public class StatisticsServiceImpl implements StatisticsService {
 
         long goalsFor = teamStats.stream().mapToInt(PlayerMatchStatistic::getGoals).sum();
 
-        // Goles en contra: para cada partido de este equipo, se suman los
-        // goles de los jugadores del equipo RIVAL en ese mismo partido.
         long goalsAgainst = resultByMatch.keySet().stream()
                 .mapToLong(matchId -> fetchMatchStats(matchId).stream()
                         .filter(s -> !s.getTeamId().equals(teamId))
@@ -487,29 +470,9 @@ public class StatisticsServiceImpl implements StatisticsService {
 
         long points = (wins * 3) + draws;
 
-        return new TeamStatisticsResponse(
+        return new TeamStatisticsResult(
                 teamId, tournamentId, played, wins, draws, losses,
                 goalsFor, goalsAgainst, goalsFor - goalsAgainst, points);
-    }
-
-    private TournamentRecognitionResponse toRecognitionResponse(TournamentRecognitionRecord recognition) {
-        List<TournamentRecognitionResponse.PlayerGoals> topScorers = recognition.getTopScorerPlayerIds().stream()
-                .map(id -> new TournamentRecognitionResponse.PlayerGoals(id, recognition.getTopScorersGoals()))
-                .toList();
-
-        List<TournamentRecognitionResponse.TeamGoalsAgainst> bestDefenses = recognition.getBestDefenseTeamIds()
-                .stream()
-                .map(id -> new TournamentRecognitionResponse.TeamGoalsAgainst(
-                        id, recognition.getBestDefenseGoalsAgainst()))
-                .toList();
-
-        return new TournamentRecognitionResponse(
-                recognition.getTournamentId(),
-                topScorers,
-                recognition.getTopScorersGoals(),
-                bestDefenses,
-                recognition.getBestDefenseGoalsAgainst(),
-                recognition.getGeneratedAt());
     }
 
     private double round(double value) {
