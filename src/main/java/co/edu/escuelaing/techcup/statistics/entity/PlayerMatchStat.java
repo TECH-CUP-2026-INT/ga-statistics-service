@@ -1,5 +1,7 @@
 package co.edu.escuelaing.techcup.statistics.entity;
 
+import co.edu.escuelaing.techcup.statistics.domain.MatchResult;
+
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
