@@ -17,11 +17,15 @@ import co.edu.escuelaing.techcup.statistics.dto.TotalResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentMatchAveragesResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentRecognitionResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentStandingsResponse;
-import co.edu.escuelaing.techcup.statistics.entity.MatchResult;
+import co.edu.escuelaing.techcup.statistics.domain.MatchResult;
 import co.edu.escuelaing.techcup.statistics.entity.PlayerMatchStat;
 import co.edu.escuelaing.techcup.statistics.entity.TournamentRecognition;
 import co.edu.escuelaing.techcup.statistics.exception.DuplicateMatchStatException;
 import co.edu.escuelaing.techcup.statistics.exception.RecognitionNotFoundException;
+import co.edu.escuelaing.techcup.statistics.mapper.PlayerMatchStatMapper;
+import co.edu.escuelaing.techcup.statistics.mapper.PlayerMatchStatMapperImpl;
+import co.edu.escuelaing.techcup.statistics.mapper.TournamentRecognitionMapper;
+import co.edu.escuelaing.techcup.statistics.mapper.TournamentRecognitionMapperImpl;
 import co.edu.escuelaing.techcup.statistics.repository.PlayerMatchStatRepository;
 import co.edu.escuelaing.techcup.statistics.repository.TournamentRecognitionRepository;
 
@@ -55,6 +59,8 @@ class StatisticsServiceImplTest {
     private TournamentRecognitionRepository recognitionRepository;
 
     private StatisticsService statisticsService;
+    private final PlayerMatchStatMapper playerMatchStatMapper = new PlayerMatchStatMapperImpl();
+    private final TournamentRecognitionMapper recognitionMapper = new TournamentRecognitionMapperImpl();
 
     private static final String PLAYER_ID = "player-1";
     private static final String TEAM_ID = "team-10";
@@ -62,7 +68,8 @@ class StatisticsServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        statisticsService = new StatisticsServiceImpl(repository, recognitionRepository, tournamentClient);
+        statisticsService = new StatisticsServiceImpl(
+                repository, recognitionRepository, tournamentClient, playerMatchStatMapper, recognitionMapper);
     }
 
     private PlayerMatchStat stat(String playerId, String teamId, String matchId, MatchResult result,
@@ -101,7 +108,7 @@ class StatisticsServiceImplTest {
 
         when(repository.existsByPlayerIdAndMatchId(PLAYER_ID, "match-500")).thenReturn(false);
 
-        statisticsService.registerMatchStat(request);
+        statisticsService.registerMatchStat(playerMatchStatMapper.toDomain(request));
 
         ArgumentCaptor<PlayerMatchStat> captor = ArgumentCaptor.forClass(PlayerMatchStat.class);
         verify(repository).save(captor.capture());
@@ -123,7 +130,7 @@ class StatisticsServiceImplTest {
 
         when(repository.existsByPlayerIdAndMatchId(PLAYER_ID, "match-501")).thenReturn(false);
 
-        statisticsService.registerMatchStat(request);
+        statisticsService.registerMatchStat(playerMatchStatMapper.toDomain(request));
 
         ArgumentCaptor<PlayerMatchStat> captor = ArgumentCaptor.forClass(PlayerMatchStat.class);
         verify(repository).save(captor.capture());
@@ -144,7 +151,7 @@ class StatisticsServiceImplTest {
         when(repository.existsByPlayerIdAndMatchId(PLAYER_ID, "match-500")).thenReturn(true);
 
         assertThrows(DuplicateMatchStatException.class,
-                () -> statisticsService.registerMatchStat(request));
+                () -> statisticsService.registerMatchStat(playerMatchStatMapper.toDomain(request)));
 
         verify(repository, never()).save(any());
     }

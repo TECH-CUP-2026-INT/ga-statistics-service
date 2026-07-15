@@ -3,7 +3,6 @@ package co.edu.escuelaing.techcup.statistics.service;
 import co.edu.escuelaing.techcup.statistics.dto.CardsTotalResponse;
 import co.edu.escuelaing.techcup.statistics.dto.GoalkeeperRankingResponse;
 import co.edu.escuelaing.techcup.statistics.dto.MatchResultResponse;
-import co.edu.escuelaing.techcup.statistics.dto.MatchStatEventRequest;
 import co.edu.escuelaing.techcup.statistics.dto.MatchesPlayedResponse;
 import co.edu.escuelaing.techcup.statistics.dto.PlayerAverageResponse;
 import co.edu.escuelaing.techcup.statistics.dto.PlayerCardsResponse;
@@ -17,14 +16,16 @@ import co.edu.escuelaing.techcup.statistics.dto.TotalResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentMatchAveragesResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentRecognitionResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentStandingsResponse;
+import co.edu.escuelaing.techcup.statistics.domain.PlayerMatchStatistic;
 
 public interface StatisticsService {
 
     /**
      * Registra el resumen de un jugador en un partido finalizado.
-     * Lo llama el servicio de Competencia.
+     * Recibe un objeto de DOMINIO, no el DTO de entrada de la web -- la
+     * conversion Request -&gt; dominio la hace el controlador con el mapper.
      */
-    void registerMatchStat(MatchStatEventRequest request);
+    void registerMatchStat(PlayerMatchStatistic statistic);
 
     PlayerAverageResponse getAverageWinRate(String playerId, String tournamentId);
 

@@ -18,10 +18,11 @@ import co.edu.escuelaing.techcup.statistics.dto.TotalResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentMatchAveragesResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentRecognitionResponse;
 import co.edu.escuelaing.techcup.statistics.dto.TournamentStandingsResponse;
-import co.edu.escuelaing.techcup.statistics.entity.MatchResult;
+import co.edu.escuelaing.techcup.statistics.domain.MatchResult;
 import co.edu.escuelaing.techcup.statistics.exception.DuplicateMatchStatException;
 import co.edu.escuelaing.techcup.statistics.exception.ExternalServiceException;
 import co.edu.escuelaing.techcup.statistics.exception.RecognitionNotFoundException;
+import co.edu.escuelaing.techcup.statistics.mapper.PlayerMatchStatMapperImpl;
 import co.edu.escuelaing.techcup.statistics.service.StatisticsService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -45,6 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(StatisticsController.class)
+@Import(PlayerMatchStatMapperImpl.class)
 class StatisticsControllerTest {
 
     @Autowired
