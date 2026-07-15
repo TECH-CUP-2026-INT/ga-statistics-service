@@ -57,7 +57,7 @@ docker run -d --name techcup-mongo -p 27017:27017 mongo:7
 |----------------|--------------------------------------------------------|--------------------------------------|
 | `MONGODB_URI`  | `mongodb://localhost:27017/techcup_statistics`        | URI de conexión a MongoDB            |
 | `SERVER_PORT`  | `8085`                                                 | Puerto en el que corre la app        |
-| `TOURNAMENTS_SERVICE_URL` | `http://localhost:8081`                    | Base URL del servicio de Torneos     |
+| `TOURNAMENTS_SERVICE_URL` | `http://localhost:8080`                    | Base URL del servicio de Torneos     |
 
 ### 3. Correrlo
 
@@ -90,10 +90,10 @@ Se llama una vez finaliza un partido, con el resumen de **un jugador** en ese pa
 
 ```json
 {
-  "playerId": 1,
-  "teamId": 10,
-  "matchId": 100,
-  "tournamentId": 1,
+  "playerId": "abc123",
+  "teamId": "team-xyz",
+  "matchId": "match-001",
+  "tournamentId": "tournament-001",
   "result": "WON",
   "goals": 2,
   "assists": 1,
@@ -142,15 +142,15 @@ los torneos), salvo que se indique lo contrario.
 
 Ejemplo (`average-goals`):
 ```json
-{ "playerId": 1, "tournamentId": null, "metric": "averageGoals", "value": 1.67, "matchesConsidered": 3 }
+{ "playerId": "abc123", "tournamentId": null, "metric": "averageGoals", "value": 1.67, "matchesConsidered": 3 }
 ```
 Ejemplo (`total-goals`, `total-fouls`, `assists` — misma forma):
 ```json
-{ "ownerId": 1, "tournamentId": null, "metric": "totalGoals", "total": 5, "matchesConsidered": 3 }
+{ "ownerId": "abc123", "tournamentId": null, "metric": "totalGoals", "total": 5, "matchesConsidered": 3 }
 ```
 Ejemplo (`cards`):
 ```json
-{ "playerId": 1, "tournamentId": null, "yellowCards": 2, "redCards": 0 }
+{ "playerId": "abc123", "tournamentId": null, "yellowCards": 2, "redCards": 0 }
 ```
 
 ### Equipo
@@ -171,14 +171,14 @@ devuelve `502 Bad Gateway`.
 Ejemplo (`/teams/{id}/statistics` o `/goals`):
 ```json
 {
-  "teamId": 10, "tournamentId": 1, "matchesPlayed": 2, "wins": 1, "draws": 0, "losses": 1,
+  "teamId": "team-10", "tournamentId": "tournament-001", "matchesPlayed": 2, "wins": 1, "draws": 0, "losses": 1,
   "goalsFor": 2, "goalsAgainst": 1, "goalDifference": 1, "points": 3
 }
 ```
 Ejemplo (`match-record`):
 ```json
 {
-  "teamId": 10, "tournamentId": 1, "matchesPlayed": 2, "wins": 1, "draws": 0, "losses": 1,
+  "teamId": "team-10", "tournamentId": "tournament-001", "matchesPlayed": 2, "wins": 1, "draws": 0, "losses": 1,
   "winRatePercentage": 50.0, "drawRatePercentage": 0.0, "lossRatePercentage": 50.0
 }
 ```
@@ -209,7 +209,7 @@ Ejemplo (`match-record`):
 - `MINUTES`: más minutos acumulados primero
 
 ```json
-{ "type": "GOALS", "tournamentId": null, "entries": [{ "position": 1, "playerId": 1, "value": 8 }] }
+{ "type": "GOALS", "tournamentId": null, "entries": [{ "position": 1, "playerId": "abc123", "value": 8 }] }
 ```
 
 #### `GET /goalkeeper-ranking`
@@ -219,7 +219,7 @@ se marcó con `"goalkeeper": true` en el evento; el valor es la suma de goles re
 por su equipo en esos partidos.
 
 ```json
-{ "tournamentId": 1, "entries": [{ "position": 1, "playerId": 8, "goalsConceded": 0 }] }
+{ "tournamentId": "tournament-001", "entries": [{ "position": 1, "playerId": "gk-8", "goalsConceded": 0 }] }
 ```
 
 #### `GET /tournaments/{tournamentId}/match-averages`
@@ -228,7 +228,7 @@ Promedios calculados sobre **todos los partidos** del torneo (no por jugador ni 
 
 ```json
 {
-  "tournamentId": 1, "matchesConsidered": 12,
+  "tournamentId": "tournament-001", "matchesConsidered": 12,
   "averageGoalsPerMatch": 2.8, "averageFoulsPerMatch": 9.1, "averageCardsPerMatch": 3.2
 }
 ```
@@ -250,10 +250,10 @@ para que el servicio de Torneos lo llame automáticamente cuando el torneo final
 
 ```json
 {
-  "tournamentId": 2,
-  "topScorers": [{ "playerId": 5, "goals": 2 }, { "playerId": 6, "goals": 2 }],
+  "tournamentId": "tournament-002",
+  "topScorers": [{ "playerId": "p5", "goals": 2 }, { "playerId": "p6", "goals": 2 }],
   "topScorersGoals": 2,
-  "bestDefenseTeams": [{ "teamId": 50, "goalsAgainst": 0 }],
+  "bestDefenseTeams": [{ "teamId": "team-50", "goalsAgainst": 0 }],
   "bestDefenseGoalsAgainst": 0,
   "generatedAt": "2026-07-14T11:19:16.149"
 }
@@ -268,13 +268,13 @@ para que el servicio de Torneos lo llame automáticamente cuando el torneo final
 
 ```json
 // /matches/{id}/cards
-{ "scope": "match", "id": 200, "yellowCards": 1, "redCards": 0 }
+{ "scope": "match", "id": "match-200", "yellowCards": 1, "redCards": 0 }
 ```
 ```json
 // /matches/{id}/result
 {
-  "matchId": 200, "tournamentId": 2,
-  "teamResults": [{ "teamId": 50, "result": "WON" }, { "teamId": 51, "result": "LOST" }]
+  "matchId": "match-200", "tournamentId": "tournament-002",
+  "teamResults": [{ "teamId": "team-50", "result": "WON" }, { "teamId": "team-51", "result": "LOST" }]
 }
 ```
 
