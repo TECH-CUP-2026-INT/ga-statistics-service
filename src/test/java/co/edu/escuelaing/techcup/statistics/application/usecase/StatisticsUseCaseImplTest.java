@@ -100,7 +100,7 @@ class StatisticsUseCaseImplTest {
     }
 
     @Test
-    void getTeamStatisticsInActiveTournament_deberiaResolverElTorneoActivo() {
+    void getTeamStatistics_deberiaResolverElTorneoActivo() {
         when(tournamentClient.getActiveTournamentId()).thenReturn(TOURNAMENT_ID);
         when(repository.findByTeamIdAndTournamentId(TEAM_ID, TOURNAMENT_ID)).thenReturn(List.of(
                 stat("p1", TEAM_ID, "m1", MatchResult.WON, 2, 0, 90),
@@ -109,8 +109,20 @@ class StatisticsUseCaseImplTest {
                 stat("p1", TEAM_ID, "m1", MatchResult.WON, 2, 0, 90),
                 stat("p2", TEAM_ID, "m1", MatchResult.WON, 2, 0, 90),
                 stat("p9", "team99", "m1", MatchResult.LOST, 1, 0, 90)));
-        var response = statisticsService.getTeamStatisticsInActiveTournament(TEAM_ID);
+        var response = statisticsService.getTeamStatistics(TEAM_ID, null);
         assertThat(response.points()).isEqualTo(3L);
+    }
+
+    @Test
+    void getTeamStatistics_conTournamentIdDirecto_noDebeLlamarTorneos() {
+        when(repository.findByTeamIdAndTournamentId(TEAM_ID, TOURNAMENT_ID)).thenReturn(List.of(
+                stat("p1", TEAM_ID, "m1", MatchResult.WON, 2, 0, 90)));
+        when(repository.findByMatchId("m1")).thenReturn(List.of(
+                stat("p1", TEAM_ID, "m1", MatchResult.WON, 2, 0, 90),
+                stat("p9", "team99", "m1", MatchResult.LOST, 0, 0, 90)));
+        var response = statisticsService.getTeamStatistics(TEAM_ID, TOURNAMENT_ID);
+        assertThat(response.points()).isEqualTo(3L);
+        verify(tournamentClient, never()).getActiveTournamentId();
     }
 
     @Test

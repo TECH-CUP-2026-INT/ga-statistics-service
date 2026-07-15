@@ -40,7 +40,7 @@ public interface StatisticsUseCase {
 
     TournamentStandingsResult getTournamentStandings(String tournamentId);
 
-    TeamStatisticsResult getTeamStatisticsInActiveTournament(String teamId);
+    TeamStatisticsResult getTeamStatistics(String teamId, String tournamentId);
 
     TournamentRecognitionRecord generateTournamentRecognitions(String tournamentId);
 

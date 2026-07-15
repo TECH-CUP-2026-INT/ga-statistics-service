@@ -67,8 +67,8 @@ public class StatisticsController implements StatisticsSwagger {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getPlayerCards(playerId, tournamentId)));
     }
 
-    @Override public ResponseEntity<TeamStatisticsResponse> getTeamStatisticsInActiveTournament(@PathVariable String teamId) {
-        return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getTeamStatisticsInActiveTournament(teamId)));
+    @Override public ResponseEntity<TeamStatisticsResponse> getTeamStatistics(@PathVariable String teamId, @RequestParam(required = false) String tournamentId) {
+        return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getTeamStatistics(teamId, tournamentId)));
     }
 
     @Override public ResponseEntity<TeamMatchRecordResponse> getTeamMatchRecord(@PathVariable String teamId, @RequestParam(required = false) String tournamentId) {

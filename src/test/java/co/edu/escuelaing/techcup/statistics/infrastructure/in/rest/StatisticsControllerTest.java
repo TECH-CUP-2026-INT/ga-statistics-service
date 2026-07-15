@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(StatisticsController.class)
+@WebMvcTest(value = StatisticsController.class, excludeAutoConfiguration = {RabbitAutoConfiguration.class})
 @Import({PlayerMatchStatMapperImpl.class, StatisticsResponseMapperImpl.class})
 class StatisticsControllerTest {
 
@@ -71,16 +72,16 @@ class StatisticsControllerTest {
     }
 
     @Test
-    void getTeamStatisticsInActiveTournament_deberiaDevolver200() throws Exception {
-        when(statisticsUseCase.getTeamStatisticsInActiveTournament(TID))
+    void getTeamStatistics_deberiaDevolver200() throws Exception {
+        when(statisticsUseCase.getTeamStatistics(any(), any()))
                 .thenReturn(new TeamStatisticsResult(TID, TNID, 2, 1, 0, 1, 3, 2, 1, 3));
         mockMvc.perform(get("/api/v1/statistics/teams/{id}/statistics", TID))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.points").value(3));
     }
 
     @Test
-    void getTeamStatisticsInActiveTournament_deberiaDevolver502() throws Exception {
-        when(statisticsUseCase.getTeamStatisticsInActiveTournament(TID))
+    void getTeamStatistics_deberiaDevolver502() throws Exception {
+        when(statisticsUseCase.getTeamStatistics(any(), any()))
                 .thenThrow(new ExternalServiceException("error"));
         mockMvc.perform(get("/api/v1/statistics/teams/{id}/statistics", TID))
                 .andExpect(status().isBadGateway());

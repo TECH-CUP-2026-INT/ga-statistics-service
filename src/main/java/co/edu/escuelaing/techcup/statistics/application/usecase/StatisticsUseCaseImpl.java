@@ -126,9 +126,12 @@ public class StatisticsUseCaseImpl implements StatisticsUseCase {
     }
 
     @Override
-    public TeamStatisticsResult getTeamStatisticsInActiveTournament(String teamId) {
-        String activeTournamentId = tournamentClient.getActiveTournamentId();
-        return buildTeamStatistics(teamId, activeTournamentId);
+    public TeamStatisticsResult getTeamStatistics(String teamId, String tournamentId) {
+        String resolvedId = tournamentId;
+        if (resolvedId == null) {
+            resolvedId = tournamentClient.getActiveTournamentId();
+        }
+        return buildTeamStatistics(teamId, resolvedId);
     }
 
     @Override

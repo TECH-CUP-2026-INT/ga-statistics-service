@@ -65,10 +65,13 @@ public interface StatisticsSwagger {
     @GetMapping("/players/{playerId}/cards")
     ResponseEntity<PlayerCardsResponse> getPlayerCards(@PathVariable String playerId, @RequestParam(required = false) String tournamentId);
 
-    @Operation(summary = "Estadísticas de un equipo en el torneo activo")
+    @Operation(summary = "Estadísticas de un equipo en un torneo",
+            description = "Si no se envía tournamentId, resuelve el torneo activo llamando al servicio de Torneos.")
     @ApiResponses({@ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "502", description = "Servicio de Torneos no disponible")})
     @GetMapping("/teams/{teamId}/statistics")
-    ResponseEntity<TeamStatisticsResponse> getTeamStatisticsInActiveTournament(@PathVariable String teamId);
+    ResponseEntity<TeamStatisticsResponse> getTeamStatistics(
+            @PathVariable String teamId,
+            @Parameter(description = "ID del torneo (opcional, si no se envía busca el activo)") @RequestParam(required = false) String tournamentId);
 
     @Operation(summary = "Récord de partidos de un equipo")
     @GetMapping("/teams/{teamId}/match-record")
