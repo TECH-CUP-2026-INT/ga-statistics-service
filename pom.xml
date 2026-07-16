@@ -32,8 +32,7 @@
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <spring-cloud.version>2025.0.0</spring-cloud.version>
          <sonar.host.url>http://localhost:9000</sonar.host.url>
-        <sonar.token>squ_593a12aae576bfb205db3c855f4996df289b6efc</sonar.token>
-        <sonar.projectKey>ga-statistics-service</sonar.projectKey>
+         <sonar.projectKey>ga-statistics-service</sonar.projectKey>
         <sonar.projectName>TechCup Statistics Service</sonar.projectName>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
