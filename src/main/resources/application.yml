@@ -16,7 +16,7 @@ spring:
       uri: ${MONGODB_URI:mongodb://localhost:27017/techcup_statistics}
 
 server:
-  port: ${SERVER_PORT:8085}
+  port: ${SERVER_PORT:5627}
 
 management:
   endpoints:
