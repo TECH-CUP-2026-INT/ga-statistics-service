@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @RestControllerAdvice
@@ -70,7 +71,7 @@ public class GlobalExceptionHandler {
     private ResponseEntity<ErrorResponse> build(HttpStatus status, List<String> messages,
                                                  HttpServletRequest request) {
         ErrorResponse body = new ErrorResponse(
-                LocalDateTime.now(), status.value(), reasonInSpanish(status), messages, request.getRequestURI());
+                LocalDateTime.now(ZoneId.systemDefault()), status.value(), reasonInSpanish(status), messages, request.getRequestURI());
         return ResponseEntity.status(status).body(body);
     }
 }

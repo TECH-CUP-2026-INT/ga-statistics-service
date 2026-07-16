@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -23,5 +24,5 @@ public class TournamentRecognitionDocument {
     private long topScorersGoals;
     private List<UUID> bestDefenseTeamIds;
     private long bestDefenseGoalsAgainst;
-    @Builder.Default private LocalDateTime generatedAt = LocalDateTime.now();
+    @Builder.Default private LocalDateTime generatedAt = LocalDateTime.now(ZoneId.systemDefault());
 }

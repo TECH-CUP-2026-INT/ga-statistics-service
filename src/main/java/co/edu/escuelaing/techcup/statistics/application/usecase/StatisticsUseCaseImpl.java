@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class StatisticsUseCaseImpl implements StatisticsUseCase {
         }
 
         PlayerMatchStatistic toSave = statistic.toBuilder()
-                .registeredAt(LocalDateTime.now())
+                .registeredAt(LocalDateTime.now(ZoneId.systemDefault()))
                 .build();
 
         repository.save(playerMatchStatMapper.toDocument(toSave));
@@ -163,7 +164,7 @@ public class StatisticsUseCaseImpl implements StatisticsUseCase {
         TournamentRecognitionRecord domain = TournamentRecognitionRecord.builder()
                 .tournamentId(tournamentId).topScorerPlayerIds(topScorerIds)
                 .topScorersGoals(maxGoals).bestDefenseTeamIds(bestDefenseIds)
-                .bestDefenseGoalsAgainst(minGoalsAgainst).generatedAt(LocalDateTime.now()).build();
+                .bestDefenseGoalsAgainst(minGoalsAgainst).generatedAt(LocalDateTime.now(ZoneId.systemDefault())).build();
 
         TournamentRecognitionDocument doc = recognitionMapper.toDocument(domain);
         existing.ifPresent(e -> doc.setId(e.getId()));

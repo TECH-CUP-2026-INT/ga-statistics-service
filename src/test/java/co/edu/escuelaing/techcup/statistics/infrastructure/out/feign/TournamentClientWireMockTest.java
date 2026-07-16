@@ -123,8 +123,7 @@ class TournamentClientWireMockTest {
         TournamentClient clientSinServidor = new TournamentClientImpl(restClient, "/tournaments/active");
 
         ExternalServiceException ex = assertThrows(ExternalServiceException.class,
-                () -> clientSinServidor.getActiveTournamentId());
-
+                clientSinServidor::getActiveTournamentId);
         assertThat(ex.getMessage()).contains("No fue posible consultar el torneo activo");
     }
 }

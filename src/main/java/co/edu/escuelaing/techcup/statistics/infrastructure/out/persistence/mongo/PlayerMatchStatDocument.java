@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -32,5 +33,5 @@ public class PlayerMatchStatDocument {
     @Builder.Default private Integer assists = 0;
     @Builder.Default private boolean goalkeeper = false;
     private MatchResult result;
-    @Builder.Default private LocalDateTime registeredAt = LocalDateTime.now();
+    @Builder.Default private LocalDateTime registeredAt = LocalDateTime.now(ZoneId.systemDefault());
 }
