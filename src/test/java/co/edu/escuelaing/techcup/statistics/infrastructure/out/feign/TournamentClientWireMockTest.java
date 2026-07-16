@@ -33,7 +33,7 @@ class TournamentClientWireMockTest {
         RestClient restClient = RestClient.builder()
                 .baseUrl("http://localhost:9090")
                 .build();
-        client = new TournamentClientImpl(restClient);
+        client = new TournamentClientImpl(restClient, "/tournaments/active");
     }
 
     @Test
@@ -120,7 +120,7 @@ class TournamentClientWireMockTest {
         RestClient restClient = RestClient.builder()
                 .baseUrl("http://localhost:9099")
                 .build();
-        TournamentClient clientSinServidor = new TournamentClientImpl(restClient);
+        TournamentClient clientSinServidor = new TournamentClientImpl(restClient, "/tournaments/active");
 
         ExternalServiceException ex = assertThrows(ExternalServiceException.class,
                 () -> clientSinServidor.getActiveTournamentId());

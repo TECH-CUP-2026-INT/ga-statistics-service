@@ -21,7 +21,7 @@ class TournamentClientImplTest {
         RestClient rc = mock(RestClient.class, Answers.RETURNS_DEEP_STUBS);
         when(rc.get().uri(ACTIVE_PATH).retrieve().body(ActiveTournamentResponse.class))
                 .thenReturn(new ActiveTournamentResponse("tournament-5"));
-        TournamentClient client = new TournamentClientImpl(rc);
+        TournamentClient client = new TournamentClientImpl(rc, ACTIVE_PATH);
         assertThat(client.getActiveTournamentId()).isEqualTo("tournament-5");
     }
 
@@ -30,7 +30,7 @@ class TournamentClientImplTest {
         RestClient rc = mock(RestClient.class, Answers.RETURNS_DEEP_STUBS);
         when(rc.get().uri(ACTIVE_PATH).retrieve().body(ActiveTournamentResponse.class))
                 .thenReturn(new ActiveTournamentResponse(null));
-        TournamentClient client = new TournamentClientImpl(rc);
+        TournamentClient client = new TournamentClientImpl(rc, ACTIVE_PATH);
         assertThrows(ExternalServiceException.class, client::getActiveTournamentId);
     }
 
@@ -39,7 +39,7 @@ class TournamentClientImplTest {
         RestClient rc = mock(RestClient.class, Answers.RETURNS_DEEP_STUBS);
         when(rc.get().uri(ACTIVE_PATH).retrieve().body(ActiveTournamentResponse.class))
                 .thenThrow(new RestClientException("timeout"));
-        TournamentClient client = new TournamentClientImpl(rc);
+        TournamentClient client = new TournamentClientImpl(rc, ACTIVE_PATH);
         assertThrows(ExternalServiceException.class, client::getActiveTournamentId);
     }
 }

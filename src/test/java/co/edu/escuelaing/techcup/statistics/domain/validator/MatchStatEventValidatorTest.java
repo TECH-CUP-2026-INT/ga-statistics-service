@@ -47,9 +47,9 @@ class MatchStatEventValidatorTest {
     }
 
     @Test
-    void validate_deberiaLanzarExcepcionCuandoTournamentIdEsNull() {
+    void validate_deberiaPasarCuandoTournamentIdEsNull() {
         var stat = validStat(); stat.setTournamentId(null);
-        assertThrows(IllegalArgumentException.class, () -> MatchStatEventValidator.validate(stat));
+        assertDoesNotThrow(() -> MatchStatEventValidator.validate(stat));
     }
 
     @Test
