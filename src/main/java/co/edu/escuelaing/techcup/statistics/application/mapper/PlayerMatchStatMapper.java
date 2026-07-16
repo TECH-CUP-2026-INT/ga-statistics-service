@@ -17,6 +17,10 @@ public interface PlayerMatchStatMapper {
     List<PlayerMatchStatistic> toDomainList(List<PlayerMatchStatDocument> documents);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "registeredAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "lastModifiedBy", ignore = true)
     PlayerMatchStatDocument toDocument(PlayerMatchStatistic domain);
 
     @Mapping(target = "id", ignore = true)

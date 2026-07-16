@@ -8,9 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -33,5 +36,8 @@ public class PlayerMatchStatDocument {
     @Builder.Default private Integer assists = 0;
     @Builder.Default private boolean goalkeeper = false;
     private MatchResult result;
-    @Builder.Default private LocalDateTime registeredAt = LocalDateTime.now(ZoneId.systemDefault());
+    @CreatedDate private LocalDateTime registeredAt;
+    @LastModifiedDate private LocalDateTime updatedAt;
+    @CreatedBy private String createdBy;
+    @LastModifiedBy private String lastModifiedBy;
 }

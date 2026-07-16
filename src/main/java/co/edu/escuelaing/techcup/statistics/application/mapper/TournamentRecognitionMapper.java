@@ -12,5 +12,9 @@ public interface TournamentRecognitionMapper {
     TournamentRecognitionRecord toDomain(TournamentRecognitionDocument document);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "generatedAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "lastModifiedBy", ignore = true)
     TournamentRecognitionDocument toDocument(TournamentRecognitionRecord domain);
 }

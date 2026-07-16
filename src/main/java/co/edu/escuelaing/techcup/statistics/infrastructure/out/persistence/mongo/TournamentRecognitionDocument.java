@@ -7,10 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -24,5 +27,8 @@ public class TournamentRecognitionDocument {
     private long topScorersGoals;
     private List<UUID> bestDefenseTeamIds;
     private long bestDefenseGoalsAgainst;
-    @Builder.Default private LocalDateTime generatedAt = LocalDateTime.now(ZoneId.systemDefault());
+    @CreatedDate private LocalDateTime generatedAt;
+    @LastModifiedDate private LocalDateTime updatedAt;
+    @CreatedBy private String createdBy;
+    @LastModifiedBy private String lastModifiedBy;
 }

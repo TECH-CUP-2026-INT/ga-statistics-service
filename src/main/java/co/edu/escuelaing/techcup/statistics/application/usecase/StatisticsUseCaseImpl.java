@@ -43,7 +43,6 @@ public class StatisticsUseCaseImpl implements StatisticsUseCase {
         }
 
         PlayerMatchStatistic toSave = statistic.toBuilder()
-                .registeredAt(LocalDateTime.now(ZoneId.systemDefault()))
                 .build();
 
         repository.save(playerMatchStatMapper.toDocument(toSave));
