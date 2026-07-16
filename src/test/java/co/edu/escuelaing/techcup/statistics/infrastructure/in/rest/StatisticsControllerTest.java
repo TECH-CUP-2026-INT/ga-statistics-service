@@ -263,7 +263,7 @@ class StatisticsControllerTest {
 
     @Test
     void getRanking_conTournamentId_deberiaPasarParametro() throws Exception {
-        when(statisticsUseCase.getRanking(eq(RankingType.GOALS), eq(TNID), eq(10)))
+        when(statisticsUseCase.getRanking(RankingType.GOALS, TNID, 10))
                 .thenReturn(new RankingResult("GOALS", TNID, List.of(new RankingResult.RankingEntry(1, PID, 5))));
         mockMvc.perform(get("/api/v1/statistics/rankings")
                         .param("type", "GOALS").param("tournamentId", TNID.toString()))
@@ -343,7 +343,7 @@ class StatisticsControllerTest {
 
     @Test
     void getGoalkeeperRanking_conTournamentId_deberiaDevolver200() throws Exception {
-        when(statisticsUseCase.getGoalkeeperRanking(eq(TNID), eq(5)))
+        when(statisticsUseCase.getGoalkeeperRanking(TNID, 5))
                 .thenReturn(new GoalkeeperRankingResult(TNID, List.of()));
         mockMvc.perform(get("/api/v1/statistics/goalkeeper-ranking")
                         .param("tournamentId", TNID.toString()).param("limit", "5"))

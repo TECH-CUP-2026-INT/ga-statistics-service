@@ -25,40 +25,32 @@ public class MatchStatEventValidator {
     public static void validate(PlayerMatchStatistic statistic) {
         List<String> errors = new ArrayList<>();
 
-        if (statistic.getPlayerId() == null) {
-            errors.add("El identificador del jugador (playerId) es obligatorio");
-        }
-        if (statistic.getTeamId() == null) {
-            errors.add("El identificador del equipo (teamId) es obligatorio");
-        }
-        if (statistic.getMatchId() == null) {
-            errors.add("El identificador del partido (matchId) es obligatorio");
-        }
+        checkRequired(errors, statistic.getPlayerId(), "El identificador del jugador (playerId) es obligatorio");
+        checkRequired(errors, statistic.getTeamId(), "El identificador del equipo (teamId) es obligatorio");
+        checkRequired(errors, statistic.getMatchId(), "El identificador del partido (matchId) es obligatorio");
         // tournamentId es opcional: Competencia no lo envia hoy
-        if (statistic.getResult() == null) {
-            errors.add("El resultado del partido (result) es obligatorio");
-        }
-        if (statistic.getGoals() != null && statistic.getGoals() < 0) {
-            errors.add("El número de goles no puede ser negativo");
-        }
-        if (statistic.getYellowCards() != null && statistic.getYellowCards() < 0) {
-            errors.add("El número de tarjetas amarillas no puede ser negativo");
-        }
-        if (statistic.getRedCards() != null && statistic.getRedCards() < 0) {
-            errors.add("El número de tarjetas rojas no puede ser negativo");
-        }
-        if (statistic.getFoulsCommitted() != null && statistic.getFoulsCommitted() < 0) {
-            errors.add("El número de faltas cometidas no puede ser negativo");
-        }
-        if (statistic.getMinutesPlayed() != null && statistic.getMinutesPlayed() < 0) {
-            errors.add("Los minutos jugados no pueden ser negativos");
-        }
-        if (statistic.getAssists() != null && statistic.getAssists() < 0) {
-            errors.add("El número de asistencias no puede ser negativo");
-        }
+        checkRequired(errors, statistic.getResult(), "El resultado del partido (result) es obligatorio");
+        checkNotNegative(errors, statistic.getGoals(), "goles");
+        checkNotNegative(errors, statistic.getYellowCards(), "tarjetas amarillas");
+        checkNotNegative(errors, statistic.getRedCards(), "tarjetas rojas");
+        checkNotNegative(errors, statistic.getFoulsCommitted(), "faltas cometidas");
+        checkNotNegative(errors, statistic.getMinutesPlayed(), "minutos jugados");
+        checkNotNegative(errors, statistic.getAssists(), "asistencias");
 
         if (!errors.isEmpty()) {
             throw new IllegalArgumentException("Errores de validación en los datos de entrada: " + String.join("; ", errors));
+        }
+    }
+
+    private static void checkRequired(List<String> errors, Object value, String message) {
+        if (value == null) {
+            errors.add(message);
+        }
+    }
+
+    private static void checkNotNegative(List<String> errors, Integer value, String fieldName) {
+        if (value != null && value < 0) {
+            errors.add("El número de " + fieldName + " no puede ser negativo");
         }
     }
 }

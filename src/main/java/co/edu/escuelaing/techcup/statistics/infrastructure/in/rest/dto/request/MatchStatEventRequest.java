@@ -2,7 +2,7 @@ package co.edu.escuelaing.techcup.statistics.infrastructure.in.rest.dto.request;
 import java.util.UUID;
 import co.edu.escuelaing.techcup.statistics.domain.model.MatchResult;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+
 import jakarta.validation.constraints.NotNull;
 
 public record MatchStatEventRequest(

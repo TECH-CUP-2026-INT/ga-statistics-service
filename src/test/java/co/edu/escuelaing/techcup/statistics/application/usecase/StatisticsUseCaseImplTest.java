@@ -100,8 +100,9 @@ class StatisticsUseCaseImplTest {
                 PLAYER_ID, TEAM_ID, id("match-500"), TOURNAMENT_ID, MatchResult.WON,
                 2, 0, 0, 1, 90, 0, false);
         when(repository.existsByPlayerIdAndMatchId(PLAYER_ID, id("match-500"))).thenReturn(true);
+        var domain = playerMatchStatMapper.toDomain(request);
         assertThrows(DuplicateMatchStatException.class,
-                () -> statisticsService.registerMatchStat(playerMatchStatMapper.toDomain(request)));
+                () -> statisticsService.registerMatchStat(domain));
         verify(repository, never()).save(any());
     }
 
@@ -124,7 +125,7 @@ class StatisticsUseCaseImplTest {
         when(repository.findByPlayerIdAndTournamentId(PLAYER_ID, TOURNAMENT_ID)).thenReturn(List.of());
         PlayerAverageResult result = statisticsService.getAverageWinRate(PLAYER_ID, TOURNAMENT_ID);
         assertThat(result.value()).isEqualTo(0.0);
-        assertThat(result.matchesConsidered()).isEqualTo(0);
+        assertThat(result.matchesConsidered()).isZero();
     }
 
     @Test
@@ -155,7 +156,7 @@ class StatisticsUseCaseImplTest {
         when(repository.findByPlayerIdAndTournamentId(PLAYER_ID, TOURNAMENT_ID)).thenReturn(List.of());
         PlayerAverageResult result = statisticsService.getAverageGoals(PLAYER_ID, TOURNAMENT_ID);
         assertThat(result.value()).isEqualTo(0.0);
-        assertThat(result.matchesConsidered()).isEqualTo(0);
+        assertThat(result.matchesConsidered()).isZero();
     }
 
     // ======================== getAverageFouls ========================
@@ -209,7 +210,7 @@ class StatisticsUseCaseImplTest {
     void getMatchesPlayed_conListaVacia_deberiaSerCero() {
         when(repository.findByPlayerIdAndTournamentId(PLAYER_ID, TOURNAMENT_ID)).thenReturn(List.of());
         MatchesPlayedResult result = statisticsService.getMatchesPlayed(PLAYER_ID, TOURNAMENT_ID);
-        assertThat(result.matchesPlayed()).isEqualTo(0);
+        assertThat(result.matchesPlayed()).isZero();
     }
 
     // ======================== getRanking ========================
@@ -360,7 +361,7 @@ class StatisticsUseCaseImplTest {
         when(recognitionRepository.findByTournamentId(TOURNAMENT_ID)).thenReturn(Optional.empty());
         when(recognitionRepository.save(any())).thenAnswer(i -> i.getArgument(0));
         TournamentRecognitionRecord response = statisticsService.generateTournamentRecognitions(TOURNAMENT_ID);
-        assertThat(response.getTopScorersGoals()).isEqualTo(0L);
+        assertThat(response.getTopScorersGoals()).isZero();
         assertThat(response.getTopScorerPlayerIds()).isEmpty();
     }
 
@@ -474,8 +475,8 @@ class StatisticsUseCaseImplTest {
     void getPlayerCards_conListaVacia_deberiaSerCero() {
         when(repository.findByPlayerIdAndTournamentId(PLAYER_ID, TOURNAMENT_ID)).thenReturn(List.of());
         PlayerCardsResult result = statisticsService.getPlayerCards(PLAYER_ID, TOURNAMENT_ID);
-        assertThat(result.yellowCards()).isEqualTo(0);
-        assertThat(result.redCards()).isEqualTo(0);
+        assertThat(result.yellowCards()).isZero();
+        assertThat(result.redCards()).isZero();
     }
 
     // ======================== getTeamMatchRecord ========================
@@ -502,7 +503,7 @@ class StatisticsUseCaseImplTest {
     void getTeamMatchRecord_sinPartidos_deberiaSerCero() {
         when(repository.findByTeamIdAndTournamentId(TEAM_ID, TOURNAMENT_ID)).thenReturn(List.of());
         TeamMatchRecordResult result = statisticsService.getTeamMatchRecord(TEAM_ID, TOURNAMENT_ID);
-        assertThat(result.matchesPlayed()).isEqualTo(0);
+        assertThat(result.matchesPlayed()).isZero();
         assertThat(result.winRatePercentage()).isEqualTo(0.0);
         assertThat(result.drawRatePercentage()).isEqualTo(0.0);
         assertThat(result.lossRatePercentage()).isEqualTo(0.0);
@@ -587,8 +588,8 @@ class StatisticsUseCaseImplTest {
     void getTournamentMatchAverages_sinPartidos_deberiaSerCero() {
         when(repository.findByTournamentId(TOURNAMENT_ID)).thenReturn(List.of());
         TournamentMatchAveragesResult result = statisticsService.getTournamentMatchAverages(TOURNAMENT_ID);
-        assertThat(result.matchesConsidered()).isEqualTo(0);
-        assertThat(result.averageGoalsPerMatch()).isEqualTo(0);
+        assertThat(result.matchesConsidered()).isZero();
+        assertThat(result.averageGoalsPerMatch()).isZero();
     }
 
     // ======================== getTournamentCardsTotal ========================
@@ -670,7 +671,7 @@ class StatisticsUseCaseImplTest {
     void getMatchCardsTotal_conPartidoSinDatos_deberiaRetornarCero() {
         when(repository.findByMatchId(id("m1"))).thenReturn(List.of());
         CardsTotalResult result = statisticsService.getMatchCardsTotal(id("m1"));
-        assertThat(result.yellowCards()).isEqualTo(0);
-        assertThat(result.redCards()).isEqualTo(0);
+        assertThat(result.yellowCards()).isZero();
+        assertThat(result.redCards()).isZero();
     }
 }

@@ -14,24 +14,26 @@ import org.springframework.web.client.RestClientException;
 public class TournamentClientImpl implements TournamentClient {
 
     private final RestClient restClient;
-
-    private static final String ACTIVE_TOURNAMENT_PATH = "/tournaments/active";
+    private final String activeTournamentPath;
 
     @Autowired
-    public TournamentClientImpl(@Value("${services.tournaments.base-url}") String baseUrl) {
-        this(RestClient.builder().baseUrl(baseUrl).build());
+    public TournamentClientImpl(
+            @Value("${services.tournaments.base-url}") String baseUrl,
+            @Value("${services.tournaments.active-path:/tournaments/active}") String activeTournamentPath) {
+        this(RestClient.builder().baseUrl(baseUrl).build(), activeTournamentPath);
     }
 
     /** Constructor usado por Spring y por los tests para inyectar un RestClient simulado. */
-    TournamentClientImpl(RestClient restClient) {
+    TournamentClientImpl(RestClient restClient, String activeTournamentPath) {
         this.restClient = restClient;
+        this.activeTournamentPath = activeTournamentPath;
     }
 
     @Override
     public String getActiveTournamentId() {
         try {
             ActiveTournamentResponse response = restClient.get()
-                    .uri(ACTIVE_TOURNAMENT_PATH)
+                    .uri(activeTournamentPath)
                     .retrieve()
                     .body(ActiveTournamentResponse.class);
 
