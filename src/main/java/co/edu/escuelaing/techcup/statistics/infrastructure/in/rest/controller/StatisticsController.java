@@ -31,67 +31,67 @@ public class StatisticsController implements StatisticsSwagger {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @Override public ResponseEntity<PlayerAverageResponse> getAverageWinRate(@PathVariable UUID playerId, @RequestParam(required = false) UUID tournamentId) {
+    @Override public ResponseEntity<PlayerAverageResponse> getAverageWinRate(@PathVariable("playerId") UUID playerId, @RequestParam(required = false) UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getAverageWinRate(playerId, tournamentId)));
     }
 
-    @Override public ResponseEntity<PlayerAverageResponse> getAverageGoals(@PathVariable UUID playerId, @RequestParam(required = false) UUID tournamentId) {
+    @Override public ResponseEntity<PlayerAverageResponse> getAverageGoals(@PathVariable("playerId") UUID playerId, @RequestParam(required = false) UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getAverageGoals(playerId, tournamentId)));
     }
 
-    @Override public ResponseEntity<PlayerAverageResponse> getAverageFouls(@PathVariable UUID playerId, @RequestParam(required = false) UUID tournamentId) {
+    @Override public ResponseEntity<PlayerAverageResponse> getAverageFouls(@PathVariable("playerId") UUID playerId, @RequestParam(required = false) UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getAverageFouls(playerId, tournamentId)));
     }
 
-    @Override public ResponseEntity<PlayerAverageResponse> getAverageMinutesPlayed(@PathVariable UUID playerId, @RequestParam(required = false) UUID tournamentId) {
+    @Override public ResponseEntity<PlayerAverageResponse> getAverageMinutesPlayed(@PathVariable("playerId") UUID playerId, @RequestParam(required = false) UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getAverageMinutesPlayed(playerId, tournamentId)));
     }
 
-    @Override public ResponseEntity<MatchesPlayedResponse> getMatchesPlayed(@PathVariable UUID playerId, @RequestParam(required = false) UUID tournamentId) {
+    @Override public ResponseEntity<MatchesPlayedResponse> getMatchesPlayed(@PathVariable("playerId") UUID playerId, @RequestParam(required = false) UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getMatchesPlayed(playerId, tournamentId)));
     }
 
-    @Override public ResponseEntity<TotalResponse> getPlayerTotalGoals(@PathVariable UUID playerId, @RequestParam(required = false) UUID tournamentId) {
+    @Override public ResponseEntity<TotalResponse> getPlayerTotalGoals(@PathVariable("playerId") UUID playerId, @RequestParam(required = false) UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getPlayerTotalGoals(playerId, tournamentId)));
     }
 
-    @Override public ResponseEntity<TotalResponse> getPlayerTotalFouls(@PathVariable UUID playerId, @RequestParam(required = false) UUID tournamentId) {
+    @Override public ResponseEntity<TotalResponse> getPlayerTotalFouls(@PathVariable("playerId") UUID playerId, @RequestParam(required = false) UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getPlayerTotalFouls(playerId, tournamentId)));
     }
 
-    @Override public ResponseEntity<TotalResponse> getPlayerTotalAssists(@PathVariable UUID playerId, @RequestParam(required = false) UUID tournamentId) {
+    @Override public ResponseEntity<TotalResponse> getPlayerTotalAssists(@PathVariable("playerId") UUID playerId, @RequestParam(required = false) UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getPlayerTotalAssists(playerId, tournamentId)));
     }
 
-    @Override public ResponseEntity<PlayerCardsResponse> getPlayerCards(@PathVariable UUID playerId, @RequestParam(required = false) UUID tournamentId) {
+    @Override public ResponseEntity<PlayerCardsResponse> getPlayerCards(@PathVariable("playerId") UUID playerId, @RequestParam(required = false) UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getPlayerCards(playerId, tournamentId)));
     }
 
-    @Override public ResponseEntity<TeamStatisticsResponse> getTeamStatistics(@PathVariable UUID teamId, @RequestParam(required = false) UUID tournamentId) {
+    @Override public ResponseEntity<TeamStatisticsResponse> getTeamStatistics(@PathVariable("teamId") UUID teamId, @RequestParam(required = false) UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getTeamStatistics(teamId, tournamentId)));
     }
 
-    @Override public ResponseEntity<TeamMatchRecordResponse> getTeamMatchRecord(@PathVariable UUID teamId, @RequestParam(required = false) UUID tournamentId) {
+    @Override public ResponseEntity<TeamMatchRecordResponse> getTeamMatchRecord(@PathVariable("teamId") UUID teamId, @RequestParam(required = false) UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getTeamMatchRecord(teamId, tournamentId)));
     }
 
-    @Override public ResponseEntity<TeamAverageResponse> getTeamAverageGoals(@PathVariable UUID teamId, @RequestParam(required = false) UUID tournamentId) {
+    @Override public ResponseEntity<TeamAverageResponse> getTeamAverageGoals(@PathVariable("teamId") UUID teamId, @RequestParam(required = false) UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getTeamAverageGoals(teamId, tournamentId)));
     }
 
-    @Override public ResponseEntity<TeamAverageResponse> getTeamAverageFouls(@PathVariable UUID teamId, @RequestParam(required = false) UUID tournamentId) {
+    @Override public ResponseEntity<TeamAverageResponse> getTeamAverageFouls(@PathVariable("teamId") UUID teamId, @RequestParam(required = false) UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getTeamAverageFouls(teamId, tournamentId)));
     }
 
-    @Override public ResponseEntity<TotalResponse> getTeamTotalFouls(@PathVariable UUID teamId, @RequestParam(required = false) UUID tournamentId) {
+    @Override public ResponseEntity<TotalResponse> getTeamTotalFouls(@PathVariable("teamId") UUID teamId, @RequestParam(required = false) UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getTeamTotalFouls(teamId, tournamentId)));
     }
 
-    @Override public ResponseEntity<TeamGoalsResponse> getTeamGoals(@PathVariable UUID teamId, @RequestParam(required = false) UUID tournamentId) {
+    @Override public ResponseEntity<TeamGoalsResponse> getTeamGoals(@PathVariable("teamId") UUID teamId, @RequestParam(required = false) UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getTeamGoals(teamId, tournamentId)));
     }
 
-    @Override public ResponseEntity<TournamentStandingsResponse> getTournamentStandings(@PathVariable UUID tournamentId) {
+    @Override public ResponseEntity<TournamentStandingsResponse> getTournamentStandings(@PathVariable("tournamentId") UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getTournamentStandings(tournamentId)));
     }
 
@@ -103,27 +103,27 @@ public class StatisticsController implements StatisticsSwagger {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getGoalkeeperRanking(tournamentId, limit)));
     }
 
-    @Override public ResponseEntity<TournamentMatchAveragesResponse> getTournamentMatchAverages(@PathVariable UUID tournamentId) {
+    @Override public ResponseEntity<TournamentMatchAveragesResponse> getTournamentMatchAverages(@PathVariable("tournamentId") UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getTournamentMatchAverages(tournamentId)));
     }
 
-    @Override public ResponseEntity<CardsTotalResponse> getTournamentCardsTotal(@PathVariable UUID tournamentId) {
+    @Override public ResponseEntity<CardsTotalResponse> getTournamentCardsTotal(@PathVariable("tournamentId") UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getTournamentCardsTotal(tournamentId)));
     }
 
-    @Override public ResponseEntity<TournamentRecognitionResponse> generateTournamentRecognitions(@PathVariable UUID tournamentId) {
+    @Override public ResponseEntity<TournamentRecognitionResponse> generateTournamentRecognitions(@PathVariable("tournamentId") UUID tournamentId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseMapper.toResponse(statisticsUseCase.generateTournamentRecognitions(tournamentId)));
     }
 
-    @Override public ResponseEntity<TournamentRecognitionResponse> getTournamentRecognitions(@PathVariable UUID tournamentId) {
+    @Override public ResponseEntity<TournamentRecognitionResponse> getTournamentRecognitions(@PathVariable("tournamentId") UUID tournamentId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getTournamentRecognitions(tournamentId)));
     }
 
-    @Override public ResponseEntity<CardsTotalResponse> getMatchCardsTotal(@PathVariable UUID matchId) {
+    @Override public ResponseEntity<CardsTotalResponse> getMatchCardsTotal(@PathVariable("matchId") UUID matchId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getMatchCardsTotal(matchId)));
     }
 
-    @Override public ResponseEntity<MatchResultResponse> getMatchResult(@PathVariable UUID matchId) {
+    @Override public ResponseEntity<MatchResultResponse> getMatchResult(@PathVariable("matchId") UUID matchId) {
         return ResponseEntity.ok(responseMapper.toResponse(statisticsUseCase.getMatchResult(matchId)));
     }
 }
