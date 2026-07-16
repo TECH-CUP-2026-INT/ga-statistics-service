@@ -18,6 +18,19 @@ spring:
 server:
   port: ${SERVER_PORT:8085}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+      show-components: when-authorized
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
 services:
   tournaments:
     base-url: ${TOURNAMENTS_SERVICE_URL:http://localhost:8080}

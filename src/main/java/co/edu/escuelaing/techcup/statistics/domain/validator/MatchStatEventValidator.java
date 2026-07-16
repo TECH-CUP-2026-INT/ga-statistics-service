@@ -34,9 +34,7 @@ public class MatchStatEventValidator {
         if (statistic.getMatchId() == null) {
             errors.add("El identificador del partido (matchId) es obligatorio");
         }
-        if (statistic.getTournamentId() == null) {
-            errors.add("El identificador del torneo (tournamentId) es obligatorio");
-        }
+        // tournamentId es opcional: Competencia no lo envia hoy
         if (statistic.getResult() == null) {
             errors.add("El resultado del partido (result) es obligatorio");
         }
