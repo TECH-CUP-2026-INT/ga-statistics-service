@@ -12,11 +12,13 @@
         <meta name="author" content="TECH-CUP 2026 INT — GA Team">
       
       
-        <link rel="canonical" href="https://tech-cup-2026-int.github.io/ga-statistics-service/anexos/">
+        <link rel="canonical" href="https://tech-cup-2026-int.github.io/ga-statistics-service/hallazgos/">
       
       
-        <link rel="prev" href="../equipo/">
+        <link rel="prev" href="../pruebas/">
       
+      
+        <link rel="next" href="../equipo/">
       
       
         
@@ -27,7 +29,7 @@
     
     
       
-        <title>Appendices - TechCup — Statistics Service</title>
+        <title>Findings - TechCup — Statistics Service</title>
       
     
     
@@ -80,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#appendices" class="md-skip">
+        <a href="#findings" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Appendices
+              Findings
             
           </span>
         </div>
@@ -363,9 +365,11 @@
   
   
   
+    
   
-    <li class="md-tabs__item">
-      <a href="../hallazgos/" class="md-tabs__link">
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
         
   
   
@@ -401,11 +405,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../anexos/" class="md-tabs__link">
         
   
   
@@ -656,10 +658,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../hallazgos/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Findings
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -675,6 +704,167 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sonarcloud-quality-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SonarCloud — Quality Gate
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SonarCloud — Quality Gate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bugs-22-javas6856" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bugs (22) — java:S6856
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vulnerabilities-7-s7637-s7636" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vulnerabilities (7) — S7637 / S7636
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tournament-service-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tournament Service Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tournament Service Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-tournamentsactive-does-not-exist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /tournaments/active does not exist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recognition-stub-without-http-call" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recognition — stub without HTTP call
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wrong-port" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wrong port
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture decisions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture decisions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#postgresql-mongodb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PostgreSQL → MongoDB
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ids-as-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IDs as String
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rabbitmq-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RabbitMQ events
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -710,37 +900,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Appendices
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../anexos/" class="md-nav__link">
         
   
   
@@ -756,72 +919,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#tech-stack" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tech Stack
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#useful-links" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Useful links
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#glossary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Glossary
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#decision-log" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Decision log
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -855,46 +952,141 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#tech-stack" class="md-nav__link">
+  <a href="#sonarcloud-quality-gate" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tech Stack
+        SonarCloud — Quality Gate
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SonarCloud — Quality Gate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bugs-22-javas6856" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bugs (22) — java:S6856
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#useful-links" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#vulnerabilities-7-s7637-s7636" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Useful links
+        Vulnerabilities (7) — S7637 / S7636
       
     </span>
   </a>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
-  <a href="#glossary" class="md-nav__link">
+  <a href="#tournament-service-integration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Glossary
+        Tournament Service Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tournament Service Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-tournamentsactive-does-not-exist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /tournaments/active does not exist
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#decision-log" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#recognition-stub-without-http-call" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Decision log
+        Recognition — stub without HTTP call
       
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wrong-port" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wrong port
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture decisions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture decisions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#postgresql-mongodb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PostgreSQL → MongoDB
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ids-as-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IDs as String
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rabbitmq-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RabbitMQ events
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -918,51 +1110,37 @@
   
 
 
-<h1 id="appendices">Appendices<a class="headerlink" href="#appendices" title="Permanent link">&para;</a></h1>
-<h2 id="tech-stack">Tech Stack<a class="headerlink" href="#tech-stack" title="Permanent link">&para;</a></h2>
+<h1 id="findings">Findings<a class="headerlink" href="#findings" title="Permanent link">&para;</a></h1>
+<h2 id="sonarcloud-quality-gate">SonarCloud — Quality Gate<a class="headerlink" href="#sonarcloud-quality-gate" title="Permanent link">&para;</a></h2>
+<h3 id="bugs-22-javas6856">Bugs (22) — java:S6856<a class="headerlink" href="#bugs-22-javas6856" title="Permanent link">&para;</a></h3>
+<p>All bugs reported by SonarCloud were for rule <strong>S6856</strong>: <code>@PathVariable</code> parameters in the controller were not bound to template variables because the <code>@GetMapping</code>/<code>@PostMapping</code> annotations were only on the <code>StatisticsSwagger</code> interface, not on the <code>StatisticsController</code> implementation.</p>
+<p><strong>Fix</strong>: duplicate the mapping annotations on each controller method. Spring merges interface and implementation annotations, but SonarCloud does not follow the annotation inheritance chain.</p>
+<p><strong>Commit</strong>: <code>07eebcf</code></p>
+<h3 id="vulnerabilities-7-s7637-s7636">Vulnerabilities (7) — S7637 / S7636<a class="headerlink" href="#vulnerabilities-7-s7637-s7636" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Java 21</li>
-<li>Spring Boot 3.5.6 (Web, Data MongoDB, Validation)</li>
-<li>MongoDB</li>
-<li>Lombok</li>
-<li>springdoc-openapi (Swagger UI)</li>
-<li>JaCoCo (test coverage)</li>
-<li>JUnit 5 + Mockito + AssertJ</li>
+<li><strong>5 × S7637</strong> (use full commit SHA): GitHub Actions (<code>docker/*</code>, <code>azure/webapps-deploy</code>) used version tags (<code>@v3</code>, <code>@v5</code>, <code>@v6</code>) instead of full commit SHAs.</li>
+<li><strong>2 × S7636</strong> (avoid expanding secrets in run block): <code>AZURE_WEBAPP_NAME</code> and <code>AZURE_WEBAPP_QA_NAME</code> secrets were expanded directly in a <code>run:</code> block instead of being passed as environment variables.</li>
 </ul>
-<h2 id="useful-links">Useful links<a class="headerlink" href="#useful-links" title="Permanent link">&para;</a></h2>
-<ul>
-<li><a href="https://github.com/TECH-CUP-2026-INT/ga-statistics-service">GitHub Repository</a></li>
-<li><a href="http://localhost:8085/swagger-ui/index.html">Swagger UI (with the app running)</a></li>
-<li><a href="https://github.com/TECH-CUP-2026-INT">TECH-CUP-2026-INT Organization</a></li>
-</ul>
-<h2 id="glossary">Glossary<a class="headerlink" href="#glossary" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Term</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Walkover</td>
-<td>A match where one team does not show up; recorded as a win (<code>WON</code>) for the present team and a loss (<code>LOST</code>) for the absent team</td>
-</tr>
-<tr>
-<td>Best defense</td>
-<td>Recognition to the goalkeeper (or team) with the fewest goals conceded</td>
-</tr>
-<tr>
-<td>Active tournament</td>
-<td>The current ongoing tournament, resolved by the Tournament service</td>
-</tr>
-</tbody>
-</table>
-<h2 id="decision-log">Decision log<a class="headerlink" href="#decision-log" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>PostgreSQL → MongoDB</strong>: the service was migrated from PostgreSQL/JPA to MongoDB to align with the TechCup ecosystem. Aggregations previously done in SQL (<code>AVG</code>, <code>SUM</code>, <code>GROUP BY</code>) are now computed in Java over raw documents.</li>
-<li><strong>Long → String for IDs</strong>: IDs were changed from <code>Long</code> to <code>String</code> after verifying that other microservices use MongoDB-style <code>ObjectId</code> IDs, not numeric ones.</li>
-</ul>
+<p><strong>Fix</strong>: replaced version tags with fixed SHAs + version comments, moved secrets to <code>env:</code>.</p>
+<p><strong>Commit</strong>: <code>07eebcf</code></p>
+<hr />
+<h2 id="tournament-service-integration">Tournament Service Integration<a class="headerlink" href="#tournament-service-integration" title="Permanent link">&para;</a></h2>
+<h3 id="get-tournamentsactive-does-not-exist"><code>GET /tournaments/active</code> does not exist<a class="headerlink" href="#get-tournamentsactive-does-not-exist" title="Permanent link">&para;</a></h3>
+<p>The Statistics service needs to resolve "the active tournament" when <code>tournamentId</code> is not provided. It was designed expecting a <code>GET /tournaments/active</code> endpoint in Tournaments, but <strong>it does not exist</strong>. Tournaments exposes routes like <code>/tournaments/{id}/finalize</code> and <code>/tournaments/history</code>, but none that returns the currently active tournament.</p>
+<p><strong>Risk</strong>: if a client calls <code>GET /teams/{id}/statistics</code> without <code>tournamentId</code>, the service fails because it cannot resolve the active tournament.</p>
+<h3 id="recognition-stub-without-http-call">Recognition — stub without HTTP call<a class="headerlink" href="#recognition-stub-without-http-call" title="Permanent link">&para;</a></h3>
+<p>Tournaments has a <code>RecognitionAwardPort.triggerAwards()</code> hook invoked from <code>FinalizeTournamentService</code>, but its only implementation is a <code>LogRecognitionAwardAdapter</code> that just logs. The real HTTP call to <code>POST /tournaments/{id}/recognitions</code> from Statistics is never executed.</p>
+<p><strong>Risk</strong>: tournament recognition (top scorer, best defense) is never triggered automatically. Someone must call the endpoint manually.</p>
+<h3 id="wrong-port">Wrong port<a class="headerlink" href="#wrong-port" title="Permanent link">&para;</a></h3>
+<p>The Tournament service runs on port <strong>8080</strong>, not 8081 as initially assumed. Its routes also lack the <code>/api/v1</code> prefix.</p>
+<hr />
+<h2 id="architecture-decisions">Architecture decisions<a class="headerlink" href="#architecture-decisions" title="Permanent link">&para;</a></h2>
+<h3 id="postgresql-mongodb">PostgreSQL → MongoDB<a class="headerlink" href="#postgresql-mongodb" title="Permanent link">&para;</a></h3>
+<p>The service was migrated from PostgreSQL/JPA to MongoDB to align with the TechCup ecosystem. SQL aggregations (<code>AVG</code>, <code>SUM</code>, <code>GROUP BY</code>) were replaced with Java streams over raw documents. This is a valid trade-off for a university tournament's data volume.</p>
+<h3 id="ids-as-string">IDs as String<a class="headerlink" href="#ids-as-string" title="Permanent link">&para;</a></h3>
+<p>IDs (<code>playerId</code>, <code>teamId</code>, <code>matchId</code>, <code>tournamentId</code>) are <code>String</code> because other microservices in the ecosystem use MongoDB <code>ObjectId</code>. This forces conversions at boundaries.</p>
+<h3 id="rabbitmq-events">RabbitMQ events<a class="headerlink" href="#rabbitmq-events" title="Permanent link">&para;</a></h3>
+<p>The service consumes Competition events via RabbitMQ when a match finishes. The integration is implemented but <strong>not validated end-to-end</strong> — Competition needs to send real events to confirm message format and deserialization work.</p>
 
 
 
@@ -1000,7 +1178,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../equipo/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Team">
+          <a href="../pruebas/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Testing">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1010,11 +1188,27 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Team
+                Testing
               </div>
             </div>
           </a>
         
+        
+          
+          <a href="../equipo/" class="md-footer__link md-footer__link--next" aria-label="Next: Team">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Team
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
         
       </nav>
     

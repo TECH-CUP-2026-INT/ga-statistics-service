@@ -1,15 +1,15 @@
 
 <!doctype html>
-<html lang="es" class="no-js">
+<html lang="en" class="no-js">
   <head>
     
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentación técnica del microservicio de estadísticas de la plataforma TechCup Fútbol.">
+        <meta name="description" content="Technical documentation for the statistics microservice of the TechCup Fútbol platform.">
       
       
-        <meta name="author" content="TECH-CUP 2026 INT — Equipo GA">
+        <meta name="author" content="TECH-CUP 2026 INT — GA Team">
       
       
         <link rel="canonical" href="https://tech-cup-2026-int.github.io/ga-statistics-service/api/">
@@ -82,8 +82,8 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-rest" class="md-skip">
-          Saltar a contenido
+        <a href="#api" class="md-skip">
+          Skip to content
         </a>
       
     </div>
@@ -95,7 +95,7 @@
       
 
 <header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+  <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="TechCup — Statistics Service" class="md-header__button md-logo" aria-label="TechCup — Statistics Service" data-md-component="logo">
       
   
@@ -129,9 +129,9 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
     
-      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
       </label>
     
@@ -139,9 +139,9 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
     
-      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
       </label>
     
@@ -164,21 +164,21 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
         
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
         
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </label>
-      <nav class="md-search__options" aria-label="Buscar">
+      <nav class="md-search__options" aria-label="Search">
         
-          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Compartir" aria-label="Compartir" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
             
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
           </a>
         
-        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
@@ -191,7 +191,7 @@
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
         <div class="md-search-result" data-md-component="search-result">
           <div class="md-search-result__meta">
-            Inicializando búsqueda
+            Initializing search
           </div>
           <ol class="md-search-result__list" role="presentation"></ol>
         </div>
@@ -203,7 +203,7 @@
     
     
       <div class="md-header__source">
-        <a href="https://github.com/TECH-CUP-2026-INT/ga-statistics-service" title="Ir al repositorio" class="md-source" data-md-component="source">
+        <a href="https://github.com/TECH-CUP-2026-INT/ga-statistics-service" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
@@ -224,7 +224,7 @@
         
           
             
-<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
   <div class="md-grid">
     <ul class="md-tabs__list">
       
@@ -240,7 +240,7 @@
   
     
   
-  Inicio
+  Home
 
       </a>
     </li>
@@ -259,7 +259,7 @@
   
     
   
-  Introducción
+  Introduction
 
       </a>
     </li>
@@ -278,7 +278,7 @@
   
     
   
-  Requerimientos
+  Requirements
 
       </a>
     </li>
@@ -297,7 +297,7 @@
   
     
   
-  Configuración
+  Configuration
 
       </a>
     </li>
@@ -316,7 +316,7 @@
   
     
   
-  Arquitectura
+  Architecture
 
       </a>
     </li>
@@ -356,7 +356,26 @@
   
     
   
-  Pruebas
+  Testing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../hallazgos/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Findings
 
       </a>
     </li>
@@ -375,7 +394,7 @@
   
     
   
-  Equipo
+  Team
 
       </a>
     </li>
@@ -394,7 +413,7 @@
   
     
   
-  Anexos
+  Appendices
 
       </a>
     </li>
@@ -421,7 +440,7 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="TechCup — Statistics Service" class="md-nav__button md-logo" aria-label="TechCup — Statistics Service" data-md-component="logo">
       
@@ -433,7 +452,7 @@
   </label>
   
     <div class="md-nav__source">
-      <a href="https://github.com/TECH-CUP-2026-INT/ga-statistics-service" title="Ir al repositorio" class="md-source" data-md-component="source">
+      <a href="https://github.com/TECH-CUP-2026-INT/ga-statistics-service" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
@@ -460,7 +479,7 @@
   <span class="md-ellipsis">
     
   
-    Inicio
+    Home
   
 
     
@@ -487,7 +506,7 @@
   <span class="md-ellipsis">
     
   
-    Introducción
+    Introduction
   
 
     
@@ -514,7 +533,7 @@
   <span class="md-ellipsis">
     
   
-    Requerimientos
+    Requirements
   
 
     
@@ -541,7 +560,7 @@
   <span class="md-ellipsis">
     
   
-    Configuración
+    Configuration
   
 
     
@@ -568,7 +587,7 @@
   <span class="md-ellipsis">
     
   
-    Arquitectura
+    Architecture
   
 
     
@@ -636,7 +655,7 @@
 
   
 
-<nav class="md-nav md-nav--secondary" aria-label="En esta página">
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
   
   
   
@@ -645,27 +664,82 @@
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
-      En esta página
+      On this page
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#ingesta-de-eventos" class="md-nav__link">
+  <a href="#endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Ingesta de eventos
+        Endpoints
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Ingesta de eventos">
+    <nav class="md-nav" aria-label="Endpoints">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#registrar-evento-de-partido" class="md-nav__link">
+  <a href="#register-a-match-event" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Registrar evento de partido
+        Register a match event
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#player-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Player statistics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#team-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Team statistics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tournament-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tournament statistics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rankings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rankings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#match-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Match statistics
       
     </span>
   </a>
@@ -678,71 +752,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#jugador-playersplayerid" class="md-nav__link">
+  <a href="#interactive-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Jugador — /players/{playerId}
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#equipo-teamsteamid" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Equipo — /teams/{teamId}
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#torneo-tournamentstournamentid" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Torneo — /tournaments/{tournamentId}
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Torneo — /tournaments/{tournamentId}">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#generar-reconocimiento" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Generar reconocimiento
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#partido-matchesmatchid" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Partido — /matches/{matchId}
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#manejo-de-errores" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Manejo de errores
+        Interactive documentation
       
     </span>
   </a>
@@ -771,7 +784,34 @@
   <span class="md-ellipsis">
     
   
-    Pruebas
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hallazgos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Findings
   
 
     
@@ -798,7 +838,7 @@
   <span class="md-ellipsis">
     
   
-    Equipo
+    Team
   
 
     
@@ -825,7 +865,7 @@
   <span class="md-ellipsis">
     
   
-    Anexos
+    Appendices
   
 
     
@@ -853,7 +893,7 @@
 
   
 
-<nav class="md-nav md-nav--secondary" aria-label="En esta página">
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
   
   
   
@@ -862,27 +902,82 @@
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
-      En esta página
+      On this page
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#ingesta-de-eventos" class="md-nav__link">
+  <a href="#endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Ingesta de eventos
+        Endpoints
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Ingesta de eventos">
+    <nav class="md-nav" aria-label="Endpoints">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#registrar-evento-de-partido" class="md-nav__link">
+  <a href="#register-a-match-event" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Registrar evento de partido
+        Register a match event
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#player-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Player statistics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#team-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Team statistics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tournament-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tournament statistics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rankings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rankings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#match-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Match statistics
       
     </span>
   </a>
@@ -895,71 +990,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#jugador-playersplayerid" class="md-nav__link">
+  <a href="#interactive-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Jugador — /players/{playerId}
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#equipo-teamsteamid" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Equipo — /teams/{teamId}
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#torneo-tournamentstournamentid" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Torneo — /tournaments/{tournamentId}
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Torneo — /tournaments/{tournamentId}">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#generar-reconocimiento" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Generar reconocimiento
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#partido-matchesmatchid" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Partido — /matches/{matchId}
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#manejo-de-errores" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Manejo de errores
+        Interactive documentation
       
     </span>
   </a>
@@ -986,296 +1020,199 @@
   
 
 
-<h1 id="api-rest">API REST<a class="headerlink" href="#api-rest" title="Permanent link">&para;</a></h1>
-<p>Base URL: <code>http://localhost:8085/api/v1/statistics</code></p>
-<p>Documentación interactiva (Swagger UI): <code>http://localhost:8085/swagger-ui/index.html</code></p>
-<div class="admonition note">
-<p class="admonition-title">Filtro por torneo</p>
-<p>Casi todos los endpoints de consulta aceptan <code>?tournamentId=</code> opcional. Si no se
-envía, la consulta es <strong>histórica</strong> (todos los torneos). La excepción es
-<code>/teams/{teamId}/statistics</code>, que resuelve el torneo activo internamente.</p>
-</div>
-<hr />
-<h2 id="ingesta-de-eventos">Ingesta de eventos<a class="headerlink" href="#ingesta-de-eventos" title="Permanent link">&para;</a></h2>
-<p>Controlador: <code>StatisticsController</code>. Lo consume el servicio de Competencia.</p>
-<h3 id="registrar-evento-de-partido">Registrar evento de partido<a class="headerlink" href="#registrar-evento-de-partido" title="Permanent link">&para;</a></h3>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="err">POST /events</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="err">Content-Type: application/json</span>
+<h1 id="api">API<a class="headerlink" href="#api" title="Permanent link">&para;</a></h1>
+<p>Base path: <code>/api/v1/statistics</code></p>
+<h2 id="endpoints">Endpoints<a class="headerlink" href="#endpoints" title="Permanent link">&para;</a></h2>
+<h3 id="register-a-match-event">Register a match event<a class="headerlink" href="#register-a-match-event" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>POST /events
 </span></code></pre></div>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;playerId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">&quot;teamId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;team-xyz&quot;</span><span class="p">,</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">&quot;matchId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;match-001&quot;</span><span class="p">,</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nt">&quot;tournamentId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tournament-001&quot;</span><span class="p">,</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">&quot;result&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;WON&quot;</span><span class="p">,</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="nt">&quot;goals&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="nt">&quot;assists&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="nt">&quot;yellowCards&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span><span class="nt">&quot;redCards&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="nt">&quot;foulsCommitted&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="nt">&quot;minutesPlayed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">90</span><span class="p">,</span>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="nt">&quot;goalkeeper&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="p">}</span>
-</span></code></pre></div>
+<p>Consumed by the Competition service when a match finishes. Each request contains the statistics of one player in one match.</p>
+<h3 id="player-statistics">Player statistics<a class="headerlink" href="#player-statistics" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>Código</th>
-<th>Significado</th>
+<th>Method</th>
+<th>Path</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>201</code></td>
-<td>Registrado correctamente</td>
+<td>GET</td>
+<td><code>/players/{playerId}/average-win-rate</code></td>
+<td>Player's win rate</td>
 </tr>
 <tr>
-<td><code>400</code></td>
-<td>Error de validación</td>
+<td>GET</td>
+<td><code>/players/{playerId}/average-goals</code></td>
+<td>Average goals per match</td>
 </tr>
 <tr>
-<td><code>409</code></td>
-<td>Ya existe un registro para ese jugador + partido</td>
+<td>GET</td>
+<td><code>/players/{playerId}/average-fouls</code></td>
+<td>Average fouls per match</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/players/{playerId}/average-minutes-played</code></td>
+<td>Average minutes per match</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/players/{playerId}/matches-played</code></td>
+<td>Total matches played</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/players/{playerId}/total-goals</code></td>
+<td>Total goals</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/players/{playerId}/total-fouls</code></td>
+<td>Total fouls</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/players/{playerId}/assists</code></td>
+<td>Total assists</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/players/{playerId}/cards</code></td>
+<td>Yellow and red cards</td>
 </tr>
 </tbody>
 </table>
-<p><code>result</code> acepta <code>WON</code>, <code>DRAWN</code>, <code>LOST</code>. Un walkover se registra igual: el equipo presente
-como <code>WON</code>, el ausente como <code>LOST</code>.</p>
-<hr />
-<h2 id="jugador-playersplayerid">Jugador — <code>/players/{playerId}</code><a class="headerlink" href="#jugador-playersplayerid" title="Permanent link">&para;</a></h2>
+<p>All accept an optional <code>?tournamentId</code> query parameter.</p>
+<h3 id="team-statistics">Team statistics<a class="headerlink" href="#team-statistics" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>Método</th>
-<th>Endpoint</th>
-<th>Descripción</th>
+<th>Method</th>
+<th>Path</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>GET</code></td>
-<td><code>/players/{id}/average-win-rate</code></td>
-<td>% de partidos ganados</td>
+<td>GET</td>
+<td><code>/teams/{teamId}/statistics</code></td>
+<td>Overall team stats in a tournament</td>
 </tr>
 <tr>
-<td><code>GET</code></td>
-<td><code>/players/{id}/average-goals</code></td>
-<td>Promedio de goles por partido</td>
+<td>GET</td>
+<td><code>/teams/{teamId}/match-record</code></td>
+<td>Wins, draws, losses</td>
 </tr>
 <tr>
-<td><code>GET</code></td>
-<td><code>/players/{id}/average-fouls</code></td>
-<td>Promedio de faltas por partido</td>
+<td>GET</td>
+<td><code>/teams/{teamId}/average-goals</code></td>
+<td>Average goals per match</td>
 </tr>
 <tr>
-<td><code>GET</code></td>
-<td><code>/players/{id}/average-minutes-played</code></td>
-<td>Promedio de minutos jugados</td>
+<td>GET</td>
+<td><code>/teams/{teamId}/average-fouls</code></td>
+<td>Average fouls per match</td>
 </tr>
 <tr>
-<td><code>GET</code></td>
-<td><code>/players/{id}/matches-played</code></td>
-<td>Total de partidos jugados</td>
+<td>GET</td>
+<td><code>/teams/{teamId}/total-fouls</code></td>
+<td>Total fouls</td>
 </tr>
 <tr>
-<td><code>GET</code></td>
-<td><code>/players/{id}/total-goals</code></td>
-<td>Goles totales (no promedio)</td>
-</tr>
-<tr>
-<td><code>GET</code></td>
-<td><code>/players/{id}/total-fouls</code></td>
-<td>Faltas totales</td>
-</tr>
-<tr>
-<td><code>GET</code></td>
-<td><code>/players/{id}/assists</code></td>
-<td>Asistencias totales</td>
-</tr>
-<tr>
-<td><code>GET</code></td>
-<td><code>/players/{id}/cards</code></td>
-<td>Tarjetas amarillas/rojas acumuladas</td>
+<td>GET</td>
+<td><code>/teams/{teamId}/goals</code></td>
+<td>Goals for, against, difference</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="equipo-teamsteamid">Equipo — <code>/teams/{teamId}</code><a class="headerlink" href="#equipo-teamsteamid" title="Permanent link">&para;</a></h2>
+<p>All accept an optional <code>?tournamentId</code> query parameter.</p>
+<h3 id="tournament-statistics">Tournament statistics<a class="headerlink" href="#tournament-statistics" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>Método</th>
-<th>Endpoint</th>
-<th>Descripción</th>
+<th>Method</th>
+<th>Path</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>GET</code></td>
-<td><code>/teams/{id}/statistics</code></td>
-<td>Estadísticas completas en el <strong>torneo activo</strong></td>
+<td>GET</td>
+<td><code>/tournaments/{tournamentId}/standings</code></td>
+<td>Tournament standings table</td>
 </tr>
 <tr>
-<td><code>GET</code></td>
-<td><code>/teams/{id}/match-record</code></td>
-<td>G/E/P con porcentajes</td>
+<td>GET</td>
+<td><code>/tournaments/{tournamentId}/match-averages</code></td>
+<td>Per-match averages</td>
 </tr>
 <tr>
-<td><code>GET</code></td>
-<td><code>/teams/{id}/average-goals</code></td>
-<td>Promedio de goles por partido</td>
+<td>GET</td>
+<td><code>/tournaments/{tournamentId}/cards</code></td>
+<td>Total cards</td>
 </tr>
 <tr>
-<td><code>GET</code></td>
-<td><code>/teams/{id}/average-fouls</code></td>
-<td>Promedio de faltas por partido</td>
+<td>POST</td>
+<td><code>/tournaments/{tournamentId}/recognitions</code></td>
+<td>Generate recognitions</td>
 </tr>
 <tr>
-<td><code>GET</code></td>
-<td><code>/teams/{id}/total-fouls</code></td>
-<td>Faltas totales del equipo</td>
-</tr>
-<tr>
-<td><code>GET</code></td>
-<td><code>/teams/{id}/goals</code></td>
-<td>Goles a favor, en contra y diferencia</td>
+<td>GET</td>
+<td><code>/tournaments/{tournamentId}/recognitions</code></td>
+<td>Get recognitions</td>
 </tr>
 </tbody>
 </table>
-<p><code>/teams/{id}/statistics</code> puede devolver <code>502</code> si el servicio de Torneos no está
-disponible o no reporta un torneo activo válido.</p>
-<hr />
-<h2 id="torneo-tournamentstournamentid">Torneo — <code>/tournaments/{tournamentId}</code><a class="headerlink" href="#torneo-tournamentstournamentid" title="Permanent link">&para;</a></h2>
+<h3 id="rankings">Rankings<a class="headerlink" href="#rankings" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>Método</th>
-<th>Endpoint</th>
-<th>Descripción</th>
+<th>Method</th>
+<th>Path</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>GET</code></td>
-<td><code>/tournaments/{id}/standings</code></td>
-<td>Tabla de posiciones completa</td>
+<td>GET</td>
+<td><code>/rankings?type={GOALS,WINS,FOULS,MINUTES}</code></td>
+<td>Public player rankings</td>
 </tr>
 <tr>
-<td><code>GET</code></td>
-<td><code>/rankings?type={TYPE}</code></td>
-<td>Ranking público: <code>GOALS</code>, <code>WINS</code>, <code>FOULS</code>, <code>MINUTES</code></td>
-</tr>
-<tr>
-<td><code>GET</code></td>
+<td>GET</td>
 <td><code>/goalkeeper-ranking</code></td>
-<td>Ranking de porteros (menos goles recibidos)</td>
-</tr>
-<tr>
-<td><code>GET</code></td>
-<td><code>/tournaments/{id}/match-averages</code></td>
-<td>Promedios de goles/faltas/tarjetas por partido</td>
-</tr>
-<tr>
-<td><code>GET</code></td>
-<td><code>/tournaments/{id}/cards</code></td>
-<td>Tarjetas totales del torneo</td>
-</tr>
-<tr>
-<td><code>POST</code></td>
-<td><code>/tournaments/{id}/recognitions</code></td>
-<td>Genera y <strong>guarda</strong> el reconocimiento</td>
-</tr>
-<tr>
-<td><code>GET</code></td>
-<td><code>/tournaments/{id}/recognitions</code></td>
-<td>Consulta el reconocimiento ya guardado</td>
+<td>Goalkeeper ranking</td>
 </tr>
 </tbody>
 </table>
-<h3 id="generar-reconocimiento">Generar reconocimiento<a class="headerlink" href="#generar-reconocimiento" title="Permanent link">&para;</a></h3>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="err">POST /tournaments/{id}/recognitions</span>
-</span></code></pre></div>
-<p>Calcula el máximo goleador y la mejor defensa, y los <strong>guarda</strong>. No recalcula en cada
-consulta — quien quiera el resultado actualizado debe volver a llamar este <code>POST</code> (por
-ejemplo, al finalizar el torneo). Si hay empate, <strong>todos</strong> los empatados quedan en la
-respuesta.</p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">&quot;tournamentId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tournament-001&quot;</span><span class="p">,</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">&quot;topScorers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;playerId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;p20&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;goals&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="p">},</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;playerId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;p22&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;goals&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="p">],</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="nt">&quot;topScorersGoals&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="nt">&quot;bestDefenseTeams&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">&quot;teamId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;teamA&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;goalsAgainst&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">}],</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="nt">&quot;bestDefenseGoalsAgainst&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">  </span><span class="nt">&quot;generatedAt&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-07-14T11:19:16.149&quot;</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="p">}</span>
-</span></code></pre></div>
-<p><code>GET /tournaments/{id}/recognitions</code> devuelve <code>404</code> si aún no se ha generado.</p>
-<hr />
-<h2 id="partido-matchesmatchid">Partido — <code>/matches/{matchId}</code><a class="headerlink" href="#partido-matchesmatchid" title="Permanent link">&para;</a></h2>
+<h3 id="match-statistics">Match statistics<a class="headerlink" href="#match-statistics" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>Método</th>
-<th>Endpoint</th>
-<th>Descripción</th>
+<th>Method</th>
+<th>Path</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>GET</code></td>
-<td><code>/matches/{id}/cards</code></td>
-<td>Tarjetas totales de ese partido</td>
+<td>GET</td>
+<td><code>/matches/{matchId}/cards</code></td>
+<td>Match total cards</td>
 </tr>
 <tr>
-<td><code>GET</code></td>
-<td><code>/matches/{id}/result</code></td>
-<td>Resultado por equipo (incluye walkover)</td>
+<td>GET</td>
+<td><code>/matches/{matchId}/result</code></td>
+<td>Match result</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="manejo-de-errores">Manejo de errores<a class="headerlink" href="#manejo-de-errores" title="Permanent link">&para;</a></h2>
-<p>Todas las respuestas de error siguen el mismo formato:</p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-07-09T08:03:32.23&quot;</span><span class="p">,</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">409</span><span class="p">,</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Conflict&quot;</span><span class="p">,</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Ya existe una estadística registrada para el jugador abc123 en el partido match-001&quot;</span><span class="p">],</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/api/v1/statistics/events&quot;</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="p">}</span>
+<h2 id="interactive-documentation">Interactive documentation<a class="headerlink" href="#interactive-documentation" title="Permanent link">&para;</a></h2>
+<p>When the service is running, visit:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>http://localhost:8085/swagger-ui/index.html
 </span></code></pre></div>
-<table>
-<thead>
-<tr>
-<th>Situación</th>
-<th>Status</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Evento duplicado</td>
-<td><code>409</code></td>
-</tr>
-<tr>
-<td>Validación de campos</td>
-<td><code>400</code></td>
-</tr>
-<tr>
-<td>Reconocimiento aún no generado</td>
-<td><code>404</code></td>
-</tr>
-<tr>
-<td>Servicio de Torneos no disponible</td>
-<td><code>502</code></td>
-</tr>
-<tr>
-<td>Error inesperado</td>
-<td><code>500</code></td>
-</tr>
-</tbody>
-</table>
 
 
 
@@ -1301,7 +1238,7 @@ respuesta.</p>
           <button type="button" class="md-top md-icon" data-md-component="top" hidden>
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
-  Volver al principio
+  Back to top
 </button>
         
       </main>
@@ -1310,33 +1247,33 @@ respuesta.</p>
   
     
       
-      <nav class="md-footer__inner md-grid" aria-label="Pie" >
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../arquitectura/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Arquitectura">
+          <a href="../arquitectura/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Architecture">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
             </div>
             <div class="md-footer__title">
               <span class="md-footer__direction">
-                Anterior
+                Previous
               </span>
               <div class="md-ellipsis">
-                Arquitectura
+                Architecture
               </div>
             </div>
           </a>
         
         
           
-          <a href="../pruebas/" class="md-footer__link md-footer__link--next" aria-label="Siguiente: Pruebas">
+          <a href="../pruebas/" class="md-footer__link md-footer__link--next" aria-label="Next: Testing">
             <div class="md-footer__title">
               <span class="md-footer__direction">
-                Siguiente
+                Next
               </span>
               <div class="md-ellipsis">
-                Pruebas
+                Testing
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1377,7 +1314,7 @@ respuesta.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.top", "navigation.footer", "navigation.indexes", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.top", "navigation.footer", "navigation.indexes", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>

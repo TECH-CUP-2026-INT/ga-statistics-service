@@ -12,10 +12,8 @@
         <meta name="author" content="TECH-CUP 2026 INT — GA Team">
       
       
-        <link rel="canonical" href="https://tech-cup-2026-int.github.io/ga-statistics-service/anexos/">
+        <link rel="canonical" href="https://tech-cup-2026-int.github.io/ga-statistics-service/rabbitmq-integration/">
       
-      
-        <link rel="prev" href="../equipo/">
       
       
       
@@ -27,7 +25,7 @@
     
     
       
-        <title>Appendices - TechCup — Statistics Service</title>
+        <title>RabbitMQ Integration - TechCup — Statistics Service</title>
       
     
     
@@ -80,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#appendices" class="md-skip">
+        <a href="#rabbitmq-integration" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Appendices
+              RabbitMQ Integration
             
           </span>
         </div>
@@ -401,11 +399,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../anexos/" class="md-tabs__link">
         
   
   
@@ -710,37 +706,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Appendices
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../anexos/" class="md-nav__link">
         
   
   
@@ -756,72 +725,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#tech-stack" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tech Stack
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#useful-links" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Useful links
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#glossary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Glossary
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#decision-log" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Decision log
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -855,10 +758,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#tech-stack" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tech Stack
+        Overview
       
     </span>
   </a>
@@ -866,10 +769,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#useful-links" class="md-nav__link">
+  <a href="#configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Useful links
+        Configuration
       
     </span>
   </a>
@@ -877,10 +780,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#glossary" class="md-nav__link">
+  <a href="#event-flow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Glossary
+        Event flow
       
     </span>
   </a>
@@ -888,10 +791,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#decision-log" class="md-nav__link">
+  <a href="#events" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Decision log
+        Events
       
     </span>
   </a>
@@ -918,51 +821,47 @@
   
 
 
-<h1 id="appendices">Appendices<a class="headerlink" href="#appendices" title="Permanent link">&para;</a></h1>
-<h2 id="tech-stack">Tech Stack<a class="headerlink" href="#tech-stack" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Java 21</li>
-<li>Spring Boot 3.5.6 (Web, Data MongoDB, Validation)</li>
-<li>MongoDB</li>
-<li>Lombok</li>
-<li>springdoc-openapi (Swagger UI)</li>
-<li>JaCoCo (test coverage)</li>
-<li>JUnit 5 + Mockito + AssertJ</li>
-</ul>
-<h2 id="useful-links">Useful links<a class="headerlink" href="#useful-links" title="Permanent link">&para;</a></h2>
-<ul>
-<li><a href="https://github.com/TECH-CUP-2026-INT/ga-statistics-service">GitHub Repository</a></li>
-<li><a href="http://localhost:8085/swagger-ui/index.html">Swagger UI (with the app running)</a></li>
-<li><a href="https://github.com/TECH-CUP-2026-INT">TECH-CUP-2026-INT Organization</a></li>
-</ul>
-<h2 id="glossary">Glossary<a class="headerlink" href="#glossary" title="Permanent link">&para;</a></h2>
+<h1 id="rabbitmq-integration">RabbitMQ Integration<a class="headerlink" href="#rabbitmq-integration" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The Statistics service consumes match events from the Competition service via RabbitMQ. When a match finishes, Competition publishes an event to the configured exchange, and this service processes and persists the statistics.</p>
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
+<p>RabbitMQ connection is configured via <code>application.yml</code> or environment variables:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">spring</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">rabbitmq</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${RABBITMQ_HOST:localhost}</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${RABBITMQ_PORT:5672}</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${RABBITMQ_USER:guest}</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${RABBITMQ_PASS:guest}</span>
+</span></code></pre></div>
+<h2 id="event-flow">Event flow<a class="headerlink" href="#event-flow" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>sequenceDiagram
+    participant C as Competition Service
+    participant Q as RabbitMQ
+    participant S as Statistics Service
+
+    C-&gt;&gt;Q: Publish MatchFinishedEvent
+    Q-&gt;&gt;S: Deliver event
+    S-&gt;&gt;S: Process &amp; persist statistics
+    S--&gt;&gt;Q: Ack</code></pre>
+<h2 id="events">Events<a class="headerlink" href="#events" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Term</th>
-<th>Meaning</th>
+<th>Event</th>
+<th>Exchange</th>
+<th>Routing Key</th>
+<th>Status</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Walkover</td>
-<td>A match where one team does not show up; recorded as a win (<code>WON</code>) for the present team and a loss (<code>LOST</code>) for the absent team</td>
-</tr>
-<tr>
-<td>Best defense</td>
-<td>Recognition to the goalkeeper (or team) with the fewest goals conceded</td>
-</tr>
-<tr>
-<td>Active tournament</td>
-<td>The current ongoing tournament, resolved by the Tournament service</td>
+<td>MatchFinished</td>
+<td><code>techcup.match.exchange</code></td>
+<td><code>match.finished</code></td>
+<td>Implemented</td>
 </tr>
 </tbody>
 </table>
-<h2 id="decision-log">Decision log<a class="headerlink" href="#decision-log" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>PostgreSQL → MongoDB</strong>: the service was migrated from PostgreSQL/JPA to MongoDB to align with the TechCup ecosystem. Aggregations previously done in SQL (<code>AVG</code>, <code>SUM</code>, <code>GROUP BY</code>) are now computed in Java over raw documents.</li>
-<li><strong>Long → String for IDs</strong>: IDs were changed from <code>Long</code> to <code>String</code> after verifying that other microservices use MongoDB-style <code>ObjectId</code> IDs, not numeric ones.</li>
-</ul>
 
 
 
@@ -995,28 +894,6 @@
       
         <footer class="md-footer">
   
-    
-      
-      <nav class="md-footer__inner md-grid" aria-label="Footer" >
-        
-          
-          <a href="../equipo/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Team">
-            <div class="md-footer__button md-icon">
-              
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
-            </div>
-            <div class="md-footer__title">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              <div class="md-ellipsis">
-                Team
-              </div>
-            </div>
-          </a>
-        
-        
-      </nav>
     
   
   <div class="md-footer-meta md-typeset">
