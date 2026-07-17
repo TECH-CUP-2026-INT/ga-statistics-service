@@ -1,0 +1,62 @@
+@startuml
+title Statistics Service - Diagrama de Componentes + Seguridad
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+package "API Management" {
+    [API Gateway\n(APIM)] as APIM
+}
+
+package "Statistics Service\nPuerto: 5627" {
+
+    [Statistics Controller\nREST Endpoints] as Controller
+    [Swagger / OpenAPI] as Swagger
+    [JWT Filter\nValida token JWT] as JwtFilter
+
+    [Statistics UseCase\nLógica de negocio\n- Promedios\n- Totales\n- Rankings\n- Reconocimientos] as UseCase
+
+    [Statistics Repository\nSpring Data MongoDB] as Repository
+
+    [Tournament Client\nREST Client (Feign)\n+ Internal API Key] as TournamentClient
+}
+
+database "MongoDB\ntechcup_stats" as Mongo {
+    [PlayerMatchStat]
+    [TournamentRecognition]
+}
+
+component "Tournament Service\nPuerto: 8080" as Tournament
+component "Competition Service" as Competition
+component "Identity Service\nPuerto: 5620" as Identity
+
+cloud "RabbitMQ" as Rabbit
+queue "match.finished.queue" as MatchQueue
+
+' === FLUJO JWT (Seguridad) ===
+Identity --> APIM : 1. Emite JWT (/auth/login)
+APIM --> Controller : 2. HTTPS Request + JWT
+Controller --> JwtFilter : 3. Intercepta y valida
+JwtFilter --> Identity : 4. GET /token/validate
+JwtFilter --> Controller : 5. OK (sigue flujo) / 401
+
+' === FLUJO HTTP ===
+Swagger .. Controller : Documentación OpenAPI
+Controller --> UseCase
+UseCase --> Repository
+UseCase --> TournamentClient
+
+Repository --> Mongo : Spring Data
+TournamentClient --> Tournament : REST + API Key
+note right of TournamentClient
+  GET /tournaments/active
+  GET /tournaments/{id}
+  POST /tournaments/{id}/recognitions
+end note
+
+' === FLUJO ASINCRONO (RabbitMQ) ===
+Competition --> Rabbit : Publica MatchFinishedEvent
+Rabbit --> MatchQueue
+MatchQueue --> UseCase : Consume evento
+
+@enduml
