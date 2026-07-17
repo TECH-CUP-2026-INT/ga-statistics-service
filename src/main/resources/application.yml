@@ -21,6 +21,14 @@ server:
 jwt:
   secret: ${JWT_SECRET:defaultSecretKeyForDevelopmentOnlyChangeInProduction2026!}
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  show-actuator: false
+
 management:
   endpoints:
     web:

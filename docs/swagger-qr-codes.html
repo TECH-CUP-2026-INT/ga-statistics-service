@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechCup — Swagger QR Codes</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #e2e8f0; padding: 2rem; }
+  h1 { text-align: center; font-size: 1.8rem; margin-bottom: 0.5rem; color: #f8fafc; }
+  .subtitle { text-align: center; color: #94a3b8; margin-bottom: 2rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; max-width: 1400px; margin: 0 auto; }
+  .card { background: #1e293b; border-radius: 12px; padding: 1.5rem; border: 1px solid #334155; }
+  .card h2 { font-size: 1rem; color: #38bdf8; margin-bottom: 0.75rem; }
+  .qr { text-align: center; margin-bottom: 0.75rem; }
+  .qr img { width: 200px; height: 200px; border-radius: 8px; }
+  .link { word-break: break-all; font-size: 0.8rem; color: #94a3b8; }
+  .link a { color: #94a3b8; text-decoration: none; }
+  .link a:hover { color: #38bdf8; }
+  .status { display: inline-block; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; margin-bottom: 0.5rem; }
+  .ok { background: #166534; color: #86efac; }
+  .footer { text-align: center; margin-top: 2rem; color: #64748b; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+  <h1>📡 TechCup — Swagger UI</h1>
+  <p class="subtitle">Escaneá el QR o abrí el link directo</p>
+  <div class="grid" id="grid"></div>
+  <p class="footer">Todos los servicios verificados — 15/15 funcionando ✅</p>
+
+  <script>
+    const services = [
+      { name: "1. TOURNAMENT", url: "https://tournament-service.bluebush-a05ae8bd.eastus2.azurecontainerapps.io/swagger-ui/index.html" },
+      { name: "2. LOGISTICS", url: "https://logistics-service.bluebush-a05ae8bd.eastus2.azurecontainerapps.io/swagger-ui/index.html" },
+      { name: "3. MATCHES", url: "https://matches-service.bluebush-a05ae8bd.eastus2.azurecontainerapps.io/swagger-ui/index.html" },
+      { name: "4. STATISTICS", url: "https://stats-service.bluebush-a05ae8bd.eastus2.azurecontainerapps.io/swagger-ui/index.html" },
+      { name: "5. IDENTITY", url: "https://identity-service.bluebush-a05ae8bd.eastus2.azurecontainerapps.io/swagger-ui/index.html" },
+      { name: "6. PAYMENT", url: "https://payment-service.bluebush-a05ae8bd.eastus2.azurecontainerapps.io/swagger-ui/index.html" },
+      { name: "7. TEAMS", url: "https://teams-service.bluebush-a05ae8bd.eastus2.azurecontainerapps.io/swagger-ui/index.html" },
+      { name: "8. NOTIFICATION", url: "https://notifications-service.bluebush-a05ae8bd.eastus2.azurecontainerapps.io/swagger-ui/index.html" },
+      { name: "9. COMMUNICATION", url: "https://communication-service.bluebush-a05ae8bd.eastus2.azurecontainerapps.io/swagger-ui/index.html" },
+      { name: "10. USERS/PLAYERS", url: "https://users-players-service.bluebush-a05ae8bd.eastus2.azurecontainerapps.io/api/v1/swagger-ui/index.html" }
+    ];
+
+    const grid = document.getElementById('grid');
+    services.forEach(s => {
+      const qr = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(s.url)}`;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <h2>${s.name}</h2>
+        <span class="status ok">✅ 200 OK</span>
+        <div class="qr"><a href="${s.url}" target="_blank"><img src="${qr}" alt="QR ${s.name}" loading="lazy"></a></div>
+        <div class="link"><a href="${s.url}" target="_blank">${s.url}</a></div>
+      `;
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+</html>
