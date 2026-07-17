@@ -120,29 +120,35 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
-    name: Deploy to Azure
+    name: Deploy to Azure Container Apps
     needs: dockerize-publish
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/qa'
     runs-on: ubuntu-latest
-    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'qa' }}
     permissions:
       contents: read
+      id-token: write
     steps:
       - name: Set target per branch
         id: target
-        env:
-          AZURE_WEBAPP_QA_NAME: ${{ secrets.AZURE_WEBAPP_QA_NAME }}
-          AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/qa" ]]; then
-            echo "APP_NAME=$AZURE_WEBAPP_QA_NAME" >> $GITHUB_OUTPUT
+            echo "APP_NAME=statistics-service-qa" >> $GITHUB_OUTPUT
             echo "IMAGE_TAG=qa" >> $GITHUB_OUTPUT
+            echo "RESOURCE_GROUP=techcup" >> $GITHUB_OUTPUT
           else
-            echo "APP_NAME=$AZURE_WEBAPP_NAME" >> $GITHUB_OUTPUT
+            echo "APP_NAME=stats-service" >> $GITHUB_OUTPUT
             echo "IMAGE_TAG=latest" >> $GITHUB_OUTPUT
+            echo "RESOURCE_GROUP=techcup" >> $GITHUB_OUTPUT
           fi
-      - uses: azure/webapps-deploy@02a81bead70021f5284939794bcec79c271ab383 # v3
+
+      - name: Azure login
+        uses: azure/login@v2
         with:
-          app-name: ${{ steps.target.outputs.APP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: ghcr.io/${{ env.IMAGE_NAME }}:${{ steps.target.outputs.IMAGE_TAG }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Container Apps
+        run: |
+          az containerapp update \
+            --name ${{ steps.target.outputs.APP_NAME }} \
+            --resource-group ${{ steps.target.outputs.RESOURCE_GROUP }} \
+            --image ghcr.io/${{ env.IMAGE_NAME }}:${{ steps.target.outputs.IMAGE_TAG }}
