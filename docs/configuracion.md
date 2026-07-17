@@ -1,70 +1,36 @@
-# Configuración
+# Configuration
 
-## Requisitos previos
+## Environment variables
 
-- Java 21
-- Maven (o el wrapper `mvnw` incluido)
-- MongoDB (local, Docker, o Atlas)
-- Docker y Docker Compose (opcional, para levantar todo junto)
-
-## Variables de entorno
-
-| Variable | Default | Descripción |
+| Variable | Default | Description |
 |---|---|---|
-| `MONGODB_URI` | `mongodb://localhost:27017/techcup_statistics` | URI de conexión a MongoDB |
-| `SERVER_PORT` | `8085` | Puerto en el que corre la app |
-| `TOURNAMENTS_SERVICE_URL` | `http://localhost:8080` | Base URL del servicio de Torneos |
+| `SERVER_PORT` | `8085` | HTTP server port |
+| `MONGODB_URI` | `mongodb://localhost:27017/techcup_statistics` | MongoDB connection string |
+| `TOURNAMENT_SERVICE_URL` | `http://localhost:8080` | Tournament service base URL |
 
-## Levantarlo localmente (sin Docker)
+## Running locally
 
-```bash
-# Windows PowerShell
-$env:MONGODB_URI="mongodb://localhost:27017/techcup_statistics"
-mvn spring-boot:run
-```
+### Prerequisites
 
-```bash
-# Linux / Mac
-export MONGODB_URI="mongodb://localhost:27017/techcup_statistics"
-./mvnw spring-boot:run
-```
+- Java 21+
+- MongoDB 7+ (or Docker)
+- Docker (optional, for containerized MongoDB)
 
-## Levantarlo con Docker Compose
-
-Incluye su propia instancia de MongoDB:
+### With Docker Compose (recommended)
 
 ```bash
 docker compose up --build
 ```
 
-Esto levanta:
+Starts both MongoDB and the service. The service is available at `http://localhost:8085`.
 
-- `statistics-service` en el puerto `8085`
-- `mongo` en el puerto `27017`
-
-## Correr los tests
+### Without Docker
 
 ```bash
-mvn test
+# Start MongoDB separately, then:
+./mvnw spring-boot:run
 ```
 
-Genera además el reporte de cobertura JaCoCo en `target/site/jacoco/index.html`.
+### Profile-specific configuration
 
-## Documentación interactiva
-
-Una vez levantado, la documentación Swagger/OpenAPI de la API queda disponible en:
-
-```
-http://localhost:8085/swagger-ui/index.html
-```
-
-## Este sitio de documentación (MkDocs)
-
-Para verlo localmente:
-
-```bash
-pip install mkdocs-material --break-system-packages
-mkdocs serve
-```
-
-Y abrir `http://localhost:8000`.
+No profiles are currently defined. All configuration is environment-variable driven for containerized deployments.

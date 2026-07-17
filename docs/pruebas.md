@@ -1,10 +1,10 @@
-# Pruebas
+# Testing
 
-## Resumen
+## Summary
 
-66 tests, 97% de cobertura de instrucciones (JaCoCo), 80% de cobertura de ramas.
+66 tests, 97% instruction coverage (JaCoCo), 80% branch coverage.
 
-| Paquete | Cobertura |
+| Package | Coverage |
 |---|---|
 | `dto` | 100% |
 | `controller` | 100% |
@@ -13,50 +13,38 @@
 | `service` | 97% |
 | `exception` | 85% |
 
-## Cómo se organizan
+## Test organization
 
 ### `StatisticsServiceImplTest` (35 tests)
 
-Tests unitarios de la lógica de negocio con Mockito, simulando `PlayerMatchStatRepository`,
-`TournamentRecognitionRepository` y `TournamentClient`. Cubre: registro de eventos
-(incluyendo duplicados y valores nulos), todos los promedios y totales de jugador,
-estadísticas de equipo, rankings (con y sin filtro de torneo), reconocimiento del
-torneo (incluyendo manejo de empates), y todos los endpoints de partido/torneo.
+Unit tests for business logic using Mockito, mocking `PlayerMatchStatRepository`, `TournamentRecognitionRepository`, and `TournamentClient`. Covers: event registration (including duplicates and null values), all player averages and totals, team statistics, rankings (with and without tournament filter), tournament recognitions (including tie handling), and all match/tournament endpoints.
 
 ### `StatisticsControllerTest` (29 tests)
 
-Tests del controlador con `@WebMvcTest` y `MockMvc`, simulando `StatisticsService`. No
-necesita MongoDB ni el servicio de Torneos corriendo. Cubre los 25 endpoints, más los
-casos de error (`400` de validación, `409` de duplicado, `404` de reconocimiento no
-generado, `502` cuando Torneos no responde).
+Controller tests with `@WebMvcTest` and `MockMvc`, mocking `StatisticsService`. Does not require MongoDB or the Tournament service running. Covers all 25 endpoints, plus error cases (`400` validation, `409` duplicate, `404` recognition not found, `502` when Tournaments is unavailable).
 
 ### `TournamentClientImplTest` (4 tests)
 
-Tests del cliente HTTP hacia Torneos, simulando `RestClient` con Mockito
-(`Answers.RETURNS_DEEP_STUBS`) — no hace llamadas de red reales. Cubre respuesta válida,
-respuesta nula, id nulo, y falla de conexión.
+HTTP client tests mocking `RestClient` with Mockito (`Answers.RETURNS_DEEP_STUBS`) — no real network calls. Covers valid response, null response, null id, and connection failure.
 
 ### `ServiceStatisticsApplicationTests` (1 test)
 
-Test de integración que levanta el contexto completo de Spring, incluyendo una conexión
-real a MongoDB (`contextLoads`).
+Integration test that loads the full Spring context, including a real MongoDB connection (`contextLoads`).
 
-## Correr los tests
+## Running tests
 
 ```bash
 mvn test
 ```
 
-## Ver el reporte de cobertura
+## Viewing coverage report
 
-Después de correr los tests, abrir:
+After running tests, open:
 
 ```
 target/site/jacoco/index.html
 ```
 
-## Nota sobre el test de contexto
+## Note on the context test
 
-`ServiceStatisticsApplicationTests` necesita MongoDB real corriendo (a diferencia de los
-demás, que usan mocks). Si `MONGODB_URI` no está exportado, usa el valor por defecto
-`mongodb://localhost:27017/techcup_statistics`.
+`ServiceStatisticsApplicationTests` requires a real MongoDB instance (unlike the other tests which use mocks). If `MONGODB_URI` is not set, it defaults to `mongodb://localhost:27017/techcup_statistics`.

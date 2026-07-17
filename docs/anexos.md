@@ -1,34 +1,30 @@
-# Anexos
+# Appendices
 
-## Stack tecnológico
+## Tech Stack
 
 - Java 21
 - Spring Boot 3.5.6 (Web, Data MongoDB, Validation)
 - MongoDB
 - Lombok
 - springdoc-openapi (Swagger UI)
-- JaCoCo (cobertura de tests)
+- JaCoCo (test coverage)
 - JUnit 5 + Mockito + AssertJ
 
-## Enlaces útiles
+## Useful links
 
-- [Repositorio en GitHub](https://github.com/TECH-CUP-2026-INT/ga-statistics-service)
-- [Swagger UI (con la app corriendo)](http://localhost:8085/swagger-ui/index.html)
-- [Organización TECH-CUP-2026-INT](https://github.com/TECH-CUP-2026-INT)
+- [GitHub Repository](https://github.com/TECH-CUP-2026-INT/ga-statistics-service)
+- [Swagger UI (with the app running)](http://localhost:8085/swagger-ui/index.html)
+- [TECH-CUP-2026-INT Organization](https://github.com/TECH-CUP-2026-INT)
 
-## Glosario
+## Glossary
 
-| Término | Significado |
+| Term | Meaning |
 |---|---|
-| Walkover | Partido en el que un equipo no se presenta; se registra como victoria (`WON`) para el presente y derrota (`LOST`) para el ausente |
-| Valla menos vencida | Reconocimiento al portero (o equipo) con menos goles recibidos |
-| Torneo activo | El torneo en curso actualmente, resuelto por el servicio de Torneos |
+| Walkover | A match where one team does not show up; recorded as a win (`WON`) for the present team and a loss (`LOST`) for the absent team |
+| Best defense | Recognition to the goalkeeper (or team) with the fewest goals conceded |
+| Active tournament | The current ongoing tournament, resolved by the Tournament service |
 
-## Historial de decisiones relevantes
+## Decision log
 
-- **PostgreSQL → MongoDB**: el servicio se migró de PostgreSQL/JPA a MongoDB para
-  alinearse con el resto del ecosistema TechCup, que usa MongoDB. Las agregaciones que
-  antes se resolvían con SQL (`AVG`, `SUM`, `GROUP BY`) ahora se calculan en Java sobre
-  los documentos crudos.
-- **Long → String en los IDs**: los IDs se cambiaron de `Long` a `String` tras verificar
-  que los demás microservicios usan IDs estilo MongoDB `ObjectId`, no numéricos.
+- **PostgreSQL → MongoDB**: the service was migrated from PostgreSQL/JPA to MongoDB to align with the TechCup ecosystem. Aggregations previously done in SQL (`AVG`, `SUM`, `GROUP BY`) are now computed in Java over raw documents.
+- **Long → String for IDs**: IDs were changed from `Long` to `String` after verifying that other microservices use MongoDB-style `ObjectId` IDs, not numeric ones.

@@ -1,46 +1,28 @@
-# Introducción
+# Introduction
 
-## Contexto
+## Context
 
-TechCup Fútbol es la plataforma que digitaliza el torneo semestral de fútbol de los
-programas de Ingeniería de Sistemas, Inteligencia Artificial, Ciberseguridad e
-Ingeniería Estadística de la Escuela Colombiana de Ingeniería Julio Garavito. Está
-construida como un conjunto de microservicios, cada uno responsable de un dominio del
-negocio (identidad, usuarios, equipos, torneos, competencia, logística, comunicaciones,
-estadísticas, etc.).
+TechCup Fútbol is the platform that digitalizes the semester football tournament of the Systems Engineering, Artificial Intelligence, Cybersecurity, and Statistical Engineering programs at the Escuela Colombiana de Ingeniería Julio Garavito. It is built as a set of microservices, each responsible for a business domain (identity, users, teams, tournaments, competition, logistics, communications, statistics, etc.).
 
-## Este microservicio
+## This microservice
 
-`ga-statistics-service` es el dueño del dominio de **estadísticas**. No calcula nada por
-sí mismo durante un partido — recibe los eventos ya resueltos desde el servicio de
-Competencia (arbitraje en vivo) una vez el partido finaliza, y a partir de ahí calcula
-todo lo demás: promedios, totales, rankings y reconocimientos.
+`ga-statistics-service` owns the **statistics** domain. It does not compute anything in real-time during a match — it receives resolved events from the Competition service (live refereeing) once a match finishes, and from there computes everything else: averages, totals, rankings, and recognitions.
 
-## Problema que resuelve
+## Problem it solves
 
-Antes de este servicio, la información estadística de un torneo (goleadores, tabla de
-posiciones, juego limpio) no existía de forma centralizada ni en tiempo real — dependía
-de cálculos manuales o de revisar actas de partido dispersas. Este servicio:
+Before this service, tournament statistical information (top scorers, standings, fair play) did not exist in a centralized or real-time manner — it depended on manual calculations or scattered match reports. This service:
 
-- Centraliza toda la estadística en un solo lugar, consultable por cualquier otro
-  servicio o por el frontend.
-- Calcula todo **a partir de datos crudos** (un registro por jugador por partido), sin
-  depender de que otro servicio le mande promedios ya calculados.
-- Es de **solo lectura** para el resto del sistema salvo dos excepciones: el evento de
-  ingesta (`POST /events`, que solo llama Competencia) y el disparo del reconocimiento
-  (`POST /tournaments/{id}/recognitions`, que solo llama Torneos).
+- Centralizes all statistics in a single place, queryable by any other service or the frontend.
+- Computes everything **from raw data** (one record per player per match), without relying on another service to send pre-computed averages.
+- Is **read-only** for the rest of the system except for two exceptions: the ingestion event (`POST /events`, called only by Competition) and the recognition trigger (`POST /tournaments/{id}/recognitions`, called only by Tournaments).
 
-## Alcance
+## Scope
 
-Cubre estadísticas de:
+Covers statistics for:
 
-- **Jugador**: promedios y totales de goles, faltas, minutos, asistencias, tarjetas,
-  partidos jugados, tasa de victorias.
-- **Equipo**: récord de partidos (G/E/P), goles a favor/en contra, promedio de goles y
-  faltas por partido, tabla de posiciones del torneo.
-- **Torneo**: promedios generales por partido, tarjetas totales, rankings públicos
-  (goleadores, juego limpio, valla menos vencida), reconocimiento oficial al finalizar.
-- **Partido**: resultado por equipo (incluye walkover), tarjetas totales del encuentro.
+- **Player**: averages and totals for goals, fouls, minutes, assists, cards, matches played, win rate.
+- **Team**: match record (W/D/L), goals for/against, average goals and fouls per match, tournament standings.
+- **Tournament**: overall per-match averages, total cards, public rankings (top scorers, fair play, best defense), official recognition upon completion.
+- **Match**: result per team (including walkovers), total cards.
 
-No cubre: la programación de partidos, las alineaciones, ni la lógica de arbitraje en
-vivo — eso pertenece al servicio de Competencia.
+Does not cover: match scheduling, lineups, or live refereeing logic — those belong to the Competition service.

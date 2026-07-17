@@ -7,61 +7,60 @@ hide:
 
 <div class="grid cards" markdown>
 
--   **Servicio de Estadísticas**
+-   **Statistics Service**
 
-    Microservicio responsable de calcular y exponer las estadísticas de jugadores, equipos, partidos y torneos: promedios, totales, rankings públicos y reconocimientos del torneo.
+    Microservice responsible for calculating and exposing player, team, match, and tournament statistics: averages, totals, public rankings, and tournament recognitions.
 
 -   **Spring Boot 3.5.6 + MongoDB**
 
-    Construido con Java 21 y persistencia en MongoDB. Los IDs (jugador, equipo, partido, torneo) son `String` para ser compatibles con los identificadores MongoDB del resto del ecosistema TechCup.
+    Built with Java 21 and MongoDB persistence. IDs (player, team, match, tournament) are `String` to remain compatible with MongoDB identifiers used across the TechCup ecosystem.
 
--   **97% de cobertura de tests**
+-   **97% test coverage**
 
-    66 tests (servicio, controlador y cliente HTTP) con JaCoCo — ver [Pruebas](pruebas.md).
+    66 tests (service, controller, HTTP client) with JaCoCo — see [Testing](pruebas.md).
 
--   **Parte del ecosistema TechCup**
+-   **Part of the TechCup ecosystem**
 
-    Un microservicio dentro de la plataforma DOSW que digitaliza el torneo semestral de fútbol de la Escuela Colombiana de Ingeniería Julio Garavito.
+    A microservice within the DOSW platform that digitalizes the semester football tournament of the Escuela Colombiana de Ingeniería Julio Garavito.
 
 </div>
 
 ---
 
-## ¿Qué hace este servicio?
+## What does this service do?
 
-El `ga-statistics-service` centraliza toda la estadística del torneo, a partir de los eventos
-que le envía el servicio de Competencia al finalizar cada partido:
+`ga-statistics-service` centralizes all tournament statistics from the events sent by the Competition service when a match finishes:
 
-- Calcula **promedios y totales por jugador**: goles, faltas, minutos jugados, asistencias, tarjetas.
-- Calcula **estadísticas por equipo**: récord de partidos, goles a favor/en contra, tabla de posiciones.
-- Genera **rankings públicos**: goleadores, juego limpio, valla menos vencida.
-- Calcula y **guarda el reconocimiento del torneo** (máximo goleador, mejor defensa) al finalizar, manejando empates.
-- Expone estadísticas **por partido**: resultado, tarjetas y promedios.
+- Computes **player averages and totals**: goals, fouls, minutes played, assists, cards.
+- Computes **team statistics**: match record, goals for/against, standings.
+- Generates **public rankings**: top scorers, fair play, best defense.
+- Calculates and **persists tournament recognitions** (top scorer, best defense) upon tournament completion, handling ties.
+- Exposes **per-match statistics**: result, cards, and averages.
 
 ---
 
-## Repositorio
+## Repository
 
 ```
 https://github.com/TECH-CUP-2026-INT/ga-statistics-service
 ```
 
-## Cómo empezar rápido
+## Quick start
 
 ```bash
-# 1. Clonar
+# 1. Clone
 git clone https://github.com/TECH-CUP-2026-INT/ga-statistics-service.git
 cd ga-statistics-service
 
-# 2. Levantar con Docker Compose (MongoDB incluido)
+# 2. Start with Docker Compose (MongoDB included)
 docker compose up --build
 
-# 3. El servicio queda disponible en
+# 3. Service available at
 http://localhost:8085
 
-# 4. Documentación interactiva (Swagger)
+# 4. Interactive API docs (Swagger)
 http://localhost:8085/swagger-ui/index.html
 ```
 
-[Ver configuración completa](configuracion.md){ .md-button .md-button--primary }
-[Ver API REST](api.md){ .md-button }
+[See full configuration](configuracion.md){ .md-button .md-button--primary }
+[See REST API](api.md){ .md-button }

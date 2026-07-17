@@ -1,94 +1,56 @@
-# Hallazgos
+# Findings
 
 ## SonarCloud — Quality Gate
 
 ### Bugs (22) — java:S6856
 
-Todos los bugs reportados por SonarCloud correspondían a la regla **S6856**: los parámetros
-`@PathVariable` del controller no se vinculaban a las variables de template porque los
-`@GetMapping`/`@PostMapping` estaban solo en la interfaz `StatisticsSwagger`, no en la
-implementación `StatisticsController`.
+All bugs reported by SonarCloud were for rule **S6856**: `@PathVariable` parameters in the controller were not bound to template variables because the `@GetMapping`/`@PostMapping` annotations were only on the `StatisticsSwagger` interface, not on the `StatisticsController` implementation.
 
-**Solución**: duplicar las anotaciones de mapeo en cada método del controller. Spring
-merges las anotaciones de interfaz e implementación, pero SonarCloud no sigue la cadena
-de herencia de anotaciones.
+**Fix**: duplicate the mapping annotations on each controller method. Spring merges interface and implementation annotations, but SonarCloud does not follow the annotation inheritance chain.
 
 **Commit**: `07eebcf`
 
-### Vulnerabilidades (7) — S7637 / S7636
+### Vulnerabilities (7) — S7637 / S7636
 
-- **5 × S7637** (use full commit SHA): las actions de GitHub (`docker/*`, `azure/webapps-deploy`)
-  usaban version tags (`@v3`, `@v5`, `@v6`) en lugar de SHA completo.
-- **2 × S7636** (avoid expanding secrets in run block): los secrets
-  `AZURE_WEBAPP_NAME` y `AZURE_WEBAPP_QA_NAME` se expandían directamente en el `run:`
-  block en lugar de pasarse como variables de entorno.
+- **5 × S7637** (use full commit SHA): GitHub Actions (`docker/*`, `azure/webapps-deploy`) used version tags (`@v3`, `@v5`, `@v6`) instead of full commit SHAs.
+- **2 × S7636** (avoid expanding secrets in run block): `AZURE_WEBAPP_NAME` and `AZURE_WEBAPP_QA_NAME` secrets were expanded directly in a `run:` block instead of being passed as environment variables.
 
-**Solución**: reemplazar version tags por SHA fijo + comentario con versión, y mover
-secrets a `env:`.
+**Fix**: replaced version tags with fixed SHAs + version comments, moved secrets to `env:`.
 
 **Commit**: `07eebcf`
 
 ---
 
-## Integración con Torneos
+## Tournament Service Integration
 
-### `GET /tournaments/active` no existe
+### `GET /tournaments/active` does not exist
 
-El servicio de Estadísticas necesita resolver "el torneo activo" cuando no se pasa
-`tournamentId`. Se diseñó esperando un endpoint `GET /tournaments/active` en Torneos,
-pero **no existe**. Torneos expone rutas como `/tournaments/{id}/finalize` y
-`/tournaments/history`, pero ninguna que devuelva el torneo activo actual.
+The Statistics service needs to resolve "the active tournament" when `tournamentId` is not provided. It was designed expecting a `GET /tournaments/active` endpoint in Tournaments, but **it does not exist**. Tournaments exposes routes like `/tournaments/{id}/finalize` and `/tournaments/history`, but none that returns the currently active tournament.
 
-**Riesgo**: si un cliente llama a `GET /teams/{id}/statistics` sin `tournamentId`, el
-servicio falla porque no puede resolver el torneo activo.
+**Risk**: if a client calls `GET /teams/{id}/statistics` without `tournamentId`, the service fails because it cannot resolve the active tournament.
 
-### Reconocimiento — stub sin llamada HTTP real
+### Recognition — stub without HTTP call
 
-Torneos tiene un hook `RecognitionAwardPort.triggerAwards()` invocado desde
-`FinalizeTournamentService`, pero su única implementación es un `LogRecognitionAwardAdapter`
-que solo registra un log. La llamada HTTP real a `POST /tournaments/{id}/recognitions`
-de Estadísticas nunca se ejecuta.
+Tournaments has a `RecognitionAwardPort.triggerAwards()` hook invoked from `FinalizeTournamentService`, but its only implementation is a `LogRecognitionAwardAdapter` that just logs. The real HTTP call to `POST /tournaments/{id}/recognitions` from Statistics is never executed.
 
-**Riesgo**: el reconocimiento del torneo (máximo goleador, mejor defensa) nunca se
-dispara automáticamente. Alguien debe llamar manualmente al endpoint.
+**Risk**: tournament recognition (top scorer, best defense) is never triggered automatically. Someone must call the endpoint manually.
 
-### Puerto incorrecto
+### Wrong port
 
-El servicio de Torneos corre en puerto **8080**, no 8081 como se había supuesto. Sus rutas
-tampoco llevan el prefijo `/api/v1`.
+The Tournament service runs on port **8080**, not 8081 as initially assumed. Its routes also lack the `/api/v1` prefix.
 
 ---
 
-## Arquitectura y decisiones
+## Architecture decisions
 
 ### PostgreSQL → MongoDB
 
-El servicio se migró de PostgreSQL/JPA a MongoDB para alinearse con el ecosistema TechCup.
-Las agregaciones SQL (`AVG`, `SUM`, `GROUP BY`) se reemplazaron por streams de Java sobre
-documentos crudos. Es una compensación válida para el volumen de datos de un torneo
-universitario.
+The service was migrated from PostgreSQL/JPA to MongoDB to align with the TechCup ecosystem. SQL aggregations (`AVG`, `SUM`, `GROUP BY`) were replaced with Java streams over raw documents. This is a valid trade-off for a university tournament's data volume.
 
-### IDs como String
+### IDs as String
 
-Los IDs (`playerId`, `teamId`, `matchId`, `tournamentId`) son `String` porque los demás
-microservicios del ecosistema usan `ObjectId` de MongoDB. Esto fuerza conversiones en los
-boundaries.
+IDs (`playerId`, `teamId`, `matchId`, `tournamentId`) are `String` because other microservices in the ecosystem use MongoDB `ObjectId`. This forces conversions at boundaries.
 
-### Eventos RabbitMQ
+### RabbitMQ events
 
-El servicio consume eventos de Competencia vía RabbitMQ cuando un partido finaliza.
-La integración está implementada pero **no validada extremo a extremo** — falta que
-Competencia envíe eventos reales para confirmar que el formato del mensaje y la
-deserialización funcionan.
-
----
-
-<!--
-
-### Template para próximos hallazgos
-
-| Hallazgo | Impacto | Prioridad | Estado |
-|---|---|---|---|
-| Título corto | Bajo/Medio/Alto | Baja/Media/Alta/Crítica | Abierto/En progreso/Resuelto |
-
--->
+The service consumes Competition events via RabbitMQ when a match finishes. The integration is implemented but **not validated end-to-end** — Competition needs to send real events to confirm message format and deserialization work.

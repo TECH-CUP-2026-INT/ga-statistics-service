@@ -1,41 +1,30 @@
-# Arquitectura
+# Architecture
 
-## Capas
+## Layers
 
 ```
-controller/   -> Endpoints REST (anotados con Swagger/OpenAPI)
-service/      -> Lógica de negocio: promedios, totales, rankings, agregaciones
-repository/   -> Acceso a datos (Spring Data MongoDB)
-entity/       -> Documentos persistentes (PlayerMatchStat, TournamentRecognition)
-dto/          -> Contratos de entrada/salida
-exception/    -> Manejo centralizado de errores
-client/       -> Cliente HTTP hacia el servicio de Torneos
+controller/   -> REST endpoints (annotated with Swagger/OpenAPI)
+service/      -> Business logic: averages, totals, rankings, aggregations
+repository/   -> Data access (Spring Data MongoDB)
+entity/       -> Persistent documents (PlayerMatchStat, TournamentRecognition)
+dto/          -> Input/output contracts
+exception/    -> Centralized error handling
+client/       -> HTTP client to the Tournament service
 ```
 
-## Modelo de datos
+## Data model
 
-El documento atómico es `PlayerMatchStat`: el desempeño de **un jugador** en **un
-partido**. A partir de ahí se derivan todos los cálculos — no hay tablas/colecciones
-separadas por cada tipo de estadística.
+The atomic document is `PlayerMatchStat`: the performance of **one player** in **one match**. All calculations are derived from this — there are no separate tables/collections for each type of statistic.
 
-MongoDB no ofrece agregaciones tipo `AVG`/`SUM`/`GROUP BY` con la misma facilidad que
-SQL, así que la decisión de diseño fue: el repositorio solo trae los documentos crudos
-que hagan falta, y `StatisticsServiceImpl` calcula promedios, sumas y agrupaciones con
-streams de Java. Es una compensación consciente entre eficiencia bruta y simplicidad de
-mantenimiento — válida para el volumen de datos de un torneo universitario.
+MongoDB does not offer `AVG`/`SUM`/`GROUP BY` aggregations as easily as SQL, so the design decision was: the repository fetches the raw documents needed, and `StatisticsServiceImpl` computes averages, sums, and groupings using Java streams. This is a conscious trade-off between raw efficiency and maintenance simplicity — valid for the data volume of a university tournament.
 
-La única excepción es `TournamentRecognition`: se calcula una sola vez (disparado por
-`POST /tournaments/{id}/recognitions`) y se **guarda**, en vez de recalcularse en cada
-consulta.
+The only exception is `TournamentRecognition`: it is computed once (triggered by `POST /tournaments/{id}/recognitions`) and **persisted**, instead of being recalculated on every query.
 
-### IDs como String
+### IDs as String
 
-`playerId`, `teamId`, `matchId` y `tournamentId` son `String`, no `Long`. Los demás
-microservicios del ecosistema TechCup (Torneos, Equipos, Usuarios) usan MongoDB con IDs
-tipo `ObjectId` (ej. `"64f1a2b3c4d5e6f7a8b9c0d1"`), así que este servicio tuvo que
-alinearse a ese formato para poder integrarse con ellos.
+`playerId`, `teamId`, `matchId`, and `tournamentId` are `String`, not `Long`. Other microservices in the TechCup ecosystem (Tournaments, Teams, Users) use MongoDB with `ObjectId` IDs (e.g. `"64f1a2b3c4d5e6f7a8b9c0d1"`), so this service aligned with that format for integration.
 
-## Integración con otros microservicios
+## Integration with other microservices
 
 ```mermaid
 graph LR
@@ -44,31 +33,17 @@ graph LR
     Estadisticas -->|GET /tournaments/active| Torneos
 ```
 
-- **Competencia → Estadísticas**: al finalizar un partido, Competencia envía el resumen
-  de cada jugador vía `POST /events`.
-- **Torneos → Estadísticas**: al finalizar un torneo, Torneos debería llamar a
-  `POST /tournaments/{id}/recognitions` para disparar el cálculo del reconocimiento.
-- **Estadísticas → Torneos**: para resolver "el torneo activo" (usado en
-  `GET /teams/{id}/statistics`), este servicio le pregunta a Torneos.
+- **Competition → Statistics**: when a match finishes, Competition sends each player's summary via `POST /events`.
+- **Tournaments → Statistics**: when a tournament finishes, Tournaments should call `POST /tournaments/{id}/recognitions` to trigger recognition computation.
+- **Statistics → Tournaments**: to resolve "the active tournament" (used in `GET /teams/{id}/statistics`), this service queries Tournaments.
 
-!!! warning "Contratos pendientes de confirmar (verificado 2026-07-14)"
-    Al revisar el código real de `mk-tournament-service`:
+!!! warning "Contracts pending confirmation (verified 2026-07-14)"
+    Reviewing the actual `mk-tournament-service` code:
 
-    - **No existe** `GET /tournaments/active`. Torneos expone rutas como
-      `/tournaments/{id}/finalize` o `/tournaments/history`, pero ninguna que devuelva
-      "el torneo activo actual". Pendiente de que el equipo de Torneos lo agregue, o de
-      rediseñar este flujo para que quien llame pase el `tournamentId` explícitamente.
-    - **Sí existe** el gancho para el reconocimiento: `RecognitionAwardPort.triggerAwards(String tournamentId)`,
-      invocado automáticamente desde `FinalizeTournamentService` sin bloquear la
-      finalización si falla. Hoy solo tiene una implementación *stub* que registra un
-      log (`LogRecognitionAwardAdapter`) — falta que la reemplacen por una llamada HTTP
-      real a `POST /tournaments/{id}/recognitions` de este servicio.
-    - El servicio de Torneos corre en el puerto **8080** (no 8081, que era el supuesto
-      inicial), y sus rutas no llevan prefijo `/api/v1`.
+    - **`GET /tournaments/active` does not exist**. Tournaments exposes routes like `/tournaments/{id}/finalize` or `/tournaments/history`, but none that returns "the currently active tournament". Pending the Tournaments team to add it, or redesigning this flow so callers pass `tournamentId` explicitly.
+    - **Recognition hook exists but is a stub**: `RecognitionAwardPort.triggerAwards(String tournamentId)` is invoked automatically from `FinalizeTournamentService` without blocking tournament finalization if it fails. However, its only implementation is a `LogRecognitionAwardAdapter` that just logs — the real HTTP call to `POST /tournaments/{id}/recognitions` is never made.
+    - The Tournament service runs on port **8080** (not 8081 as initially assumed), and its routes have no `/api/v1` prefix.
 
-## Seguridad
+## Security
 
-Este servicio no implementa autenticación ni autorización propia — se asume que el
-control de acceso (JWT, roles) se resuelve en el API Gateway o en el servicio de
-Identidad antes de que la petición llegue aquí. Todos los endpoints de consulta son de
-solo lectura y públicos dentro de la red interna del sistema.
+This service does not implement authentication or authorization — access control (JWT, roles) is assumed to be handled by the API Gateway or Identity service before requests reach here. All query endpoints are read-only and public within the system's internal network.
