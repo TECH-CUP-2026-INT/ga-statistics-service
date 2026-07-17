@@ -18,6 +18,9 @@ spring:
 server:
   port: ${SERVER_PORT:5627}
 
+jwt:
+  secret: ${JWT_SECRET:defaultSecretKeyForDevelopmentOnlyChangeInProduction2026!}
+
 management:
   endpoints:
     web:
@@ -27,6 +30,9 @@ management:
     health:
       show-details: when-authorized
       show-components: when-authorized
+    info:
+      env:
+        enabled: true
   metrics:
     tags:
       application: ${spring.application.name}
