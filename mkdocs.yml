@@ -115,6 +115,7 @@ nav:
   - Architecture: arquitectura.md
   - API: api.md
   - Testing: pruebas.md
+  - Diagrams: diagramas.md
   - Findings: hallazgos.md
   - Team: equipo.md
   - Appendices: anexos.md
