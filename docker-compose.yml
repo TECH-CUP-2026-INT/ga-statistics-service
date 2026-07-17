@@ -11,7 +11,7 @@ services:
     build: .
     container_name: statistics-service
     ports:
-      - "8085:8085"
+      - "5627:5627"
     environment:
       MONGODB_URI: mongodb://mongo:27017/techcup_statistics
       TOURNAMENTS_SERVICE_URL: http://host.docker.internal:8080
